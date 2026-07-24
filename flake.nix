@@ -1,5 +1,5 @@
 {
-  description = "Default";
+  description = "Ayame";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

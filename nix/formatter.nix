@@ -8,30 +8,15 @@ let
       statix.enable = true;
       deadnix.enable = true;
 
-      shfmt.enable = true;
+      # shfmt.enable = true;
       just.enable = true;
 
-      # prettier.enable = true;
-      biome.enable = true;
+      # biome.enable = true;
     };
     settings = {
       global.excludes = [ ]; # https://github.com/numtide/treefmt-nix/issues/171
-      prettier = {
-        includes = [
-          # "*.js"
-          # "*.ts"
-          "*.svelte"
-          # "*.json"
-          # "*.md"
-          # "*.css"
-        ];
-      };
       biome = {
         includes = [
-          "*.js"
-          "*.ts"
-          "*.jsx"
-          "*.tsx"
           "*.json"
         ];
       };

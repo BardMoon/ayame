@@ -25,7 +25,7 @@ in
   packages = forAllSystems (
     _: pkgs: rec {
       default = ayame;
-      ayame = pkgs.callPackage ./pkgs/ayame.nix { };
+      ayame = pkgs.kdePackages.callPackage ./pkgs/ayame.nix { };
     }
   );
   devShells = forAllSystems (

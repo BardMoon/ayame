@@ -6,6 +6,7 @@ ecm_add_qml_module(AyameStyle URI "org.kde.ayame"
 )
 
 ecm_target_qml_sources(AyameStyle SOURCES
+    ApplicationWindow.qml
     Button.qml
 )
 

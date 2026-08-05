@@ -1,0 +1,28 @@
+[workspace]
+resolver = "3"
+
+members = [
+  "crates/colors",
+  "crates/common",
+  "crates/kdecoreation6",
+  "crates/kstyle6",
+  "crates/qml6",
+]
+
+default-members = [
+  "crates/qml6",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+
+[workspace.dependencies]
+anyhow = "1"
+clap = { version = "4.6", features = ["derive"] }
+cxx = "1"
+cxx-qt = "0.9"
+cxx-qt-lib = "0.9"
+cxx-qt-build = "0.9"
+directories = "6.0"
+time = "0.3"

@@ -9,6 +9,19 @@ mkShell {
     cmake
     ninja
 
+    # === Rust ===
+    (rust-bin.stable.latest.default.override {
+      extensions = [
+        "clippy"
+        "rust-src"
+      ];
+    })
+    cargo
+    cargo-edit
+    cargo-outdated
+    rustc
+    cargo-nextest
+
     # === Qt ===
     qt6.qtbase
     qt6.qtsvg

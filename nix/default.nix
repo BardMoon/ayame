@@ -1,9 +1,9 @@
 {
   nixpkgs,
+  rust-overlay,
   ...
 }@inputs:
 let
-  # https://github.com/numtide/go2nix/blob/main/flake.nix
   systems = [
     "x86_64-linux"
     "aarch64-linux"
@@ -16,6 +16,7 @@ let
       let
         pkgs = import nixpkgs {
           inherit system;
+          overlays = [ (import rust-overlay) ];
         };
       in
       f system pkgs

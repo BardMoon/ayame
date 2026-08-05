@@ -1,21 +1,51 @@
-.DS_Store
+# -----------------------------------------------------------------------
+# Files ignored by Git.
+#
+# Keep project-specific ignore rules in subdirectories whenever possible.
+# -----------------------------------------------------------------------
 
-node_modules
-.svelte-kit
-package
+# 1 Build artifacts
+# -----------------
+
+build/
+dist/
+package/
+result
+result-*
+target/
+
+# 1.1 Development environment
+# ---------------------------
+
+.direnv/
+.svelte-kit/
+
+# Environment variables
+# ---------------------
+
 .env
 .env.*
 !.env.example
+
+# Cache
+# -----
+
+.cache/
+node_modules/
+*.log
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+# Editor
+# ------
 
-# Build file
-build
-result
-target
-dist
+.claude/
+.idea/
+.vscode/
 
-# Dev file
-.direnv
-.cache
+# Operating system
+# ----------------
+
+.DS_Store
+Desktop.ini
+Thumbs.db

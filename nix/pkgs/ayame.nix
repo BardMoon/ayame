@@ -8,7 +8,7 @@
 let
   src = ../..;
 in
-# https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/kl/klassy/package.nix
+# [ https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/kl/klassy/package.nix ]
 stdenv.mkDerivation (_finalAttrs: {
   inherit src;
   pname = "ayame";

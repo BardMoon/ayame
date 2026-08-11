@@ -1,6 +1,5 @@
 {
   nixpkgs,
-  rust-overlay,
   ...
 }@inputs:
 let
@@ -16,7 +15,6 @@ let
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ (import rust-overlay) ];
         };
       in
       f system pkgs
@@ -29,11 +27,13 @@ in
       ayame = pkgs.kdePackages.callPackage ./pkgs/ayame.nix { };
     }
   );
+
   devShells = forAllSystems (
     _: pkgs: {
-      default = pkgs.callPackage ./dev.nix { };
+      default = pkgs.callPackage ./dev.nix { inherit inputs; };
     }
   );
+
   formatter = forAllSystems (
     _: pkgs:
     let

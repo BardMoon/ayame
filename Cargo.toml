@@ -9,9 +9,7 @@ members = [
   "crates/qml6",
 ]
 
-default-members = [
-  "crates/qml6",
-]
+default-members = ["crates/qml6"]
 
 [workspace.package]
 version = "0.1.0"

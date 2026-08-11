@@ -4,9 +4,7 @@
 # Keep project-specific ignore rules in subdirectories whenever possible.
 # -----------------------------------------------------------------------
 
-# 1 Build artifacts
-# -----------------
-
+#[ Build file ]
 build/
 dist/
 package/
@@ -14,38 +12,21 @@ result
 result-*
 target/
 
-# 1.1 Development environment
-# ---------------------------
-
+#[ Dev ]
 .direnv/
-.svelte-kit/
-
-# Environment variables
-# ---------------------
-
-.env
-.env.*
-!.env.example
-
-# Cache
-# -----
-
-.cache/
-node_modules/
-*.log
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
-
-# Editor
-# ------
-
 .claude/
 .idea/
 .vscode/
 
-# Operating system
-# ----------------
+#[ Cache ]
+.cache/
 
+#[ User's variable ]
+.env
+.env.*
+!.env.example
+
+#[ OS ]
 .DS_Store
 Desktop.ini
 Thumbs.db

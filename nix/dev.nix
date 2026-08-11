@@ -1,32 +1,37 @@
 {
+  inputs,
+  stdenv,
   mkShell,
   pkgs,
   ...
 }:
+let
+  rust-toolchain = inputs.fenix.packages.${stdenv.hostPlatform.system}.stable.withComponents [
+    "cargo"
+    "clippy"
+    "rustc"
+    "rust-src"
+    "rust-analyzer"
+  ];
+in
 mkShell {
-  # https://github.com/NixOS/nixpkgs/blob/master/pkgs/kde/plasma/ayame/default.nix
+  #[ https://github.com/NixOS/nixpkgs/blob/master/pkgs/kde/plasma/breeze/default.nix ]
   buildInputs = with pkgs; [
+    #[ Rust ]
+    rust-toolchain
+    cargo-edit
+    cargo-outdated
+    cargo-nextest
+
+    #[ CMake ]
     cmake
     ninja
 
-    # === Rust ===
-    (rust-bin.stable.latest.default.override {
-      extensions = [
-        "clippy"
-        "rust-src"
-      ];
-    })
-    cargo
-    cargo-edit
-    cargo-outdated
-    rustc
-    cargo-nextest
-
-    # === Qt ===
+    #[ Qt ]
     qt6.qtbase
     qt6.qtsvg
     qt6.qtdeclarative
-    # === KDE ===
+    #[ KDE ]
     kdePackages.extra-cmake-modules
     kdePackages.kcmutils
     kdePackages.kcoreaddons
@@ -37,12 +42,12 @@ mkShell {
     kdePackages.kiconthemes
     kdePackages.kwindowsystem
     kdePackages.kdecoration
-    # === Graphics ===
+    #[ Graphics ]
     libGL
     mesa
   ];
 
   shellHook = ''
-    echo "🧪 C++ Qt"
+    echo "🧪 C++ Qt Rust"
   '';
 }

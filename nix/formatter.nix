@@ -1,28 +1,35 @@
 { pkgs, inputs, ... }:
 let
   treefmtModule = inputs.treefmt-nix.lib.evalModule pkgs {
-    projectRootFile = "flake.nix"; # .git/config
+    projectRootFile = "flake.nix";
     programs = {
-      # Nix
+      #[ Nix ]
       nixfmt.enable = true;
       statix.enable = true;
       deadnix.enable = true;
+      #[ Shell ]
+      shfmt.enable = true;
+      shellcheck.enable = true;
 
-      # shfmt.enable = true;
-      just.enable = true;
+      #[ Main ]
+      rustfmt.enable = true; # Rust
+      taplo.enable = true; # Toml
 
+      #[ Sub ]
+      # prettier.enable = true;
       # biome.enable = true;
     };
     settings = {
       global.excludes = [ ]; # https://github.com/numtide/treefmt-nix/issues/171
+
+      shfmt = {
+        includes = [ "*.sh" ];
+      };
+
       biome = {
         includes = [
           "*.json"
         ];
-      };
-
-      shfmt = {
-        includes = [ "*.sh" ];
       };
     };
   };

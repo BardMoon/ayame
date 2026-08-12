@@ -1,8 +1,9 @@
 {
+  lib,
+  pkgs,
   inputs,
   stdenv,
   mkShell,
-  pkgs,
   qt6,
   ...
 }:
@@ -15,7 +16,7 @@ let
     "rust-src"
     # "rust-analyzer"
   ];
-in mkShell {
+in mkShell rec {
   #[ https://github.com/NixOS/nixpkgs/blob/master/pkgs/kde/plasma/breeze/default.nix ]
   buildInputs = with pkgs; [
     #[ Rust ]

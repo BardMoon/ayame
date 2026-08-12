@@ -1,52 +1,58 @@
 {
   lib,
   stdenv,
+  craneLib,
+  callPackage,
+
+  #[ Dependencies ]
+  pkg-config,
   cmake,
-  ninja,
-  kdePackages,
+  qt6,
+  llvmPackages,
 }:
 let
   src = ../..;
-in
-# [ https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/kl/klassy/package.nix ]
-stdenv.mkDerivation (_finalAttrs: {
-  inherit src;
-  pname = "ayame";
-  version = "6.7.4";
+  qtToolchain = callPackage ../qt-toolchain.nix { inherit qt6; };
+  commonArgs = rec {
+    inherit src;
+    pname = "ayame";
+    version = "0.1.0";
 
-  nativeBuildInputs = [
-    cmake
-    ninja
-    kdePackages.extra-cmake-modules
-    kdePackages.wrapQtAppsHook
-  ];
+    dontWrapQtApps = true;
+    cargoExtraArgs = "-p ayame";
 
-  buildInputs = with kdePackages; [
-    qtbase
-    qtdeclarative
-    qttools
-    qtsvg
+    nativeBuildInputs = [
+      pkg-config
+      cmake
+      qt6.qtbase
+      qt6.qtdeclarative
+      qt6.qmake
+      llvmPackages.lld
+    ];
 
-    frameworkintegration
-    kcmutils
-    kcolorscheme
-    kconfig
-    kcoreaddons
-    kdecoration
-    kguiaddons
-    ki18n
-    kiconthemes
-    kirigami
-    kwidgetsaddons
-    kwindowsystem
-  ];
+    buildInputs = [
+      qt6.qtbase
+      qt6.qtdeclarative
+    ];
 
-  cmakeFlags = [
-    (lib.cmakeBool "BUILD_QT6" true)
-  ];
+    env = {
+      ENV_QT_INCLUDE_PATH = "${qt6.qtdeclarative}/include";
+      RUSTFLAGS = "-C link-arg=-fuse-ld=lld";
+    };
 
-  meta = {
-    maintainers = with lib.maintainers; [ tefla ];
-    mainProgram = "ayame-settings6";
+    preBuild = ''
+      export QMAKE="${qtToolchain.qmakeWrapper}/bin/qmake-wrapper"
+      if [ -d target ]; then
+        find target -type f -exec sed -i "s|/build/[^/]*source|$PWD|g" {} + 2>/dev/null || true
+      fi
+    '';
   };
-})
+  cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+in
+craneLib.buildPackage (
+  commonArgs
+  // {
+    inherit cargoArtifacts;
+    doCheck = false;
+  }
+)

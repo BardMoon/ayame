@@ -2,10 +2,10 @@
 resolver = "3"
 
 members = [
-  "crates/colors",
-  "crates/common",
-  "crates/kdecoreation6",
-  "crates/kstyle6",
+  # "crates/colors",
+  # "crates/common",
+  # "crates/kdecoreation6",
+  # "crates/kstyle6",
   "crates/qml6",
 ]
 

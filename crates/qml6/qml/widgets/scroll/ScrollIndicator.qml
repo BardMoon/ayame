@@ -20,7 +20,9 @@ QQC2.ScrollIndicator {
         opacity: control.active ? 0.6 : 0.0
 
         Behavior on opacity {
-            NumberAnimation { duration: 150 }
+            NumberAnimation {
+                duration: 150
+            }
         }
     }
 }

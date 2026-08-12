@@ -1,0 +1,6 @@
+[package]
+name = "ayame-settings"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]

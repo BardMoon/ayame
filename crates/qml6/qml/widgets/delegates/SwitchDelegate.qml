@@ -43,7 +43,9 @@ QQC2.SwitchDelegate {
             color: control.checked ? control.colors.highlightedTextColor : control.colors.textColor
 
             Behavior on x {
-                NumberAnimation { duration: 100 }
+                NumberAnimation {
+                    duration: 100
+                }
             }
         }
     }

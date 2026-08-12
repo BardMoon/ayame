@@ -10,10 +10,8 @@ QQC2.ScrollBar {
     property int colorSet: Theme.view
     readonly property var colors: Theme.paletteFor(control.colorSet)
 
-    implicitWidth: Math.max(implicitBackgroundWidth + leftPadding + rightPadding,
-                            implicitContentWidth + leftPadding + rightPadding)
-    implicitHeight: Math.max(implicitBackgroundHeight + topPadding + bottomPadding,
-                             implicitContentHeight + topPadding + bottomPadding)
+    implicitWidth: Math.max(implicitBackgroundWidth + leftPadding + rightPadding, implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(implicitBackgroundHeight + topPadding + bottomPadding, implicitContentHeight + topPadding + bottomPadding)
 
     padding: 2
 
@@ -25,7 +23,9 @@ QQC2.ScrollBar {
         opacity: control.active ? 1.0 : 0.0
 
         Behavior on opacity {
-            NumberAnimation { duration: 150 }
+            NumberAnimation {
+                duration: 150
+            }
         }
     }
 

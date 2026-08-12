@@ -64,7 +64,7 @@ extern "C" {
 char* cettila_available_styles_joined()
 {
     QSet<QString> styles;
-    styles.insert(QStringLiteral("Ayame"));
+    styles.insert(QStringLiteral("la.cettila.Ayame"));
     for (const QString& root : importPathRoots()) {
         collectStylesUnder(root, QLatin1String("QtQuick/Controls"), QString(), styles);
         collectStylesUnder(root, QLatin1String("org/kde"), QLatin1String("org.kde"), styles);

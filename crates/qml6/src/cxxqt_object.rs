@@ -203,7 +203,6 @@ mod ffi {
     }
 }
 
-
 #[derive(Default)]
 pub struct StyleInfoRust {
     saved_style: String,
@@ -395,7 +394,11 @@ impl ffi::FontSettings {
         self.as_mut().rust_mut().point_size = size;
         let family = self.rust().family.clone();
         apply_ui_font(
-            if family.is_empty() { None } else { Some(&family) },
+            if family.is_empty() {
+                None
+            } else {
+                Some(&family)
+            },
             size,
         );
     }

@@ -1,6 +1,4 @@
 {
-  lib,
-  stdenv,
   craneLib,
   callPackage,
 

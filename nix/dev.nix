@@ -16,7 +16,8 @@ let
     "rust-src"
     # "rust-analyzer"
   ];
-in mkShell rec {
+in
+mkShell rec {
   #[ https://github.com/NixOS/nixpkgs/blob/master/pkgs/kde/plasma/breeze/default.nix ]
   buildInputs = with pkgs; [
     #[ Rust ]

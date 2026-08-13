@@ -21,6 +21,7 @@ flake-parts.lib.mkFlake { inherit inputs; } {
       packages = rec {
         default = ayame;
         ayame = pkgs.callPackage ./pkgs/ayame.nix { inherit craneLib; };
+        ayame-settings = pkgs.callPackage ./pkgs/ayame-settings.nix { inherit craneLib; };
       };
 
       devShells.default = pkgs.callPackage ./dev.nix { inherit inputs craneLib; };

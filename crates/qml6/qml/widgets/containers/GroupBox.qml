@@ -16,8 +16,7 @@ QQC2.GroupBox {
         x: control.leftPadding
         width: control.availableWidth
         text: control.title
-        font: control.font
-        font.bold: true
+        font: Qt.font({ family: control.font.family, pointSize: control.font.pointSize, bold: true })
         color: control.colors.textColor
         elide: Text.ElideRight
     }

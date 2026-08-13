@@ -12,7 +12,7 @@ QtObject {
         font: Qt.application.font
     }
 
-    readonly property UiScaleSettings _uiScaleSettings: UiScaleSettings {}
+    readonly property Ayame.UiScaleSettings _uiScaleSettings: Ayame.UiScaleSettings {}
 
     // Read the persisted value once at startup. Changes only afterward
     // through setUiScale() -- same seed-once-then-update-live shape as
@@ -56,7 +56,7 @@ QtObject {
             disabled: 0
         })
 
-    readonly property CornerRadiusSettings _cornerRadiusSettings: CornerRadiusSettings {}
+    readonly property Ayame.CornerRadiusSettings _cornerRadiusSettings: Ayame.CornerRadiusSettings {}
 
     // Read the persisted value once at startup. Changes only afterward
     // through setCornerRadiusOption() -- binding to a qinvokable's return
@@ -85,7 +85,7 @@ QtObject {
             thick: 2
         })
 
-    readonly property BorderWidthSettings _borderWidthSettings: BorderWidthSettings {}
+    readonly property Ayame.BorderWidthSettings _borderWidthSettings: Ayame.BorderWidthSettings {}
 
     // Same seed-once-at-startup shape as cornerRadiusOption above.
     property string borderWidthOption: units._borderWidthSettings.option()
@@ -121,7 +121,7 @@ QtObject {
             fast: 0.5
         })
 
-    readonly property AnimationSettings _animationSettings: AnimationSettings {}
+    readonly property Ayame.AnimationSettings _animationSettings: Ayame.AnimationSettings {}
 
     // Same seed-once-at-startup-then-update-live shape as
     // cornerRadiusOption/borderWidthOption above.

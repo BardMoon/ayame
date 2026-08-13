@@ -6,40 +6,9 @@
 
 namespace {
 
-QPalette lightPalette()
+QColor fromRgb(uint32_t rgb)
 {
-    QPalette pal;
-    pal.setColor(QPalette::Window, QColor(0xef, 0xf0, 0xf1));
-    pal.setColor(QPalette::WindowText, QColor(0x23, 0x26, 0x29));
-    pal.setColor(QPalette::Base, QColor(0xfc, 0xfc, 0xfc));
-    pal.setColor(QPalette::AlternateBase, QColor(0xef, 0xf0, 0xf1));
-    pal.setColor(QPalette::Text, QColor(0x23, 0x26, 0x29));
-    pal.setColor(QPalette::Button, QColor(0xef, 0xf0, 0xf1));
-    pal.setColor(QPalette::ButtonText, QColor(0x23, 0x26, 0x29));
-    pal.setColor(QPalette::Highlight, QColor(0x3d, 0xae, 0xe9));
-    pal.setColor(QPalette::HighlightedText, QColor(0xfc, 0xfc, 0xfc));
-    pal.setColor(QPalette::ToolTipBase, QColor(0xf7, 0xf7, 0xf7));
-    pal.setColor(QPalette::ToolTipText, QColor(0x23, 0x26, 0x29));
-    pal.setColor(QPalette::Light, QColor(0xff, 0xff, 0xff));
-    return pal;
-}
-
-QPalette darkPalette()
-{
-    QPalette pal;
-    pal.setColor(QPalette::Window, QColor(0x31, 0x36, 0x3b));
-    pal.setColor(QPalette::WindowText, QColor(0xef, 0xf0, 0xf1));
-    pal.setColor(QPalette::Base, QColor(0x23, 0x26, 0x29));
-    pal.setColor(QPalette::AlternateBase, QColor(0x31, 0x36, 0x3b));
-    pal.setColor(QPalette::Text, QColor(0xef, 0xf0, 0xf1));
-    pal.setColor(QPalette::Button, QColor(0x31, 0x36, 0x3b));
-    pal.setColor(QPalette::ButtonText, QColor(0xef, 0xf0, 0xf1));
-    pal.setColor(QPalette::Highlight, QColor(0x3d, 0xae, 0xe9));
-    pal.setColor(QPalette::HighlightedText, QColor(0xef, 0xf0, 0xf1));
-    pal.setColor(QPalette::ToolTipBase, QColor(0x31, 0x36, 0x3b));
-    pal.setColor(QPalette::ToolTipText, QColor(0xef, 0xf0, 0xf1));
-    pal.setColor(QPalette::Light, QColor(0x4d, 0x4d, 0x4d));
-    return pal;
+    return QColor::fromRgb(rgb);
 }
 
 bool g_capturedSystemPalette = false;
@@ -49,24 +18,45 @@ QPalette g_systemPalette;
 
 extern "C" {
 
-void cettila_apply_theme_mode(int mode)
+void cettila_apply_theme_palette(
+    int mode,
+    uint32_t window,
+    uint32_t windowText,
+    uint32_t base,
+    uint32_t alternateBase,
+    uint32_t text,
+    uint32_t button,
+    uint32_t buttonText,
+    uint32_t highlight,
+    uint32_t highlightedText,
+    uint32_t tooltipBase,
+    uint32_t tooltipText,
+    uint32_t light)
 {
     if (!g_capturedSystemPalette) {
         g_systemPalette = QGuiApplication::palette();
         g_capturedSystemPalette = true;
     }
 
-    switch (mode) {
-    case 1:
-        QGuiApplication::setPalette(lightPalette());
-        break;
-    case 2:
-        QGuiApplication::setPalette(darkPalette());
-        break;
-    default:
+    if (mode != 1 && mode != 2) {
         QGuiApplication::setPalette(g_systemPalette);
-        break;
+        return;
     }
+
+    QPalette pal;
+    pal.setColor(QPalette::Window, fromRgb(window));
+    pal.setColor(QPalette::WindowText, fromRgb(windowText));
+    pal.setColor(QPalette::Base, fromRgb(base));
+    pal.setColor(QPalette::AlternateBase, fromRgb(alternateBase));
+    pal.setColor(QPalette::Text, fromRgb(text));
+    pal.setColor(QPalette::Button, fromRgb(button));
+    pal.setColor(QPalette::ButtonText, fromRgb(buttonText));
+    pal.setColor(QPalette::Highlight, fromRgb(highlight));
+    pal.setColor(QPalette::HighlightedText, fromRgb(highlightedText));
+    pal.setColor(QPalette::ToolTipBase, fromRgb(tooltipBase));
+    pal.setColor(QPalette::ToolTipText, fromRgb(tooltipText));
+    pal.setColor(QPalette::Light, fromRgb(light));
+    QGuiApplication::setPalette(pal);
 }
 
 } // extern "C"

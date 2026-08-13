@@ -101,7 +101,7 @@ QQC2.ApplicationWindow {
                 Layout.margins: 12
                 spacing: 8
 
-                Button {
+                QQC2.Button {
                     text: "Defaults"
                     onClicked: settingsObj.reset_defaults()
                 }

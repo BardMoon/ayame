@@ -4,8 +4,7 @@ resolver = "3"
 members = [
   "ayame-settings",
   "crates/qml6",
-  # "crates/colors",
-  # "crates/common",
+  "crates/colors",
   # "crates/kdecoreation6",
   # "crates/kstyle6",
 ]

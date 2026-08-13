@@ -5,7 +5,7 @@ use cxx_qt_lib::{QGuiApplication, QQmlApplicationEngine, QString, QUrl};
 
 fn main() {
     // Ensure ayame crate and its Cxx-Qt static QML plugin initializers are linked
-    std::hint::black_box(ayame::apply_theme_mode);
+    std::hint::black_box(ayame::apply_theme);
 
     let mut app = QGuiApplication::new();
     let mut engine = QQmlApplicationEngine::new();

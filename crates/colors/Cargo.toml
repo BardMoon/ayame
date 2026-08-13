@@ -1,0 +1,7 @@
+[package]
+name = "ayame-colors"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+cxx-qt-lib = { workspace = true, features = ["qt_gui"] }

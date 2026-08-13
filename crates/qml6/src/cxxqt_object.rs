@@ -2,7 +2,7 @@ use std::ffi::CStr;
 use std::pin::Pin;
 
 use cxx_qt::CxxQtType;
-use cxx_qt_lib::QString;
+use cxx_qt_lib::{QColor, QString};
 
 unsafe extern "C" {
     fn cettila_available_styles_joined() -> *mut std::os::raw::c_char;
@@ -11,7 +11,22 @@ unsafe extern "C" {
 }
 
 unsafe extern "C" {
-    fn cettila_apply_theme_mode(mode: i32);
+    #[allow(clippy::too_many_arguments)]
+    fn cettila_apply_theme_palette(
+        mode: i32,
+        window: u32,
+        window_text: u32,
+        base: u32,
+        alternate_base: u32,
+        text: u32,
+        button: u32,
+        button_text: u32,
+        highlight: u32,
+        highlighted_text: u32,
+        tooltip_base: u32,
+        tooltip_text: u32,
+        light: u32,
+    );
 }
 
 unsafe extern "C" {
@@ -38,8 +53,35 @@ fn theme_mode_code(mode: &str) -> i32 {
     }
 }
 
-pub fn apply_theme_mode(mode: &str) {
-    unsafe { cettila_apply_theme_mode(theme_mode_code(mode)) };
+/// Applies `mode` ("system"/"light"/"dark") composed with `accent_hex`
+/// ("#RRGGBB") as Ayame's own `QGuiApplication` palette. A no-op unless
+/// Ayame is the currently active QQC2 style -- overriding the palette while
+/// e.g. Breeze is active would fight that style's own, independently
+/// computed palette instead of leaving it alone as intended.
+pub fn apply_theme(mode: &str, accent_hex: &str) {
+    if current_style_raw() != "Ayame" {
+        return;
+    }
+    let accent = ayame_colors::RgbColor::from_hex(accent_hex).unwrap_or(ayame_colors::DEFAULT_ACCENT);
+    let preset = ayame_colors::preset_by_id(mode);
+    let p = ayame_colors::compose_palette(preset, accent);
+    unsafe {
+        cettila_apply_theme_palette(
+            theme_mode_code(mode),
+            p.window.to_rgb_u32(),
+            p.window_text.to_rgb_u32(),
+            p.base.to_rgb_u32(),
+            p.alternate_base.to_rgb_u32(),
+            p.text.to_rgb_u32(),
+            p.button.to_rgb_u32(),
+            p.button_text.to_rgb_u32(),
+            p.highlight.to_rgb_u32(),
+            p.highlighted_text.to_rgb_u32(),
+            p.tooltip_base.to_rgb_u32(),
+            p.tooltip_text.to_rgb_u32(),
+            p.light.to_rgb_u32(),
+        )
+    };
 }
 
 unsafe fn take_c_string(ptr: *mut std::os::raw::c_char) -> String {
@@ -89,6 +131,11 @@ mod ffi {
     unsafe extern "C++" {
         include!("cxx-qt-lib/qstring.h");
         type QString = cxx_qt_lib::QString;
+    }
+
+    unsafe extern "C++" {
+        include!("cxx-qt-lib/qcolor.h");
+        type QColor = cxx_qt_lib::QColor;
     }
 
     unsafe extern "RustQt" {
@@ -173,6 +220,12 @@ mod ffi {
 
         #[qinvokable]
         fn set_mode(self: Pin<&mut ThemeSettings>, mode: &QString);
+
+        #[qinvokable]
+        fn accent_color(self: Pin<&mut ThemeSettings>) -> QColor;
+
+        #[qinvokable]
+        fn set_accent_color(self: Pin<&mut ThemeSettings>, color: &QColor);
     }
 
     unsafe extern "RustQt" {
@@ -324,12 +377,14 @@ impl ffi::AnimationSettings {
 
 pub struct ThemeSettingsRust {
     mode: String,
+    accent: String,
 }
 
 impl Default for ThemeSettingsRust {
     fn default() -> Self {
         Self {
             mode: String::from("auto"),
+            accent: ayame_colors::DEFAULT_ACCENT.to_hex(),
         }
     }
 }
@@ -342,7 +397,21 @@ impl ffi::ThemeSettings {
     fn set_mode(mut self: Pin<&mut Self>, mode: &QString) {
         let mode_str = mode.to_string();
         self.as_mut().rust_mut().mode = mode_str.clone();
-        apply_theme_mode(&mode_str);
+        let accent = self.rust().accent.clone();
+        apply_theme(&mode_str, &accent);
+    }
+
+    fn accent_color(self: Pin<&mut Self>) -> QColor {
+        ayame_colors::RgbColor::from_hex(&self.rust().accent)
+            .unwrap_or(ayame_colors::DEFAULT_ACCENT)
+            .to_qcolor()
+    }
+
+    fn set_accent_color(mut self: Pin<&mut Self>, color: &QColor) {
+        let hex = ayame_colors::RgbColor::from_qcolor(color).to_hex();
+        self.as_mut().rust_mut().accent = hex.clone();
+        let mode = self.rust().mode.clone();
+        apply_theme(&mode, &hex);
     }
 }
 

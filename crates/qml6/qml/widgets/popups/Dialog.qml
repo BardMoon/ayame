@@ -19,7 +19,7 @@ QQC2.Dialog {
         border.color: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
     }
 
-    header: Label {
+    header: Ayame.Label {
         text: control.title
         font.bold: true
         font.pointSize: Ayame.Units.gridUnit * 0.75

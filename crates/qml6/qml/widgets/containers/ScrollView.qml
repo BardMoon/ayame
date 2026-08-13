@@ -26,11 +26,11 @@ QQC2.ScrollView {
     // Same knob as widgets/Label.qml/widgets/inputs/CheckBox.qml.
     property int colorSet: Ayame.Theme.view
 
-    QQC2.ScrollBar.vertical: ScrollBar {
+    QQC2.ScrollBar.vertical: QQC2.ScrollBar {
         colorSet: control.colorSet
     }
 
-    QQC2.ScrollBar.horizontal: ScrollBar {
+    QQC2.ScrollBar.horizontal: QQC2.ScrollBar {
         colorSet: control.colorSet
     }
 }

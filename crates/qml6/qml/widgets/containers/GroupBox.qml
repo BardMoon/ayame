@@ -12,7 +12,7 @@ QQC2.GroupBox {
 
     padding: Ayame.Units.largeSpacing
 
-    label: Label {
+    label: Ayame.Label {
         x: control.leftPadding
         width: control.availableWidth
         text: control.title

@@ -1,9 +1,9 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import org.ayame.settings
 
-Page {
+QQC2.Page {
     id: root
 
     required property AyameSettingsObject settings
@@ -13,19 +13,19 @@ Page {
         anchors.margins: 16
         spacing: 16
 
-        Label {
+        QQC2.Label {
             text: "General Settings"
             font.pixelSize: 18
             font.bold: true
         }
 
-        CheckBox {
+        QQC2.CheckBox {
             text: "Draw Widget Borders"
             checked: root.settings.draw_widget_borders
             onCheckedChanged: root.settings.draw_widget_borders = checked
         }
 
-        CheckBox {
+        QQC2.CheckBox {
             id: animCheck
             text: "Enable UI Animations"
             checked: root.settings.animations_enabled
@@ -36,9 +36,9 @@ Page {
             enabled: animCheck.checked
             spacing: 8
 
-            Label { text: "Animation Duration (ms):" }
+            QQC2.Label { text: "Animation Duration (ms):" }
 
-            SpinBox {
+            QQC2.SpinBox {
                 from: 50
                 to: 1000
                 stepSize: 25

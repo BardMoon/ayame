@@ -1,10 +1,10 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import org.ayame.settings
 import "pages"
 
-ApplicationWindow {
+QQC2.ApplicationWindow {
     id: window
     width: 760
     height: 540
@@ -30,7 +30,7 @@ ApplicationWindow {
                 anchors.margins: 12
                 spacing: 8
 
-                Label {
+                QQC2.Label {
                     text: "Ayame Style"
                     font.pixelSize: 18
                     font.bold: true
@@ -40,21 +40,21 @@ ApplicationWindow {
                     Layout.bottomMargin: 16
                 }
 
-                Button {
+                QQC2.Button {
                     text: "General"
                     Layout.fillWidth: true
                     highlighted: stackLayout.currentIndex === 0
                     onClicked: stackLayout.currentIndex = 0
                 }
 
-                Button {
+                QQC2.Button {
                     text: "Decoration"
                     Layout.fillWidth: true
                     highlighted: stackLayout.currentIndex === 1
                     onClicked: stackLayout.currentIndex = 1
                 }
 
-                Button {
+                QQC2.Button {
                     text: "Exceptions"
                     Layout.fillWidth: true
                     highlighted: stackLayout.currentIndex === 2
@@ -108,12 +108,12 @@ ApplicationWindow {
 
                 Item { Layout.fillWidth: true }
 
-                Button {
+                QQC2.Button {
                     text: "Reset"
                     onClicked: settingsObj.load()
                 }
 
-                Button {
+                QQC2.Button {
                     text: "Apply"
                     highlighted: true
                     onClicked: settingsObj.save()

@@ -11,8 +11,12 @@ fn main() {
     let mut engine = QQmlApplicationEngine::new();
 
     if let Some(mut engine) = engine.as_mut() {
-        engine.as_mut().add_import_path(&QString::from("qrc:/qt/qml"));
-        engine.as_mut().load(&QUrl::from("qrc:/qt/qml/org/ayame/settings/qml/main.qml"));
+        engine
+            .as_mut()
+            .add_import_path(&QString::from("qrc:/qt/qml"));
+        engine
+            .as_mut()
+            .load(&QUrl::from("qrc:/qt/qml/org/ayame/settings/qml/main.qml"));
     }
 
     if let Some(app) = app.as_mut() {

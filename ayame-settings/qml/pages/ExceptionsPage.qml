@@ -1,9 +1,9 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import org.ayame.settings
 
-Page {
+QQC2.Page {
     id: root
 
     required property AyameSettingsObject settings
@@ -13,13 +13,13 @@ Page {
         anchors.margins: 16
         spacing: 16
 
-        Label {
+        QQC2.Label {
             text: "Window Specific Overrides / Exceptions"
             font.pixelSize: 18
             font.bold: true
         }
 
-        Label {
+        QQC2.Label {
             text: "Configure custom window decoration rules for specific applications (e.g. matching window class or title)."
             wrapMode: Text.WordWrap
             Layout.fillWidth: true
@@ -33,15 +33,15 @@ Page {
                 ListElement { ruleName: "Example Rule (No Titlebar for Alacritty)"; matchStr: "alacritty" }
             }
 
-            delegate: ItemDelegate {
+            delegate: QQC2.ItemDelegate {
                 width: ListView.view.width
                 text: model.ruleName + " [" + model.matchStr + "]"
             }
         }
 
         RowLayout {
-            Button { text: "Add Exception Rule" }
-            Button { text: "Remove Selected" }
+            QQC2.Button { text: "Add Exception Rule" }
+            QQC2.Button { text: "Remove Selected" }
         }
     }
 }

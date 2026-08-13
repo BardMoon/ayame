@@ -2,21 +2,21 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Controls.Ayame 1.0
+import Ayame 1.0 as Ayame
 
 QQC2.SpinBox {
     id: control
 
-    property int colorSet: Theme.view
-    readonly property var colors: Theme.paletteFor(control.colorSet)
+    property int colorSet: Ayame.Theme.view
+    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
-    implicitHeight: Units.gridUnit * 1.6
+    implicitHeight: Ayame.Units.gridUnit * 1.6
 
     background: Rectangle {
-        radius: Units.cornerRadius
+        radius: Ayame.Units.cornerRadius
         color: control.colors.backgroundColor
-        border.width: Units.borderWidth
+        border.width: Ayame.Units.borderWidth
         border.color: control.activeFocus ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
     }
 
@@ -34,8 +34,8 @@ QQC2.SpinBox {
     up.indicator: Rectangle {
         x: control.mirrored ? 0 : parent.width - width
         height: parent.height
-        implicitWidth: Units.gridUnit * 1.2
-        radius: Units.cornerRadius
+        implicitWidth: Ayame.Units.gridUnit * 1.2
+        radius: Ayame.Units.cornerRadius
         color: control.up.pressed ? control.colors.highlightColor : (control.up.hovered ? control.colors.hoverColor : "transparent")
 
         Text {
@@ -48,8 +48,8 @@ QQC2.SpinBox {
     down.indicator: Rectangle {
         x: control.mirrored ? parent.width - width : 0
         height: parent.height
-        implicitWidth: Units.gridUnit * 1.2
-        radius: Units.cornerRadius
+        implicitWidth: Ayame.Units.gridUnit * 1.2
+        radius: Ayame.Units.cornerRadius
         color: control.down.pressed ? control.colors.highlightColor : (control.down.hovered ? control.colors.hoverColor : "transparent")
 
         Text {

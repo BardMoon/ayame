@@ -2,13 +2,13 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Controls.Ayame 1.0
+import Ayame 1.0 as Ayame
 
 QQC2.SwitchDelegate {
     id: control
 
-    property int colorSet: Theme.view
-    readonly property var colors: Theme.paletteFor(control.colorSet)
+    property int colorSet: Ayame.Theme.view
+    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
 
@@ -31,7 +31,7 @@ QQC2.SwitchDelegate {
         y: parent.height / 2 - height / 2
         radius: 10
         color: control.checked ? control.colors.highlightColor : control.colors.backgroundColor
-        border.width: Units.borderWidth
+        border.width: Ayame.Units.borderWidth
         border.color: control.checked ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
 
         Rectangle {

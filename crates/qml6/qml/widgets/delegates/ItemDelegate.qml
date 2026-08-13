@@ -2,18 +2,18 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Controls.Ayame 1.0
+import Ayame 1.0 as Ayame
 
 QQC2.ItemDelegate {
     id: control
 
-    property int colorSet: Theme.view
-    readonly property var colors: Theme.paletteFor(control.colorSet)
+    property int colorSet: Ayame.Theme.view
+    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
 
     background: Rectangle {
-        radius: Units.cornerRadius
+        radius: Ayame.Units.cornerRadius
         color: control.pressed ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
     }
 

@@ -2,17 +2,17 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Controls.Ayame 1.0
+import Ayame 1.0 as Ayame
 
 QQC2.CheckBox {
     id: control
 
-    property int colorSet: Theme.view
-    readonly property var colors: Theme.paletteFor(control.colorSet)
-    readonly property real _indicatorSize: Units.iconSizes.small
+    property int colorSet: Ayame.Theme.view
+    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    readonly property real _indicatorSize: Ayame.Units.iconSizes.small
 
     hoverEnabled: true
-    spacing: Units.smallSpacing
+    spacing: Ayame.Units.smallSpacing
     opacity: control.enabled ? 1.0 : 0.5
 
     indicator: Rectangle {
@@ -20,9 +20,9 @@ QQC2.CheckBox {
         y: control.topPadding + (control.availableHeight - height) / 2
         width: control._indicatorSize
         height: control._indicatorSize
-        radius: Units.cornerRadius
+        radius: Ayame.Units.cornerRadius
         color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
-        border.width: Units.borderWidth
+        border.width: Ayame.Units.borderWidth
         border.color: control.checked ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, control.hovered ? 0.4 : 0.3)
 
         Text {

@@ -2,13 +2,13 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Controls.Ayame 1.0
+import Ayame 1.0 as Ayame
 
 QQC2.RadioDelegate {
     id: control
 
-    property int colorSet: Theme.view
-    readonly property var colors: Theme.paletteFor(control.colorSet)
+    property int colorSet: Ayame.Theme.view
+    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
 
@@ -27,11 +27,11 @@ QQC2.RadioDelegate {
     indicator: Rectangle {
         x: control.leftPadding
         y: control.topPadding + (control.availableHeight - height) / 2
-        width: Units.iconSizes.small
-        height: Units.iconSizes.small
+        width: Ayame.Units.iconSizes.small
+        height: Ayame.Units.iconSizes.small
         radius: width / 2
         color: "transparent"
-        border.width: Units.borderWidth
+        border.width: Ayame.Units.borderWidth
         border.color: control.checked ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
 
         Rectangle {

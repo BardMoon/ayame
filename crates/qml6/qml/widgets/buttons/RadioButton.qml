@@ -2,17 +2,17 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Controls.Ayame 1.0
+import Ayame 1.0 as Ayame
 
 QQC2.RadioButton {
     id: control
 
-    property int colorSet: Theme.view
-    readonly property var colors: Theme.paletteFor(control.colorSet)
-    readonly property real _indicatorSize: Units.iconSizes.small
+    property int colorSet: Ayame.Theme.view
+    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    readonly property real _indicatorSize: Ayame.Units.iconSizes.small
 
     hoverEnabled: true
-    spacing: Units.smallSpacing
+    spacing: Ayame.Units.smallSpacing
     opacity: control.enabled ? 1.0 : 0.5
 
     indicator: Rectangle {
@@ -22,7 +22,7 @@ QQC2.RadioButton {
         height: control._indicatorSize
         radius: width / 2
         color: "transparent"
-        border.width: Units.borderWidth
+        border.width: Ayame.Units.borderWidth
         border.color: control.checked ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, control.hovered ? 0.4 : 0.3)
 
         Rectangle {

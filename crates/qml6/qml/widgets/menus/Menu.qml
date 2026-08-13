@@ -2,20 +2,20 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Controls.Ayame 1.0
+import Ayame 1.0 as Ayame
 
 QQC2.Menu {
     id: control
 
-    property int colorSet: Theme.header
-    readonly property var colors: Theme.paletteFor(control.colorSet)
+    property int colorSet: Ayame.Theme.header
+    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
-    padding: Units.smallSpacing
+    padding: Ayame.Units.smallSpacing
 
     background: Rectangle {
-        radius: Units.cornerRadius
+        radius: Ayame.Units.cornerRadius
         color: control.colors.backgroundColor
-        border.width: Units.borderWidth
+        border.width: Ayame.Units.borderWidth
         border.color: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
     }
 }

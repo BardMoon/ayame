@@ -2,15 +2,15 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Controls.Ayame 1.0
+import Ayame 1.0 as Ayame
 
 QQC2.GroupBox {
     id: control
 
-    property int colorSet: Theme.view
-    readonly property var colors: Theme.paletteFor(control.colorSet)
+    property int colorSet: Ayame.Theme.view
+    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
-    padding: Units.largeSpacing
+    padding: Ayame.Units.largeSpacing
 
     label: Label {
         x: control.leftPadding
@@ -26,9 +26,9 @@ QQC2.GroupBox {
         y: control.topPadding - control.bottomPadding
         width: parent.width
         height: parent.height - control.topPadding + control.bottomPadding
-        radius: Units.cornerRadius
+        radius: Ayame.Units.cornerRadius
         color: "transparent"
-        border.width: Units.borderWidth
+        border.width: Ayame.Units.borderWidth
         border.color: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
     }
 }

@@ -2,28 +2,28 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Controls.Ayame 1.0
+import Ayame 1.0 as Ayame
 
 QQC2.Dialog {
     id: control
 
-    property int colorSet: Theme.view
-    readonly property var colors: Theme.paletteFor(control.colorSet)
+    property int colorSet: Ayame.Theme.view
+    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
-    padding: Units.largeSpacing
+    padding: Ayame.Units.largeSpacing
 
     background: Rectangle {
-        radius: Units.cornerRadius
+        radius: Ayame.Units.cornerRadius
         color: control.colors.backgroundColor
-        border.width: Units.borderWidth
+        border.width: Ayame.Units.borderWidth
         border.color: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
     }
 
     header: Label {
         text: control.title
         font.bold: true
-        font.pointSize: Units.gridUnit * 0.75
+        font.pointSize: Ayame.Units.gridUnit * 0.75
         visible: control.title.length > 0
-        padding: Units.largeSpacing
+        padding: Ayame.Units.largeSpacing
     }
 }

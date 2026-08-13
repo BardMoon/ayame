@@ -2,22 +2,22 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import QtQuick.Controls.Ayame 1.0
+import Ayame 1.0 as Ayame
 
 QQC2.Dial {
     id: control
 
-    property int colorSet: Theme.view
-    readonly property var colors: Theme.paletteFor(control.colorSet)
+    property int colorSet: Ayame.Theme.view
+    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
 
     background: Rectangle {
-        implicitWidth: Units.gridUnit * 3.5
-        implicitHeight: Units.gridUnit * 3.5
+        implicitWidth: Ayame.Units.gridUnit * 3.5
+        implicitHeight: Ayame.Units.gridUnit * 3.5
         radius: width / 2
         color: control.colors.backgroundColor
-        border.width: Units.borderWidth
+        border.width: Ayame.Units.borderWidth
         border.color: control.hovered ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
     }
 

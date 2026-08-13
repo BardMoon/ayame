@@ -1,0 +1,124 @@
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import org.ayame.settings
+import "pages"
+
+ApplicationWindow {
+    id: window
+    width: 760
+    height: 540
+    visible: true
+    title: "Ayame Settings"
+
+    AyameSettingsObject {
+        id: settingsObj
+    }
+
+    RowLayout {
+        anchors.fill: parent
+        spacing: 0
+
+        // Sidebar Navigation
+        Rectangle {
+            Layout.fillHeight: true
+            Layout.preferredWidth: 180
+            color: "#1e1e24"
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 12
+                spacing: 8
+
+                Label {
+                    text: "Ayame Style"
+                    font.pixelSize: 18
+                    font.bold: true
+                    color: "#ffffff"
+                    Layout.alignment: Qt.AlignHCenter
+                    Layout.topMargin: 12
+                    Layout.bottomMargin: 16
+                }
+
+                Button {
+                    text: "General"
+                    Layout.fillWidth: true
+                    highlighted: stackLayout.currentIndex === 0
+                    onClicked: stackLayout.currentIndex = 0
+                }
+
+                Button {
+                    text: "Decoration"
+                    Layout.fillWidth: true
+                    highlighted: stackLayout.currentIndex === 1
+                    onClicked: stackLayout.currentIndex = 1
+                }
+
+                Button {
+                    text: "Exceptions"
+                    Layout.fillWidth: true
+                    highlighted: stackLayout.currentIndex === 2
+                    onClicked: stackLayout.currentIndex = 2
+                }
+
+                Item { Layout.fillHeight: true }
+            }
+        }
+
+        // Content Area & Action Buttons
+        ColumnLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            spacing: 0
+
+            StackLayout {
+                id: stackLayout
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                currentIndex: 0
+
+                GeneralPage {
+                    settings: settingsObj
+                }
+
+                DecorationPage {
+                    settings: settingsObj
+                }
+
+                ExceptionsPage {
+                    settings: settingsObj
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                height: 1
+                color: "#333333"
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Layout.margins: 12
+                spacing: 8
+
+                Button {
+                    text: "Defaults"
+                    onClicked: settingsObj.reset_defaults()
+                }
+
+                Item { Layout.fillWidth: true }
+
+                Button {
+                    text: "Reset"
+                    onClicked: settingsObj.load()
+                }
+
+                Button {
+                    text: "Apply"
+                    highlighted: true
+                    onClicked: settingsObj.save()
+                }
+            }
+        }
+    }
+}

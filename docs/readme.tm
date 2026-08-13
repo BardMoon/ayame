@@ -2,6 +2,13 @@
 
 Qt Theme
 
+
+##[ Path ]
+
+Quick/Controls/Ayame
+la/cettila/Ayame
+org/ayame/settings
+
 #[ Inspiration ]
 
 - https://invent.kde.org/plasma/breeze

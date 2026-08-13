@@ -1,8 +1,8 @@
 {
-  qt6,
   runCommand,
   symlinkJoin,
   writeShellScriptBin,
+  qt6,
 }:
 let
   qtLibPatched = runCommand "qt6-lib-with-prl" { } ''

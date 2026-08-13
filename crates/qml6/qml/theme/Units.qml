@@ -1,6 +1,6 @@
 pragma Singleton
 import QtQuick
-import la.cettila.Ayame 1.0
+import QtQuick.Controls.Ayame 1.0
 
 // Kirigami.Unitsの代替。フォントサイズから導いた基本単位(gridUnit)を
 // 起点に、間隔・アイコンサイズ・角丸半径・アニメーション時間の定数を

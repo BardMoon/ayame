@@ -24,7 +24,11 @@ flake-parts.lib.mkFlake { inherit inputs; } {
         ayame-settings = pkgs.callPackage ./pkgs/ayame-settings.nix { inherit craneLib; };
       };
 
-      devShells.default = pkgs.callPackage ./dev.nix { inherit inputs craneLib; };
+      devShells.default = pkgs.callPackage ./dev.nix {
+        inherit inputs craneLib;
+        ayame = pkgs.callPackage ./pkgs/ayame.nix { inherit craneLib; };
+        # ayame-settings = pkgs.callPackage ./pkgs/ayame-settings.nix { inherit craneLib; };
+      };
 
       treefmt = import ./formatter.nix;
     };

@@ -5,6 +5,7 @@
   stdenv,
   mkShell,
   qt6,
+  ayame,
   ...
 }:
 let
@@ -20,6 +21,8 @@ in
 mkShell rec {
   #[ https://github.com/NixOS/nixpkgs/blob/master/pkgs/kde/plasma/breeze/default.nix ]
   buildInputs = with pkgs; [
+    ayame
+
     #[ Rust ]
     rustToolchain
     cargo-edit
@@ -50,6 +53,25 @@ mkShell rec {
     mesa
   ];
 
+  PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
+  LD_LIBRARY_PATH = lib.makeLibraryPath [
+    ayame
+
+    qt6.qtbase
+    qt6.qtdeclarative
+    qt6.qtwayland
+    qt6.qtwebengine
+    qt6.qtmultimedia
+
+    pkgs.wayland
+    pkgs.libxkbcommon
+    pkgs.pipewire
+    pkgs.mesa
+    pkgs.libGL
+
+    pkgs.stdenv.cc.cc.lib
+  ];
+
   RUSTFLAGS = "-C link-arg=-fuse-ld=lld";
   #[ Qt ]
   ENV_QT_INCLUDE_PATH = "${qt6.qtdeclarative}/include";
@@ -63,10 +85,13 @@ mkShell rec {
     qt6.qtdeclarative
     qt6.qtmultimedia
     qt6.qtwayland
+
+    ayame
   ];
   QML2_IMPORT_PATH = QML_IMPORT_PATH;
 
   shellHook = ''
+    export QT_QUICK_CONTROLS_STYLE="Ayame"
     export QMAKE="${qtToolchain.qmakeWrapper}/bin/qmake-wrapper"
 
     echo "🧪 C++ Qt Rust"

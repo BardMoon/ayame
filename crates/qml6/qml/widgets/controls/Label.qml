@@ -2,7 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls as QQC2
-import la.cettila.Ayame 1.0
+import QtQuick.Controls.Ayame 1.0
 
 // Themed drop-in for QQC2's Label. Every call site across the app used to
 // hand-roll `color: root.colors.textColor` (plus ad-hoc `opacity: 0.5`/

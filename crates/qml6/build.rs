@@ -16,14 +16,14 @@ fn main() {
                 QmlFile::from("qml/theme/Theme.qml").singleton(true),
             ])
             .qml_files([
+                "qml/widgets/ApplicationWindow.qml",
+                "qml/widgets/Button.qml",
                 "qml/widgets/buttons/AbstractButton.qml",
-                "qml/widgets/buttons/Button.qml",
                 "qml/widgets/buttons/DelayButton.qml",
                 "qml/widgets/buttons/RadioButton.qml",
                 "qml/widgets/buttons/RoundButton.qml",
                 "qml/widgets/buttons/TabButton.qml",
                 "qml/widgets/buttons/ToolButton.qml",
-                "qml/widgets/containers/ApplicationWindow.qml",
                 "qml/widgets/containers/Container.qml",
                 "qml/widgets/containers/Frame.qml",
                 "qml/widgets/containers/GroupBox.qml",

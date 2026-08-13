@@ -52,5 +52,18 @@ craneLib.buildPackage (
   // {
     inherit cargoArtifacts;
     doCheck = false;
+    postInstall = ''
+      mkdir -p $out/lib/qt-6/qml/la/cettila/Ayame
+      mkdir -p $out/lib/qt-6/qml/QtQuick/Controls/Ayame
+      if [ -d crates/qml6/qml ]; then
+        cp -r crates/qml6/qml/* $out/lib/qt-6/qml/la/cettila/Ayame/
+        cp -r crates/qml6/qml/* $out/lib/qt-6/qml/QtQuick/Controls/Ayame/
+      fi
+      qmldir_file=$(find target -name qmldir 2>/dev/null | head -n 1)
+      if [ -n "$qmldir_file" ]; then
+        cp "$qmldir_file" $out/lib/qt-6/qml/la/cettila/Ayame/qmldir
+        cp "$qmldir_file" $out/lib/qt-6/qml/QtQuick/Controls/Ayame/qmldir
+      fi
+    '';
   }
 )

@@ -30,6 +30,8 @@ QStringList importPathRoots()
             roots += QString::fromLocal8Bit(value).split(QDir::listSeparator(), Qt::SkipEmptyParts);
         }
     }
+    roots << QStringLiteral(":/qt/qml");
+    roots << QStringLiteral(":/qt-project.org/imports");
     return roots;
 }
 
@@ -39,8 +41,10 @@ bool looksLikeStyleQmldir(const QString& path)
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;
     const QString content = QString::fromUtf8(file.readAll());
-    return content.contains(QLatin1String("\nApplicationWindow "))
-        && content.contains(QLatin1String("\nButton "));
+    return content.contains(QLatin1String("ApplicationWindow"))
+        || content.contains(QLatin1String("Button"))
+        || content.contains(QLatin1String("la.cettila.Ayame"))
+        || content.contains(QLatin1String("QtQuick.Controls"));
 }
 
 void collectStylesUnder(const QString& root, const QString& relativeDir, const QString& namePrefix, QSet<QString>& out)
@@ -68,6 +72,16 @@ char* cettila_available_styles_joined()
         collectStylesUnder(root, QLatin1String("QtQuick/Controls"), QString(), styles);
         collectStylesUnder(root, QLatin1String("org/kde"), QLatin1String("org.kde"), styles);
         collectStylesUnder(root, QLatin1String("la/cettila"), QLatin1String("la.cettila"), styles);
+    }
+
+    // Always check for embedded/registered Ayame modules as fallbacks
+    if (QFile::exists(QStringLiteral(":/qt/qml/la/cettila/Ayame/qmldir")) ||
+        QFile::exists(QStringLiteral(":/qt-project.org/imports/la/cettila/Ayame/qmldir"))) {
+        styles.insert(QStringLiteral("la.cettila.Ayame"));
+    }
+    if (QFile::exists(QStringLiteral(":/qt/qml/QtQuick/Controls/Ayame/qmldir")) ||
+        QFile::exists(QStringLiteral(":/qt-project.org/imports/QtQuick/Controls/Ayame/qmldir"))) {
+        styles.insert(QStringLiteral("Ayame"));
     }
 
     QStringList sorted = styles.values();

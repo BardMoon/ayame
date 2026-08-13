@@ -16,8 +16,8 @@ QQC2.GroupBox {
         x: control.leftPadding
         width: control.availableWidth
         text: control.title
-        font.bold: true
         font: control.font
+        font.bold: true
         color: control.colors.textColor
         elide: Text.ElideRight
     }

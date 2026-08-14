@@ -24,11 +24,11 @@ T.ScrollView {
     // Same knob as widgets/Label.qml/widgets/inputs/CheckBox.qml.
     property int colorSet: Ayame.Theme.view
 
-    ScrollBar.vertical: ScrollBar {
+    T.ScrollBar.vertical: Ayame.ScrollBar {
         colorSet: control.colorSet
     }
 
-    ScrollBar.horizontal: ScrollBar {
+    T.ScrollBar.horizontal: Ayame.ScrollBar {
         colorSet: control.colorSet
     }
 }

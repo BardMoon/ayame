@@ -10,6 +10,16 @@ T.ToolTip {
     property int colorSet: Ayame.Theme.tooltip
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
+    // T.Popup's default position is (0, 0) relative to its parent -- for
+    // a ToolTip that parent is the hovered item itself, so without this
+    // the tooltip renders directly on top of/covering whatever it's
+    // describing instead of next to it. Same offset-above-and-centered
+    // positioning as both QtQuick.Controls.Basic's and
+    // qqc2-breeze-style's own ToolTip.qml.
+    x: control.parent ? (control.parent.width - implicitWidth) / 2 : 0
+    y: -implicitHeight - Ayame.Units.smallSpacing
+    z: 999
+
     padding: Ayame.Units.smallSpacing
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)

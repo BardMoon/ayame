@@ -23,6 +23,7 @@ T.ToolTip {
     }
 
     contentItem: Text {
+        verticalAlignment: Text.AlignVCenter
         text: control.text
         font: control.font
         color: control.colors.textColor

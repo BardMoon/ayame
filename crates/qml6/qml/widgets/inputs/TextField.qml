@@ -14,6 +14,7 @@ T.TextField {
     placeholderTextColor: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.5)
     selectedTextColor: control.colors.highlightedTextColor
     selectionColor: control.colors.highlightColor
+    verticalAlignment: TextInput.AlignVCenter
 
     implicitHeight: Ayame.Units.gridUnit * 1.6
 

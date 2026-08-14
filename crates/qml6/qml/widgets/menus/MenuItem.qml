@@ -12,8 +12,8 @@ T.MenuItem {
 
     hoverEnabled: true
 
-    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding + (implicitIndicatorWidth > 0 ? implicitIndicatorWidth + spacing : 0) + (implicitArrowWidth > 0 ? implicitArrowWidth + spacing : 0))
-    implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, Math.max(implicitContentHeight, implicitIndicatorHeight, implicitArrowHeight) + topPadding + bottomPadding)
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding + (implicitIndicatorWidth > 0 ? implicitIndicatorWidth + spacing : 0) + (arrow ? arrow.implicitWidth + spacing : 0))
+    implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, Math.max(implicitContentHeight, implicitIndicatorHeight, arrow ? arrow.implicitHeight : 0) + topPadding + bottomPadding)
 
     background: Rectangle {
         radius: Ayame.Units.cornerRadius

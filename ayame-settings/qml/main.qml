@@ -40,25 +40,32 @@ QQC2.ApplicationWindow {
                     Layout.bottomMargin: 16
                 }
 
-                QQC2.Button {
+                QQC2.ToolButton {
                     text: "General"
                     Layout.fillWidth: true
                     highlighted: stackLayout.currentIndex === 0
                     onClicked: stackLayout.currentIndex = 0
                 }
 
-                QQC2.Button {
+                QQC2.ToolButton {
                     text: "Decoration"
                     Layout.fillWidth: true
                     highlighted: stackLayout.currentIndex === 1
                     onClicked: stackLayout.currentIndex = 1
                 }
 
-                QQC2.Button {
-                    text: "Exceptions"
+                QQC2.ToolButton {
+                    text: "Appearance"
                     Layout.fillWidth: true
                     highlighted: stackLayout.currentIndex === 2
                     onClicked: stackLayout.currentIndex = 2
+                }
+
+                QQC2.ToolButton {
+                    text: "Exceptions"
+                    Layout.fillWidth: true
+                    highlighted: stackLayout.currentIndex === 3
+                    onClicked: stackLayout.currentIndex = 3
                 }
 
                 Item { Layout.fillHeight: true }
@@ -84,6 +91,8 @@ QQC2.ApplicationWindow {
                 DecorationPage {
                     settings: settingsObj
                 }
+
+                AppearancePage {}
 
                 ExceptionsPage {
                     settings: settingsObj

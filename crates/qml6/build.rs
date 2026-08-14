@@ -81,6 +81,7 @@ fn main() {
     .cpp_file(cpp_dir.join("font_query.cpp"))
     .qt_module("Quick")
     .qt_module("QuickControls2")
+    .qt_module("QuickShapes")
     .build()
     .export();
 }

@@ -31,7 +31,7 @@ pub mod qobject {
     }
 }
 
-use crate::config::Settings;
+use ayame_config::Settings;
 use core::pin::Pin;
 use cxx_qt::CxxQtType;
 use cxx_qt_lib::QString;

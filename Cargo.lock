@@ -19,6 +19,7 @@ name = "ayame"
 version = "0.1.0"
 dependencies = [
  "ayame-colors",
+ "ayame-config",
  "cxx",
  "cxx-qt",
  "cxx-qt-build",
@@ -33,18 +34,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "ayame-config"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "directories",
+ "serde",
+ "toml",
+]
+
+[[package]]
 name = "ayame-settings"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "ayame",
+ "ayame-config",
  "cxx",
  "cxx-qt",
  "cxx-qt-build",
  "cxx-qt-lib",
- "directories",
- "serde",
- "toml",
 ]
 
 [[package]]

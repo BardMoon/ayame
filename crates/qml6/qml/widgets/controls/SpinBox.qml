@@ -12,7 +12,20 @@ T.SpinBox {
 
     hoverEnabled: true
     implicitHeight: Ayame.Units.gridUnit * 1.6
-    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding + (up.indicator ? up.indicator.implicitWidth : 0) + (down.indicator ? down.indicator.implicitWidth : 0))
+    // The indicators' width is reserved via leftPadding/rightPadding below
+    // (not added again here), same as QtQuick.Controls.Basic's own
+    // SpinBox.qml -- otherwise it'd be double-counted.
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
+
+    // Without this, contentItem (an interactive TextInput) spans the full
+    // control width and overlaps up.indicator/down.indicator, which are
+    // positioned at the left/right edges independently -- so it eats the
+    // press events meant for the +/- buttons and increase()/decrease()
+    // never fire. Same fix QtQuick.Controls.Basic's own SpinBox.qml
+    // applies ("the width of the indicators are calculated into the
+    // padding").
+    leftPadding: padding + (control.mirrored ? (up.indicator ? up.indicator.width : 0) : (down.indicator ? down.indicator.width : 0))
+    rightPadding: padding + (control.mirrored ? (down.indicator ? down.indicator.width : 0) : (up.indicator ? up.indicator.width : 0))
 
     background: Rectangle {
         radius: Ayame.Units.cornerRadius

@@ -48,4 +48,35 @@ T.ComboBox {
         font: control.font
         color: control.colors.textColor
     }
+
+    // Without delegate/popup, T.ComboBox (headless) has nothing to show on
+    // click -- both are required, same as QtQuick.Controls.Basic's own
+    // ComboBox.qml.
+    delegate: Ayame.ItemDelegate {
+        required property var model
+        required property int index
+
+        width: ListView.view.width
+        text: model[control.textRole]
+        highlighted: control.highlightedIndex === index
+        hoverEnabled: control.hoverEnabled
+    }
+
+    popup: Ayame.Popup {
+        y: control.height
+        width: control.width
+        height: Math.min(contentItem.implicitHeight, control.Window.height - topMargin - bottomMargin)
+        topMargin: Ayame.Units.smallSpacing
+        bottomMargin: Ayame.Units.smallSpacing
+
+        contentItem: ListView {
+            clip: true
+            implicitHeight: contentHeight
+            model: control.delegateModel
+            currentIndex: control.highlightedIndex
+            highlightMoveDuration: 0
+
+            T.ScrollIndicator.vertical: Ayame.ScrollIndicator {}
+        }
+    }
 }

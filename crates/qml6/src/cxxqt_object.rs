@@ -8,12 +8,13 @@ use cxx_qt_lib::{QColor, QString};
 /// The last `(mode, accent_hex)` passed to `apply_theme`, so a freshly
 /// constructed `ThemeSettings` (e.g. when the settings screen is opened)
 /// can seed its displayed value from what was actually applied at startup
-/// (`origami::apply_saved_theme_mode()` calls `apply_theme` with the
-/// persisted settings before any QML loads) instead of always starting
-/// from the hardcoded "auto"/`DEFAULT_ACCENT` regardless of what's saved.
-/// Deliberately in-memory only, not a read from `origami-config` --  this
-/// crate has no business knowing about vaults/persistence, it just
-/// remembers what it was told.
+/// (`origami::apply_saved_theme_mode()`, or this crate's own
+/// `apply_saved_settings()`, both call `apply_theme` with the persisted
+/// settings before any QML loads) instead of missing an update that
+/// happened without going through `ayamerc` at all. Takes priority over
+/// `ayame-config` in `ThemeSettingsRust::default()` below for exactly that
+/// reason -- it reflects this process's live state, which `ayamerc` alone
+/// can't when something applied a value without saving it.
 static LAST_APPLIED_THEME: Mutex<Option<(String, String)>> = Mutex::new(None);
 
 fn last_applied_theme() -> Option<(String, String)> {
@@ -124,6 +125,19 @@ fn available_styles_raw() -> String {
 
 fn current_style_raw() -> String {
     unsafe { take_c_string(cettila_current_style_name()) }
+}
+
+/// Loads `ayamerc`, lets `mutate` change the `style` section, then saves it
+/// back -- the read-modify-write shape every style-object setter below uses
+/// to persist immediately, since each QML-exposed object here is its own
+/// independent `QObject` with no shared in-memory `Settings` instance to
+/// keep in sync.
+fn persist_style(mutate: impl FnOnce(&mut ayame_config::StyleSettings)) {
+    let mut settings = ayame_config::Settings::load();
+    mutate(&mut settings.style);
+    if let Err(e) = settings.save() {
+        eprintln!("Failed to save Ayame settings: {e}");
+    }
 }
 
 unsafe fn take_font_c_string(ptr: *mut std::os::raw::c_char) -> String {
@@ -313,9 +327,16 @@ mod ffi {
     }
 }
 
-#[derive(Default)]
 pub struct StyleInfoRust {
     saved_style: String,
+}
+
+impl Default for StyleInfoRust {
+    fn default() -> Self {
+        Self {
+            saved_style: ayame_config::Settings::load().style.saved_style,
+        }
+    }
 }
 
 impl ffi::StyleInfo {
@@ -332,7 +353,9 @@ impl ffi::StyleInfo {
     }
 
     fn save_style(mut self: Pin<&mut Self>, style: &QString) {
-        self.as_mut().rust_mut().saved_style = style.to_string();
+        let style = style.to_string();
+        self.as_mut().rust_mut().saved_style = style.clone();
+        persist_style(|s| s.saved_style = style);
     }
 }
 
@@ -343,7 +366,7 @@ pub struct CornerRadiusSettingsRust {
 impl Default for CornerRadiusSettingsRust {
     fn default() -> Self {
         Self {
-            option: String::from("medium"),
+            option: ayame_config::Settings::load().style.corner_radius,
         }
     }
 }
@@ -354,7 +377,9 @@ impl ffi::CornerRadiusSettings {
     }
 
     fn set_option(mut self: Pin<&mut Self>, option: &QString) {
-        self.as_mut().rust_mut().option = option.to_string();
+        let option = option.to_string();
+        self.as_mut().rust_mut().option = option.clone();
+        persist_style(|s| s.corner_radius = option);
     }
 }
 
@@ -365,7 +390,7 @@ pub struct BorderWidthSettingsRust {
 impl Default for BorderWidthSettingsRust {
     fn default() -> Self {
         Self {
-            option: String::from("default"),
+            option: ayame_config::Settings::load().style.border_width,
         }
     }
 }
@@ -376,7 +401,9 @@ impl ffi::BorderWidthSettings {
     }
 
     fn set_option(mut self: Pin<&mut Self>, option: &QString) {
-        self.as_mut().rust_mut().option = option.to_string();
+        let option = option.to_string();
+        self.as_mut().rust_mut().option = option.clone();
+        persist_style(|s| s.border_width = option);
     }
 }
 
@@ -386,7 +413,9 @@ pub struct UiScaleSettingsRust {
 
 impl Default for UiScaleSettingsRust {
     fn default() -> Self {
-        Self { scale: 1.0 }
+        Self {
+            scale: ayame_config::Settings::load().style.ui_scale,
+        }
     }
 }
 
@@ -397,6 +426,7 @@ impl ffi::UiScaleSettings {
 
     fn set_scale(mut self: Pin<&mut Self>, scale: f64) {
         self.as_mut().rust_mut().scale = scale;
+        persist_style(|s| s.ui_scale = scale);
     }
 }
 
@@ -407,9 +437,10 @@ pub struct AnimationSettingsRust {
 
 impl Default for AnimationSettingsRust {
     fn default() -> Self {
+        let style = ayame_config::Settings::load().style;
         Self {
-            speed_option: String::from("normal"),
-            enabled: true,
+            speed_option: style.animation_speed,
+            enabled: style.animations_enabled,
         }
     }
 }
@@ -420,7 +451,9 @@ impl ffi::AnimationSettings {
     }
 
     fn set_speed_option(mut self: Pin<&mut Self>, option: &QString) {
-        self.as_mut().rust_mut().speed_option = option.to_string();
+        let option = option.to_string();
+        self.as_mut().rust_mut().speed_option = option.clone();
+        persist_style(|s| s.animation_speed = option);
     }
 
     fn enabled(self: Pin<&mut Self>) -> bool {
@@ -429,6 +462,7 @@ impl ffi::AnimationSettings {
 
     fn set_enabled(mut self: Pin<&mut Self>, enabled: bool) {
         self.as_mut().rust_mut().enabled = enabled;
+        persist_style(|s| s.animations_enabled = enabled);
     }
 }
 
@@ -439,16 +473,23 @@ pub struct ThemeSettingsRust {
 
 impl Default for ThemeSettingsRust {
     fn default() -> Self {
+        // `LAST_APPLIED_THEME` wins when set -- it reflects whatever was
+        // actually applied to this process (e.g. via `apply_saved_settings`
+        // or Cettila's own `apply_saved_theme_mode`), which may be fresher
+        // than what's on disk if something applied a value without saving
+        // it. Otherwise fall back to `ayamerc` directly, so `ThemeSettings`
+        // reflects the persisted pick even if nothing has called
+        // `apply_theme` yet this process (previously this always started
+        // from the hardcoded default -- see docs/roadmap.tm).
         match last_applied_theme() {
             Some((mode, accent)) => Self { mode, accent },
-            // "system" matches both `origami_config::settings::load_theme_mode`'s
-            // own default and `themeModeOptions`' QML key -- "auto" (the old
-            // default here) was neither, so it displayed as a raw, unmatched
-            // string when nothing had been applied yet.
-            None => Self {
-                mode: String::from("system"),
-                accent: ayame_colors::DEFAULT_ACCENT.to_hex(),
-            },
+            None => {
+                let style = ayame_config::Settings::load().style;
+                Self {
+                    mode: style.theme_mode,
+                    accent: style.accent_color,
+                }
+            }
         }
     }
 }
@@ -463,6 +504,7 @@ impl ffi::ThemeSettings {
         self.as_mut().rust_mut().mode = mode_str.clone();
         let accent = self.rust().accent.clone();
         apply_theme(&mode_str, &accent);
+        persist_style(|s| s.theme_mode = mode_str);
     }
 
     fn accent_color(self: Pin<&mut Self>) -> QColor {
@@ -476,6 +518,7 @@ impl ffi::ThemeSettings {
         self.as_mut().rust_mut().accent = hex.clone();
         let mode = self.rust().mode.clone();
         apply_theme(&mode, &hex);
+        persist_style(|s| s.accent_color = hex);
     }
 
     fn available_scheme_ids(self: Pin<&mut Self>) -> QString {
@@ -553,9 +596,10 @@ pub struct FontSettingsRust {
 
 impl Default for FontSettingsRust {
     fn default() -> Self {
+        let style = ayame_config::Settings::load().style;
         Self {
-            family: String::new(),
-            point_size: 0.0,
+            family: style.font_family,
+            point_size: style.font_point_size,
         }
     }
 }
@@ -584,6 +628,7 @@ impl ffi::FontSettings {
             if f.is_empty() { None } else { Some(&f) },
             self.rust().point_size,
         );
+        persist_style(|s| s.font_family = f);
     }
 
     fn point_size(self: Pin<&mut Self>) -> f64 {
@@ -601,5 +646,6 @@ impl ffi::FontSettings {
             },
             size,
         );
+        persist_style(|s| s.font_point_size = size);
     }
 }

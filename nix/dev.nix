@@ -5,6 +5,7 @@
   stdenv,
   mkShell,
   qt6,
+  kdePackages,
   ayame,
   ...
 }:
@@ -23,32 +24,26 @@ mkShell rec {
   buildInputs = with pkgs; [
     ayame
 
-    #[ Rust ]
+    #[ Develop ]
+    ##[ Rust ]
     rustToolchain
     cargo-edit
     cargo-outdated
     cargo-nextest
-
-    #[ CMake ]
+    ##[ CMake ]
     cmake
     ninja
 
-    #[ Qt ]
+    #[ Runtime ]
+    ##[ Qt ]
     qt6.qtbase
     qt6.qtsvg
     qt6.qtdeclarative
-    #[ KDE ]
-    kdePackages.extra-cmake-modules
-    kdePackages.kcmutils
-    kdePackages.kcoreaddons
-    kdePackages.kcolorscheme
-    kdePackages.kconfig
+    ##[ Breeze ]
+    kdePackages.qqc2-breeze-style
+    kdePackages.kirigami
     kdePackages.kguiaddons
-    kdePackages.ki18n
-    kdePackages.kiconthemes
-    kdePackages.kwindowsystem
-    kdePackages.kdecoration
-    #[ Graphics ]
+    ##[ Graphics ]
     libGL
     mesa
   ];
@@ -85,6 +80,10 @@ mkShell rec {
     qt6.qtdeclarative
     qt6.qtmultimedia
     qt6.qtwayland
+    ##[ KDE ]
+    kdePackages.qqc2-breeze-style
+    kdePackages.kirigami
+    kdePackages.kguiaddons
 
     ayame
   ];

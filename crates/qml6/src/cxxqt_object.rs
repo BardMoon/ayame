@@ -1,8 +1,24 @@
 use std::ffi::CStr;
 use std::pin::Pin;
+use std::sync::Mutex;
 
 use cxx_qt::CxxQtType;
 use cxx_qt_lib::{QColor, QString};
+
+/// The last `(mode, accent_hex)` passed to `apply_theme`, so a freshly
+/// constructed `ThemeSettings` (e.g. when the settings screen is opened)
+/// can seed its displayed value from what was actually applied at startup
+/// (`origami::apply_saved_theme_mode()` calls `apply_theme` with the
+/// persisted settings before any QML loads) instead of always starting
+/// from the hardcoded "auto"/`DEFAULT_ACCENT` regardless of what's saved.
+/// Deliberately in-memory only, not a read from `origami-config` --  this
+/// crate has no business knowing about vaults/persistence, it just
+/// remembers what it was told.
+static LAST_APPLIED_THEME: Mutex<Option<(String, String)>> = Mutex::new(None);
+
+fn last_applied_theme() -> Option<(String, String)> {
+    LAST_APPLIED_THEME.lock().ok()?.clone()
+}
 
 unsafe extern "C" {
     fn cettila_available_styles_joined() -> *mut std::os::raw::c_char;
@@ -45,20 +61,27 @@ pub fn apply_ui_font(family: Option<&str>, point_size: f64) {
     unsafe { cettila_apply_ui_font(family_ptr, point_size) };
 }
 
+/// `cettila_apply_theme_palette`'s `mode` parameter is now just a binary
+/// "apply the given colors" (1) vs. "restore the captured system palette,
+/// ignore the rest of the arguments" (0) flag -- preset *selection* fully
+/// happens Rust-side via `ayame_colors::preset_by_id` before this is even
+/// called, so C++ no longer needs to distinguish "light" from "dark" (or
+/// now, from any of the many named-scheme ids) itself.
 fn theme_mode_code(mode: &str) -> i32 {
-    match mode {
-        "light" => 1,
-        "dark" => 2,
-        _ => 0,
-    }
+    if mode == "system" { 0 } else { 1 }
 }
 
-/// Applies `mode` ("system"/"light"/"dark") composed with `accent_hex`
-/// ("#RRGGBB") as Ayame's own `QGuiApplication` palette. A no-op unless
-/// Ayame is the currently active QQC2 style -- overriding the palette while
-/// e.g. Breeze is active would fight that style's own, independently
-/// computed palette instead of leaving it alone as intended.
+/// Applies `mode` (`"system"`, or any flat scheme/variant id from
+/// `ayame_colors::presets::SCHEMES`, e.g. `"dark"`/`"catppuccin-mocha"`)
+/// composed with `accent_hex` ("#RRGGBB") as Ayame's own `QGuiApplication`
+/// palette. A no-op unless Ayame is the currently active QQC2 style --
+/// overriding the palette while e.g. Breeze is active would fight that
+/// style's own, independently computed palette instead of leaving it alone
+/// as intended.
 pub fn apply_theme(mode: &str, accent_hex: &str) {
+    if let Ok(mut last) = LAST_APPLIED_THEME.lock() {
+        *last = Some((mode.to_string(), accent_hex.to_string()));
+    }
     if current_style_raw() != "Ayame" {
         return;
     }
@@ -226,6 +249,40 @@ mod ffi {
 
         #[qinvokable]
         fn set_accent_color(self: Pin<&mut ThemeSettings>, color: &QColor);
+
+        // Newline-joined lists (same convention as StyleInfo's
+        // available_styles) so SettingsPage.qml can build its
+        // scheme -> variant two-stage picker without any C++ involved --
+        // the whole registry is static Rust data in `ayame_colors::presets`.
+        #[qinvokable]
+        fn available_scheme_ids(self: Pin<&mut ThemeSettings>) -> QString;
+
+        #[qinvokable]
+        fn available_scheme_names(self: Pin<&mut ThemeSettings>) -> QString;
+
+        #[qinvokable]
+        fn available_variant_ids(self: Pin<&mut ThemeSettings>, scheme_id: &QString) -> QString;
+
+        #[qinvokable]
+        fn available_variant_names(self: Pin<&mut ThemeSettings>, scheme_id: &QString) -> QString;
+
+        #[qinvokable]
+        fn variant_name(
+            self: Pin<&mut ThemeSettings>,
+            scheme_id: &QString,
+            variant_id: &QString,
+        ) -> QString;
+
+        // Which scheme a flat, persisted id belongs to (e.g.
+        // "catppuccin-mocha" -> "catppuccin", "dark" -> "ayame"), or the
+        // literal "system" if `id` is "system" -- lets SettingsPage.qml
+        // derive its initial scheme/variant dropdown selection from
+        // `mode()` alone.
+        #[qinvokable]
+        fn scheme_of(self: Pin<&mut ThemeSettings>, id: &QString) -> QString;
+
+        #[qinvokable]
+        fn default_accent_for(self: Pin<&mut ThemeSettings>, id: &QString) -> QColor;
     }
 
     unsafe extern "RustQt" {
@@ -382,9 +439,16 @@ pub struct ThemeSettingsRust {
 
 impl Default for ThemeSettingsRust {
     fn default() -> Self {
-        Self {
-            mode: String::from("auto"),
-            accent: ayame_colors::DEFAULT_ACCENT.to_hex(),
+        match last_applied_theme() {
+            Some((mode, accent)) => Self { mode, accent },
+            // "system" matches both `origami_config::settings::load_theme_mode`'s
+            // own default and `themeModeOptions`' QML key -- "auto" (the old
+            // default here) was neither, so it displayed as a raw, unmatched
+            // string when nothing had been applied yet.
+            None => Self {
+                mode: String::from("system"),
+                accent: ayame_colors::DEFAULT_ACCENT.to_hex(),
+            },
         }
     }
 }
@@ -412,6 +476,73 @@ impl ffi::ThemeSettings {
         self.as_mut().rust_mut().accent = hex.clone();
         let mode = self.rust().mode.clone();
         apply_theme(&mode, &hex);
+    }
+
+    fn available_scheme_ids(self: Pin<&mut Self>) -> QString {
+        let joined = ayame_colors::presets::SCHEMES
+            .iter()
+            .map(|scheme| scheme.id)
+            .collect::<Vec<_>>()
+            .join("\n");
+        QString::from(joined.as_str())
+    }
+
+    fn available_scheme_names(self: Pin<&mut Self>) -> QString {
+        let joined = ayame_colors::presets::SCHEMES
+            .iter()
+            .map(|scheme| scheme.name)
+            .collect::<Vec<_>>()
+            .join("\n");
+        QString::from(joined.as_str())
+    }
+
+    fn available_variant_ids(self: Pin<&mut Self>, scheme_id: &QString) -> QString {
+        let joined = ayame_colors::presets::scheme_by_id(&scheme_id.to_string())
+            .map(|scheme| {
+                scheme
+                    .variants
+                    .iter()
+                    .map(|variant| variant.id)
+                    .collect::<Vec<_>>()
+                    .join("\n")
+            })
+            .unwrap_or_default();
+        QString::from(joined.as_str())
+    }
+
+    fn available_variant_names(self: Pin<&mut Self>, scheme_id: &QString) -> QString {
+        let joined = ayame_colors::presets::scheme_by_id(&scheme_id.to_string())
+            .map(|scheme| {
+                scheme
+                    .variants
+                    .iter()
+                    .map(|variant| variant.name)
+                    .collect::<Vec<_>>()
+                    .join("\n")
+            })
+            .unwrap_or_default();
+        QString::from(joined.as_str())
+    }
+
+    fn variant_name(self: Pin<&mut Self>, scheme_id: &QString, variant_id: &QString) -> QString {
+        let variant_id = variant_id.to_string();
+        let name = ayame_colors::presets::scheme_by_id(&scheme_id.to_string())
+            .and_then(|scheme| scheme.variants.iter().find(|v| v.id == variant_id))
+            .map(|variant| variant.name)
+            .unwrap_or_default();
+        QString::from(name)
+    }
+
+    fn scheme_of(self: Pin<&mut Self>, id: &QString) -> QString {
+        let id = id.to_string();
+        if id == "system" {
+            return QString::from("system");
+        }
+        QString::from(ayame_colors::scheme_of(&id).unwrap_or(""))
+    }
+
+    fn default_accent_for(self: Pin<&mut Self>, id: &QString) -> QColor {
+        ayame_colors::default_accent_for(&id.to_string()).to_qcolor()
     }
 }
 

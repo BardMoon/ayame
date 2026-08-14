@@ -38,7 +38,7 @@ void cettila_apply_theme_palette(
         g_capturedSystemPalette = true;
     }
 
-    if (mode != 1 && mode != 2) {
+    if (mode != 1) {
         QGuiApplication::setPalette(g_systemPalette);
         return;
     }

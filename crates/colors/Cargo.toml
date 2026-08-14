@@ -2,6 +2,7 @@
 name = "ayame-colors"
 version.workspace = true
 edition.workspace = true
+readme = "README.md"
 
 [dependencies]
 cxx-qt-lib = { workspace = true, features = ["qt_gui"] }

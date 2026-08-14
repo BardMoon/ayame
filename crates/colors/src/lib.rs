@@ -6,6 +6,12 @@
 //! set of `QPalette` roles `theme_palette.cpp` applies. It has no build.rs
 //! and registers no QML type -- it is pure data/logic, consumed by
 //! `crates/qml6` which owns the actual FFI boundary into Qt.
+//!
+//! `presets` extends this with a registry of named color schemes
+//! (TokyoNight, Catppuccin, Flexoki, alongside Ayame's own light/dark)
+//! layered on top of the same `PalettePreset`/`RgbColor` types.
+
+pub mod presets;
 
 /// An 8-bit-per-channel RGB color, independent of any Qt type so this crate
 /// has no cxx-qt bridge/build.rs of its own.
@@ -108,12 +114,38 @@ pub const DARK_PRESET: PalettePreset = PalettePreset {
 /// kept as the default for users who haven't picked one of their own.
 pub const DEFAULT_ACCENT: RgbColor = RgbColor::new(0x3d, 0xae, 0xe9);
 
-/// Selects a preset by the same mode string `theme_mode`/`ThemeSettings`
-/// already use ("light"/"dark"); anything else falls back to the light
-/// preset (callers are expected to gate out "system" before reaching here
-/// -- see `apply_theme`'s early return).
+/// Selects a preset by the same flat id `theme_mode`/`ThemeSettings`
+/// persist (e.g. `"dark"`, `"catppuccin-mocha"`) -- see `presets::SCHEMES`
+/// for the full registry. Ayame's own two variants keep the bare ids
+/// `"light"`/`"dark"` for backward compatibility with already-saved
+/// `settings.yaml` files that predate every other scheme; every other
+/// scheme's ids are `"<scheme>-<variant>"` to avoid colliding with them
+/// (e.g. Flexoki's light variant is `"flexoki-light"`, not `"light"`).
+/// Unknown ids fall back to the light preset (callers are expected to gate
+/// out `"system"` before reaching here -- see `apply_theme`'s early
+/// return).
 pub fn preset_by_id(id: &str) -> PalettePreset {
-    if id == "dark" { DARK_PRESET } else { LIGHT_PRESET }
+    presets::find_variant(id)
+        .map(|variant| variant.preset)
+        .unwrap_or(LIGHT_PRESET)
+}
+
+/// The given variant's own "signature" accent color, shown as the default
+/// in Cettila's accent color picker when this scheme/variant is selected
+/// (still freely overridable by the user afterwards). Falls back to
+/// `DEFAULT_ACCENT` for unknown ids.
+pub fn default_accent_for(id: &str) -> RgbColor {
+    presets::find_variant(id)
+        .map(|variant| variant.default_accent)
+        .unwrap_or(DEFAULT_ACCENT)
+}
+
+/// Which scheme a flat variant id belongs to (e.g. `"catppuccin-mocha"` ->
+/// `Some("catppuccin")`, `"dark"` -> `Some("ayame")`), or `None` if `id`
+/// doesn't match any known variant (including `"system"`, which isn't a
+/// scheme at all).
+pub fn scheme_of(id: &str) -> Option<&'static str> {
+    presets::scheme_of(id)
 }
 
 /// All twelve `QPalette` roles `theme_palette.cpp` applies, after composing
@@ -231,5 +263,40 @@ mod tests {
         assert_eq!(preset_by_id("light"), LIGHT_PRESET);
         assert_eq!(preset_by_id("system"), LIGHT_PRESET);
         assert_eq!(preset_by_id("anything-else"), LIGHT_PRESET);
+    }
+
+    #[test]
+    fn preset_by_id_resolves_named_schemes() {
+        assert_eq!(
+            preset_by_id("catppuccin-mocha"),
+            presets::find_variant("catppuccin-mocha").unwrap().preset
+        );
+        assert_eq!(
+            preset_by_id("tokyonight-storm"),
+            presets::find_variant("tokyonight-storm").unwrap().preset
+        );
+        assert_eq!(
+            preset_by_id("flexoki-light"),
+            presets::find_variant("flexoki-light").unwrap().preset
+        );
+    }
+
+    #[test]
+    fn default_accent_for_known_and_unknown_ids() {
+        assert_eq!(default_accent_for("dark"), DEFAULT_ACCENT);
+        assert_eq!(
+            default_accent_for("catppuccin-mocha"),
+            RgbColor::new(0xcb, 0xa6, 0xf7)
+        );
+        assert_eq!(default_accent_for("nonexistent"), DEFAULT_ACCENT);
+    }
+
+    #[test]
+    fn scheme_of_known_and_unknown_ids() {
+        assert_eq!(scheme_of("light"), Some("ayame"));
+        assert_eq!(scheme_of("catppuccin-latte"), Some("catppuccin"));
+        assert_eq!(scheme_of("flexoki-dark"), Some("flexoki"));
+        assert_eq!(scheme_of("system"), None);
+        assert_eq!(scheme_of("nonexistent"), None);
     }
 }

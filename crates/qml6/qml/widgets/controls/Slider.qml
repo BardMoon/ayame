@@ -11,30 +11,31 @@ T.Slider {
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
-    implicitWidth: Ayame.Units.gridUnit * 8
-    implicitHeight: Ayame.Units.gridUnit * 1.4
+    implicitWidth: control.horizontal ? Ayame.Units.gridUnit * 8 : Ayame.Units.gridUnit * 1.4
+    implicitHeight: control.horizontal ? Ayame.Units.gridUnit * 1.4 : Ayame.Units.gridUnit * 8
 
     background: Rectangle {
-        x: control.leftPadding
-        y: control.topPadding + (control.availableHeight - height) / 2
-        width: control.availableWidth
-        height: 6
+        x: control.leftPadding + (control.horizontal ? 0 : (control.availableWidth - width) / 2)
+        y: control.topPadding + (control.horizontal ? (control.availableHeight - height) / 2 : 0)
+        width: control.horizontal ? control.availableWidth : 6
+        height: control.horizontal ? 6 : control.availableHeight
         radius: 3
         color: control.colors.backgroundColor
         border.width: Ayame.Units.borderWidth
         border.color: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
 
         Rectangle {
-            width: control.visualPosition * parent.width
-            height: parent.height
+            y: control.horizontal ? 0 : control.visualPosition * parent.height
+            width: control.horizontal ? control.position * parent.width : parent.width
+            height: control.horizontal ? parent.height : control.position * parent.height
             radius: 3
             color: control.colors.highlightColor
         }
     }
 
     handle: Rectangle {
-        x: control.leftPadding + control.visualPosition * (control.availableWidth - width)
-        y: control.topPadding + (control.availableHeight - height) / 2
+        x: control.leftPadding + (control.horizontal ? control.visualPosition * (control.availableWidth - width) : (control.availableWidth - width) / 2)
+        y: control.topPadding + (control.horizontal ? (control.availableHeight - height) / 2 : control.visualPosition * (control.availableHeight - height))
         implicitWidth: 14
         implicitHeight: 14
         radius: 7

@@ -2,7 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Templates as T
-import QtQuick.Controls.Ayame 1.0 as Ayame
+import Ayame 1.0 as Ayame
 
 T.Container {
     id: control

@@ -65,7 +65,7 @@ fn main() {
     ];
 
     CxxQtBuilder::new_qml_module(
-        QmlModule::new("QtQuick.Controls.Ayame")
+        QmlModule::new("Ayame")
             .depend("QtQuick.Controls")
             .qml_files([
                 QmlFile::from("qml/theme/Units.qml").singleton(true),
@@ -83,5 +83,7 @@ fn main() {
     .qt_module("Quick")
     .qt_module("QuickControls2")
     .build()
+    .export();
+}
     .export();
 }

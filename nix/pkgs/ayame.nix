@@ -58,7 +58,7 @@ craneLib.buildPackage (
         cp -r crates/qml6/qml/* $out/lib/qt-6/qml/QtQuick/Controls/Ayame/
       fi
       # cxx-qt-build mirrors the module's dotted URI as a directory path
-      # under target/cxxqt/qml_modules/ (e.g. "QtQuick.Controls.Ayame" ->
+      # under target/cxxqt/qml_modules/ (e.g. "Ayame" ->
       # QtQuick/Controls/Ayame/qmldir), independent of the per-build
       # OUT_DIR hash -- deterministic, unlike `find target -name qmldir`
       # (which used to pick up whichever of several stale qmldir variants

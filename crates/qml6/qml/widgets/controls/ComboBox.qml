@@ -11,8 +11,20 @@ T.ComboBox {
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
+    spacing: Ayame.Units.smallSpacing
+    padding: Ayame.Units.smallSpacing
     implicitHeight: Ayame.Units.gridUnit * 1.6
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
+
+    // Reserve room for `indicator` by shrinking the control's own
+    // available content area -- setting padding on contentItem's own Text
+    // only moves where it *elides*, not the box Control actually lays it
+    // out into (Control always resizes contentItem to availableWidth
+    // regardless), so the indicator arrow used to render on top of the
+    // display text instead of next to it. Same root-level-padding
+    // approach as QtQuick.Controls.Basic's own ComboBox.qml.
+    leftPadding: padding + (control.mirrored && control.indicator ? control.indicator.width + control.spacing : 0)
+    rightPadding: padding + (!control.mirrored && control.indicator ? control.indicator.width + control.spacing : 0)
 
     background: Rectangle {
         radius: Ayame.Units.cornerRadius
@@ -22,8 +34,6 @@ T.ComboBox {
     }
 
     contentItem: Text {
-        leftPadding: Ayame.Units.smallSpacing
-        rightPadding: control.indicator ? control.indicator.width + control.spacing : Ayame.Units.smallSpacing
         verticalAlignment: Text.AlignVCenter
         text: control.displayText
         font: control.font
@@ -32,7 +42,7 @@ T.ComboBox {
     }
 
     indicator: Text {
-        x: control.mirrored ? control.leftPadding : control.width - width - control.rightPadding
+        x: control.mirrored ? control.padding : control.width - width - control.padding
         y: control.topPadding + (control.availableHeight - height) / 2
         text: "▾"
         font: control.font

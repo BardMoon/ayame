@@ -8,16 +8,19 @@ import Ayame 1.0 as Ayame
 // Label.qml/Popup.qml), not `widgets/inputs/`: it's chrome wrapping other
 // content, not an input control itself.
 //
-// UNLIKE the other widget files here (which qualify every base-type/enum
-// reference as `T.<Type>`), the composed `ScrollBar.vertical`/
-// `.horizontal` below stay BARE -- both the attached-property qualifier
-// and the child instances. Bare `ScrollBar` inside this same QML module
-// resolves directly to this module's own themed
-// `widgets/scroll/ScrollBar.qml` (same-module sibling-type resolution,
-// no import needed), which is what actually makes the composed
-// scrollbars themed rather than an unstyled `T.ScrollBar`. Matches
-// qqc2-breeze-style's own ScrollView.qml (confirmed on disk), which uses
-// this exact same bare-`ScrollBar` idiom for the identical reason.
+// Both the `T.ScrollBar.vertical`/`.horizontal` attached-property
+// qualifiers AND the `Ayame.ScrollBar` instances below are explicitly
+// qualified, unlike qqc2-breeze-style's own ScrollView.qml (which can get
+// away with a bare `ScrollBar` because every one of its files lives
+// flat in a single `org/kde/breeze/` directory -- same-directory QML
+// files resolve each other by bare name with no import needed). Ayame's
+// own widgets are split across subdirectories
+// (`widgets/scroll/ScrollBar.qml` vs. this file in
+// `widgets/containers/`), so that same-directory rule doesn't apply here
+// -- a bare `ScrollBar` would resolve to nothing usable (confirmed while
+// investigating Menu.qml's own cross-directory `ScrollIndicator`
+// reference, which needed the same fix). Always use `Ayame.<Type>` for
+// any cross-directory reference within this module.
 T.ScrollView {
     id: control
 

@@ -11,4 +11,7 @@ T.AbstractButton {
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
+
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 }

@@ -12,6 +12,9 @@ T.Frame {
 
     padding: Ayame.Units.smallSpacing
 
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(contentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
+
     background: Rectangle {
         radius: Ayame.Units.cornerRadius
         color: control.colors.backgroundColor

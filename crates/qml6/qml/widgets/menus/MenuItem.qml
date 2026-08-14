@@ -12,6 +12,9 @@ T.MenuItem {
 
     hoverEnabled: true
 
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding + (implicitIndicatorWidth > 0 ? implicitIndicatorWidth + spacing : 0) + (implicitArrowWidth > 0 ? implicitArrowWidth + spacing : 0))
+    implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, Math.max(implicitContentHeight, implicitIndicatorHeight, implicitArrowHeight) + topPadding + bottomPadding)
+
     background: Rectangle {
         radius: Ayame.Units.cornerRadius
         color: control.highlighted ? control.colors.highlightColor : "transparent"

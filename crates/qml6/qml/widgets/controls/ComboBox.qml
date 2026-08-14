@@ -12,6 +12,7 @@ T.ComboBox {
 
     hoverEnabled: true
     implicitHeight: Ayame.Units.gridUnit * 1.6
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
 
     background: Rectangle {
         radius: Ayame.Units.cornerRadius

@@ -24,6 +24,9 @@ T.ScrollView {
     // Same knob as widgets/Label.qml/widgets/inputs/CheckBox.qml.
     property int colorSet: Ayame.Theme.view
 
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(contentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
+
     T.ScrollBar.vertical: Ayame.ScrollBar {
         colorSet: control.colorSet
     }

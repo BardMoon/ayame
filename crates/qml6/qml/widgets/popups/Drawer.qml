@@ -10,6 +10,9 @@ T.Drawer {
     property int colorSet: Ayame.Theme.window
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
+
     background: Rectangle {
         color: control.colors.backgroundColor
         border.width: Ayame.Units.borderWidth

@@ -12,6 +12,9 @@ T.ToolTip {
 
     padding: Ayame.Units.smallSpacing
 
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
+
     background: Rectangle {
         radius: Ayame.Units.cornerRadius
         color: control.colors.backgroundColor

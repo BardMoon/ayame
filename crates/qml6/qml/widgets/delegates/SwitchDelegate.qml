@@ -12,12 +12,15 @@ T.SwitchDelegate {
 
     hoverEnabled: true
 
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
+
     background: Rectangle {
         color: control.pressed ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
     }
 
     contentItem: Text {
-        leftPadding: control.indicator ? control.indicator.width + control.spacing : 0
+        rightPadding: control.indicator ? control.indicator.width + control.spacing : 0
         verticalAlignment: Text.AlignVCenter
         text: control.text
         font: control.font

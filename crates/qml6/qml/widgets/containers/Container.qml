@@ -9,4 +9,7 @@ T.Container {
 
     property int colorSet: Ayame.Theme.view
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(contentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 }

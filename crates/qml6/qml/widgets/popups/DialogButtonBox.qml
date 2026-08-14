@@ -11,4 +11,7 @@ T.DialogButtonBox {
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     spacing: Ayame.Units.smallSpacing
+
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 }

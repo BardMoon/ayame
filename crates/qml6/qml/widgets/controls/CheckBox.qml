@@ -15,6 +15,9 @@ T.CheckBox {
     spacing: Ayame.Units.smallSpacing
     opacity: control.enabled ? 1.0 : 0.5
 
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
+
     indicator: Rectangle {
         x: control.leftPadding
         y: control.topPadding + (control.availableHeight - height) / 2

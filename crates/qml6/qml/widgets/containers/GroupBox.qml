@@ -12,6 +12,9 @@ T.GroupBox {
 
     padding: Ayame.Units.largeSpacing
 
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentWidth + leftPadding + rightPadding, implicitLabelWidth)
+    implicitHeight: Math.max(contentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
+
     label: Ayame.Label {
         x: control.leftPadding
         width: control.availableWidth

@@ -53,15 +53,19 @@ craneLib.buildPackage (
     inherit cargoArtifacts;
     doCheck = false;
     postInstall = ''
-      mkdir -p $out/lib/qt-6/qml/la/cettila/Ayame
       mkdir -p $out/lib/qt-6/qml/QtQuick/Controls/Ayame
       if [ -d crates/qml6/qml ]; then
-        cp -r crates/qml6/qml/* $out/lib/qt-6/qml/la/cettila/Ayame/
         cp -r crates/qml6/qml/* $out/lib/qt-6/qml/QtQuick/Controls/Ayame/
       fi
-      qmldir_file=$(find target -name qmldir 2>/dev/null | head -n 1)
-      if [ -n "$qmldir_file" ]; then
-        cp "$qmldir_file" $out/lib/qt-6/qml/la/cettila/Ayame/qmldir
+      # cxx-qt-build mirrors the module's dotted URI as a directory path
+      # under target/cxxqt/qml_modules/ (e.g. "QtQuick.Controls.Ayame" ->
+      # QtQuick/Controls/Ayame/qmldir), independent of the per-build
+      # OUT_DIR hash -- deterministic, unlike `find target -name qmldir`
+      # (which used to pick up whichever of several stale qmldir variants
+      # `find` happened to list first, left over from this module's
+      # naming history).
+      qmldir_file=target/cxxqt/qml_modules/QtQuick/Controls/Ayame/qmldir
+      if [ -f "$qmldir_file" ]; then
         cp "$qmldir_file" $out/lib/qt-6/qml/QtQuick/Controls/Ayame/qmldir
       fi
     '';

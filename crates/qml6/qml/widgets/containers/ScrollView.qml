@@ -1,36 +1,34 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Controls as QQC2
-import Ayame 1.0 as Ayame
+import QtQuick.Templates as T
+import QtQuick.Controls.Ayame 1.0 as Ayame
 
 // Themed drop-in for QQC2's ScrollView. Placed at `widgets/` root (like
 // Label.qml/Popup.qml), not `widgets/inputs/`: it's chrome wrapping other
 // content, not an input control itself.
 //
-// UNLIKE the other wrapper files here (Button.qml/CheckBox.qml/Label.qml/
-// Popup.qml/ScrollBar.qml/Slider.qml), this one roots itself with the
-// QUALIFIED `QQC2.ScrollView` rather than the usual "bare self-name"
-// trick -- it needs to assign `QQC2.ScrollBar.vertical`/`.horizontal` to
-// instances of this SAME module's own themed `ScrollBar` (bare
-// `ScrollBar` reference, resolved via the unqualified `la.cettila.Origami`
-// import below). Importing `QtQuick.Controls` unqualified too (as the
-// bare self-name trick requires) would make that `ScrollBar` reference
-// ambiguous between QQC2's and this module's own -- qualifying the root
-// type instead sidesteps the question entirely, since only
-// `la.cettila.Origami` provides the unqualified `ScrollBar` name in this
-// file.
-QQC2.ScrollView {
+// UNLIKE the other widget files here (which qualify every base-type/enum
+// reference as `T.<Type>`), the composed `ScrollBar.vertical`/
+// `.horizontal` below stay BARE -- both the attached-property qualifier
+// and the child instances. Bare `ScrollBar` inside this same QML module
+// resolves directly to this module's own themed
+// `widgets/scroll/ScrollBar.qml` (same-module sibling-type resolution,
+// no import needed), which is what actually makes the composed
+// scrollbars themed rather than an unstyled `T.ScrollBar`. Matches
+// qqc2-breeze-style's own ScrollView.qml (confirmed on disk), which uses
+// this exact same bare-`ScrollBar` idiom for the identical reason.
+T.ScrollView {
     id: control
 
     // Same knob as widgets/Label.qml/widgets/inputs/CheckBox.qml.
     property int colorSet: Ayame.Theme.view
 
-    QQC2.ScrollBar.vertical: QQC2.ScrollBar {
+    ScrollBar.vertical: ScrollBar {
         colorSet: control.colorSet
     }
 
-    QQC2.ScrollBar.horizontal: QQC2.ScrollBar {
+    ScrollBar.horizontal: ScrollBar {
         colorSet: control.colorSet
     }
 }

@@ -1,14 +1,14 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Controls as QQC2
-import Ayame 1.0 as Ayame
+import QtQuick.Templates as T
+import QtQuick.Controls.Ayame 1.0 as Ayame
 
-QQC2.AbstractButton {
+T.AbstractButton {
     id: control
 
-    property int colorSet: Ayame.Ayame.Theme.view
-    readonly property var colors: Ayame.Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: Ayame.Theme.view
+    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
 }

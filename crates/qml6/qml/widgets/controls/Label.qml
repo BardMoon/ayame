@@ -1,15 +1,15 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Controls as QQC2
-import Ayame 1.0 as Ayame
+import QtQuick.Templates as T
+import QtQuick.Controls.Ayame 1.0 as Ayame
 
 // Themed drop-in for QQC2's Label. Every call site across the app used to
 // hand-roll `color: root.colors.textColor` (plus ad-hoc `opacity: 0.5`/
 // `0.7` for de-emphasized text, or `Ayame.Theme.negativeTextColor` for errors)
-// on a bare QQC2.Label -- this folds those repeated patterns into a small
+// on a bare T.Label -- this folds those repeated patterns into a small
 // `type` variant so call sites only need to say what they mean.
-QQC2.Label {
+T.Label {
     id: control
 
     // plain | secondary | disabled | positive | negative | neutral

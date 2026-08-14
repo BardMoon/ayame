@@ -1,8 +1,8 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Controls as QQC2
-import Ayame 1.0 as Ayame
+import QtQuick.Templates as T
+import QtQuick.Controls.Ayame 1.0 as Ayame
 
 // Themed drop-in for QQC2's Popup, same "wrap the QQC2 type, replace its
 // background" approach as widgets/Label.qml/widgets/inputs/TextField.qml.
@@ -14,7 +14,7 @@ import Ayame 1.0 as Ayame
 // into a shared default so a fifth call site (MapView.qml's pinEditor,
 // previously left with zero override, just whatever the active QQC2
 // style draws) picks it up too.
-QQC2.Popup {
+T.Popup {
     id: control
 
     // Same knob as widgets/Label.qml/widgets/inputs/CheckBox.qml.
@@ -59,7 +59,7 @@ QQC2.Popup {
     // mid-edit).
     property bool detachedWindow: false
 
-    popupType: control.detachedWindow ? QQC2.Popup.Window : QQC2.Popup.Item
+    popupType: control.detachedWindow ? T.Popup.Window : T.Popup.Item
 
     padding: Ayame.Units.smallSpacing
 

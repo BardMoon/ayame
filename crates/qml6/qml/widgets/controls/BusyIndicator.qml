@@ -1,8 +1,8 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Controls as QQC2
-import Ayame 1.0 as Ayame
+import QtQuick.Templates as T
+import QtQuick.Controls.Ayame 1.0 as Ayame
 
 // Themed drop-in for QQC2's BusyIndicator, same "wrap the QQC2 type,
 // replace its contentItem" approach as every other widgets/*.qml here.
@@ -12,7 +12,7 @@ import Ayame 1.0 as Ayame
 // folded-in duplicate: a ring of 8 dots, fading around the ring, the
 // whole ring spinning while `running` -- plain QtQuick primitives, no
 // image asset or extra Qt module.
-QQC2.BusyIndicator {
+T.BusyIndicator {
     id: control
 
     // Same knob as widgets/Label.qml/widgets/inputs/CheckBox.qml.

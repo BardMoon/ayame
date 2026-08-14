@@ -53,40 +53,23 @@ craneLib.buildPackage (
     inherit cargoArtifacts;
     doCheck = false;
     postInstall = ''
-      # The generated qmldir lists every component with the same
-      # "qml/..." prefix build.rs's own widget_files/qml_files entries
-      # use (e.g. "qml/widgets/menus/Menu.qml", relative to the qmldir
-      # itself) -- so the QML source tree has to land at .../Ayame/qml/,
-      # not flattened directly into .../Ayame/. Copying
-      # crates/qml6/qml/* straight into the Ayame/ root (the previous
-      # version of this script) stripped that "qml/" prefix, leaving
-      # every single listed component unresolvable (confirmed with
-      # qmllint: "listed as component in .../qmldir but does not exist"
-      # for all 52 widget files) even once the module name/path
-      # themselves were otherwise correct.
-      mkdir -p $out/lib/qt-6/qml/QtQuick/Controls/Ayame/qml
+      # A custom (non-built-in) QQC2 style is imported by Qt using its
+      # style name literally as the QML import URI, with no
+      # "QtQuick.Controls." prefix (see qtquickcontrols2plugin.cpp's own
+      # styleUri(): that prefix is only added for Qt's own built-in
+      # styles) -- so the module must be named/located as plain "Ayame",
+      # not "QtQuick.Controls.Ayame". See docs/qqc2-custom-style-resolution.md.
+      mkdir -p $out/lib/qt-6/qml/Ayame/qml
       if [ -d crates/qml6/qml ]; then
-        cp -r crates/qml6/qml/* $out/lib/qt-6/qml/QtQuick/Controls/Ayame/qml/
+        cp -r crates/qml6/qml/* $out/lib/qt-6/qml/Ayame/qml/
       fi
-      # cxx-qt-build mirrors the module's dotted URI as a directory path
-      # under target/cxxqt/qml_modules/ (e.g. "QtQuick.Controls.Ayame" ->
-      # QtQuick/Controls/Ayame/qmldir), independent of the per-build
-      # OUT_DIR hash -- deterministic, unlike `find target -name qmldir`
-      # (which used to pick up whichever of several stale qmldir variants
-      # `find` happened to list first, left over from this module's
-      # naming history).
-      qmldir_file=target/cxxqt/qml_modules/QtQuick/Controls/Ayame/qmldir
+      qmldir_file=target/cxxqt/qml_modules/Ayame/qmldir
       if [ -f "$qmldir_file" ]; then
-        cp "$qmldir_file" $out/lib/qt-6/qml/QtQuick/Controls/Ayame/qmldir
+        cp "$qmldir_file" $out/lib/qt-6/qml/Ayame/qmldir
       fi
-      # Not strictly required at runtime (Ayame's Rust-backed QML_ELEMENT
-      # types self-register via cxx-qt's static plugin initializer once
-      # linked into the consuming binary, not by Qt reading this file),
-      # but qmllint/IDE tooling and qmldir's own `typeinfo` line expect
-      # it to exist -- cheap to include, removes any doubt.
-      qmltypes_file=target/cxxqt/qml_modules/QtQuick/Controls/Ayame/plugin.qmltypes
+      qmltypes_file=target/cxxqt/qml_modules/Ayame/plugin.qmltypes
       if [ -f "$qmltypes_file" ]; then
-        cp "$qmltypes_file" $out/lib/qt-6/qml/QtQuick/Controls/Ayame/plugin.qmltypes
+        cp "$qmltypes_file" $out/lib/qt-6/qml/Ayame/plugin.qmltypes
       fi
     '';
   }

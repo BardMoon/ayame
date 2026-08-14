@@ -12,6 +12,9 @@ T.Dial {
 
     hoverEnabled: true
 
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
+
     background: Rectangle {
         implicitWidth: Ayame.Units.gridUnit * 3.5
         implicitHeight: Ayame.Units.gridUnit * 3.5

@@ -12,6 +12,7 @@ T.SpinBox {
 
     hoverEnabled: true
     implicitHeight: Ayame.Units.gridUnit * 1.6
+    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding + (up.indicator ? up.indicator.implicitWidth : 0) + (down.indicator ? down.indicator.implicitWidth : 0))
 
     background: Rectangle {
         radius: Ayame.Units.cornerRadius

@@ -12,6 +12,9 @@ T.ScrollIndicator {
 
     padding: 2
 
+    implicitWidth: Math.max(implicitBackgroundWidth + leftPadding + rightPadding, implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(implicitBackgroundHeight + topPadding + bottomPadding, implicitContentHeight + topPadding + bottomPadding)
+
     contentItem: Rectangle {
         implicitWidth: 4
         implicitHeight: 4

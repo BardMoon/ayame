@@ -30,4 +30,12 @@ T.ComboBox {
         color: control.colors.textColor
         elide: Text.ElideRight
     }
+
+    indicator: Text {
+        x: control.mirrored ? control.leftPadding : control.width - width - control.rightPadding
+        y: control.topPadding + (control.availableHeight - height) / 2
+        text: "▾"
+        font: control.font
+        color: control.colors.textColor
+    }
 }

@@ -14,6 +14,7 @@ T.TextArea {
     placeholderTextColor: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.5)
     selectedTextColor: control.colors.highlightedTextColor
     selectionColor: control.colors.highlightColor
+    padding: Ayame.Units.smallSpacing
 
     background: Rectangle {
         radius: Ayame.Units.cornerRadius

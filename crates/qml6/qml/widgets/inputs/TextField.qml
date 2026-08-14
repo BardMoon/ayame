@@ -15,6 +15,8 @@ T.TextField {
     selectedTextColor: control.colors.highlightedTextColor
     selectionColor: control.colors.highlightColor
     verticalAlignment: TextInput.AlignVCenter
+    leftPadding: Ayame.Units.smallSpacing
+    rightPadding: Ayame.Units.smallSpacing
 
     implicitHeight: Ayame.Units.gridUnit * 1.6
 

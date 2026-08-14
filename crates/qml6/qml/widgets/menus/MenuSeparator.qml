@@ -12,6 +12,9 @@ T.MenuSeparator {
 
     padding: Ayame.Units.smallSpacing
 
+    implicitWidth: Math.max(implicitBackgroundWidth + leftPadding + rightPadding, implicitContentWidth + leftPadding + rightPadding)
+    implicitHeight: Math.max(implicitBackgroundHeight + topPadding + bottomPadding, implicitContentHeight + topPadding + bottomPadding)
+
     contentItem: Rectangle {
         implicitWidth: 100
         implicitHeight: 1

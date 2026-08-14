@@ -2,7 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Templates as T
-import Ayame 1.0 as Ayame
+import QtQuick.Controls.Ayame 1.0 as Ayame
 
 // Themed drop-in for QQC2's ScrollView. Placed at `widgets/` root (like
 // Label.qml/Popup.qml), not `widgets/inputs/`: it's chrome wrapping other

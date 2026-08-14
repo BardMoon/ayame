@@ -65,7 +65,7 @@ fn main() {
     ];
 
     CxxQtBuilder::new_qml_module(
-        QmlModule::new("Ayame")
+        QmlModule::new("QtQuick.Controls.Ayame")
             .depend("QtQuick.Controls")
             .qml_files([
                 QmlFile::from("qml/theme/Units.qml").singleton(true),

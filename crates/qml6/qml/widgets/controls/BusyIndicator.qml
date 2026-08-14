@@ -2,7 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Templates as T
-import Ayame 1.0 as Ayame
+import QtQuick.Controls.Ayame 1.0 as Ayame
 
 // Themed drop-in for QQC2's BusyIndicator, same "wrap the QQC2 type,
 // replace its contentItem" approach as every other widgets/*.qml here.

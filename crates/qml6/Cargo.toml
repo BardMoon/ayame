@@ -3,7 +3,6 @@ name = "ayame"
 links = "ayame"
 version.workspace = true
 edition.workspace = true
-readme = "README.md"
 
 [dependencies]
 ayame-colors = { path = "../colors" }

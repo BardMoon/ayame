@@ -12,6 +12,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     crane.url = "github:ipetkov/crane";
+
+    #[ Debug ]
+    origami = {
+      url = "git+https://nixos-server.tail0827ee.ts.net:1029/tefww/origami-frameworks";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs: import ./nix inputs;

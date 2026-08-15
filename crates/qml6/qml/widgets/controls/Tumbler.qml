@@ -19,21 +19,21 @@ T.Tumbler {
     // render its columns into -- same missing-piece shape as ComboBox's
     // missing popup/delegate. Matches QtQuick.Controls.Basic's own
     // Tumbler.qml (TumblerView + Path wiring).
-    contentItem: TumblerView {
-        implicitWidth: Ayame.Units.gridUnit * 3
-        implicitHeight: Ayame.Units.gridUnit * 1.6 * control.visibleItemCount
-        model: control.model
-        delegate: control.delegate
-        path: Path {
-            startX: control.contentItem.width / 2
-            startY: -control.__delegateHeight / 2
+    // contentItem: TumblerView {
+    //     implicitWidth: Ayame.Units.gridUnit * 3
+    //     implicitHeight: Ayame.Units.gridUnit * 1.6 * control.visibleItemCount
+    //     model: control.model
+    //     delegate: control.delegate
+    //     path: Path {
+    //         startX: control.contentItem.width / 2
+    //         startY: -control.__delegateHeight / 2
 
-            PathLine {
-                x: control.contentItem.width / 2
-                y: (control.visibleItemCount + 1) * control.__delegateHeight - control.__delegateHeight / 2
-            }
-        }
-    }
+    //         PathLine {
+    //             x: control.contentItem.width / 2
+    //             y: (control.visibleItemCount + 1) * control.__delegateHeight - control.__delegateHeight / 2
+    //         }
+    //     }
+    // }
 
     background: Rectangle {
         radius: Ayame.Units.cornerRadius

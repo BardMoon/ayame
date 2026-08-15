@@ -15,7 +15,7 @@
 
     #[ Debug ]
     origami = {
-      url = "git+https://nixos-server.tail0827ee.ts.net:1029/tefww/origami-frameworks";
+      url = "github:BardMoon/origami-frameworks";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

@@ -28,18 +28,19 @@ T.Button {
         Rectangle {
             anchors.fill: parent
             radius: Ayame.Units.cornerRadius
-            color: control.pressed ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
+            color: control.pressed ? Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.5) : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
             border.width: Ayame.Units.borderWidth
-            border.color: (control.pressed || control.activeFocus) ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, control.hovered ? 0.4 : 0.3)
+            border.color: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, control.hovered ? 0.4 : 0.3)
         }
 
-        // Spinning highlight ring, replacing the old static
-        // activeFocus-turns-the-border-highlightColor treatment: a bright
-        // arc chases around the border while the control is highlighted.
-        // See HighlightRing.qml for the shape/animation itself.
+        // Highlighted -> a bright arc chases around the border in an
+        // infinite loop. activeFocus -> a solid border fades in/out,
+        // replacing the old instant activeFocus-swaps-border-to-
+        // highlightColor treatment. See HighlightRing.qml for both.
         Ayame.HighlightRing {
             anchors.fill: parent
             animating: control.enabled && control.highlighted && Ayame.Units.animationsEnabled
+            active: control.enabled && control.activeFocus
             ringColor: control.colors.highlightColor
         }
     }
@@ -53,7 +54,7 @@ T.Button {
         spacing: Ayame.Units.smallSpacing
         text: control.text
         font: control.font
-        color: control.pressed ? control.colors.highlightedTextColor : control.colors.textColor
+        color: control.colors.textColor
 
         Behavior on color {
             ColorAnimation { duration: Ayame.Units.shortDuration; easing.type: Easing.OutCubic }

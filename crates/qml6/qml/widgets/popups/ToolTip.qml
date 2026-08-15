@@ -22,6 +22,12 @@ T.ToolTip {
 
     padding: Ayame.Units.smallSpacing
 
+    // Without this, T.ToolTip falls back to its base Popup closePolicy
+    // (CloseOnEscape only), so a tooltip left open by e.g. a long hover
+    // won't dismiss on an outside click/tap. Matches
+    // QtQuick.Controls.Basic's own ToolTip.qml.
+    closePolicy: T.Popup.CloseOnEscape | T.Popup.CloseOnPressOutsideParent | T.Popup.CloseOnReleaseOutsideParent
+
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 

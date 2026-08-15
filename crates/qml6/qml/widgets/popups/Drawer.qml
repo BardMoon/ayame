@@ -10,6 +10,12 @@ T.Drawer {
     property int colorSet: Ayame.Theme.window
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
+    // Without this, the Drawer attaches to its regular QML parent instead
+    // of the window's overlay layer, so it doesn't get edge-anchored
+    // (Drawer.edge) or positioned above the rest of the UI correctly.
+    // Matches QtQuick.Controls.Basic's own Drawer.qml.
+    parent: T.Overlay.overlay
+
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 

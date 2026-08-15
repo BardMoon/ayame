@@ -128,10 +128,13 @@ fn current_style_raw() -> String {
 }
 
 /// Loads `ayamerc`, lets `mutate` change the `style` section, then saves it
-/// back -- the read-modify-write shape every style-object setter below uses
-/// to persist immediately, since each QML-exposed object here is its own
-/// independent `QObject` with no shared in-memory `Settings` instance to
-/// keep in sync.
+/// back -- the read-modify-write shape each style object's `persist()`
+/// qinvokable uses to commit its own current in-memory value(s) to disk.
+/// Setters themselves only update in-memory state and (where applicable)
+/// live-apply it; nothing reaches disk until `persist()` is called
+/// explicitly (wired to the settings window's "Save" button), since each
+/// QML-exposed object here is its own independent `QObject` with no shared
+/// in-memory `Settings` instance to keep in sync.
 fn persist_style(mutate: impl FnOnce(&mut ayame_config::StyleSettings)) {
     let mut settings = ayame_config::Settings::load();
     mutate(&mut settings.style);
@@ -191,6 +194,18 @@ mod ffi {
 
         #[qinvokable]
         fn save_style(self: Pin<&mut StyleInfo>, style: &QString);
+
+        #[qinvokable]
+        fn persist(self: Pin<&mut StyleInfo>);
+
+        #[qinvokable]
+        fn reload(self: Pin<&mut StyleInfo>);
+
+        #[qinvokable]
+        fn reset_to_default(self: Pin<&mut StyleInfo>);
+
+        #[qinvokable]
+        fn default_saved_style(self: Pin<&mut StyleInfo>) -> QString;
     }
 
     unsafe extern "RustQt" {
@@ -203,6 +218,18 @@ mod ffi {
 
         #[qinvokable]
         fn set_option(self: Pin<&mut CornerRadiusSettings>, option: &QString);
+
+        #[qinvokable]
+        fn persist(self: Pin<&mut CornerRadiusSettings>);
+
+        #[qinvokable]
+        fn reload(self: Pin<&mut CornerRadiusSettings>);
+
+        #[qinvokable]
+        fn reset_to_default(self: Pin<&mut CornerRadiusSettings>);
+
+        #[qinvokable]
+        fn default_option(self: Pin<&mut CornerRadiusSettings>) -> QString;
     }
 
     unsafe extern "RustQt" {
@@ -215,6 +242,18 @@ mod ffi {
 
         #[qinvokable]
         fn set_option(self: Pin<&mut BorderWidthSettings>, option: &QString);
+
+        #[qinvokable]
+        fn persist(self: Pin<&mut BorderWidthSettings>);
+
+        #[qinvokable]
+        fn reload(self: Pin<&mut BorderWidthSettings>);
+
+        #[qinvokable]
+        fn reset_to_default(self: Pin<&mut BorderWidthSettings>);
+
+        #[qinvokable]
+        fn default_option(self: Pin<&mut BorderWidthSettings>) -> QString;
     }
 
     unsafe extern "RustQt" {
@@ -233,6 +272,21 @@ mod ffi {
 
         #[qinvokable]
         fn set_enabled(self: Pin<&mut AnimationSettings>, enabled: bool);
+
+        #[qinvokable]
+        fn persist(self: Pin<&mut AnimationSettings>);
+
+        #[qinvokable]
+        fn reload(self: Pin<&mut AnimationSettings>);
+
+        #[qinvokable]
+        fn reset_to_default(self: Pin<&mut AnimationSettings>);
+
+        #[qinvokable]
+        fn default_speed_option(self: Pin<&mut AnimationSettings>) -> QString;
+
+        #[qinvokable]
+        fn default_enabled(self: Pin<&mut AnimationSettings>) -> bool;
     }
 
     unsafe extern "RustQt" {
@@ -245,6 +299,18 @@ mod ffi {
 
         #[qinvokable]
         fn set_scale(self: Pin<&mut UiScaleSettings>, scale: f64);
+
+        #[qinvokable]
+        fn persist(self: Pin<&mut UiScaleSettings>);
+
+        #[qinvokable]
+        fn reload(self: Pin<&mut UiScaleSettings>);
+
+        #[qinvokable]
+        fn reset_to_default(self: Pin<&mut UiScaleSettings>);
+
+        #[qinvokable]
+        fn default_scale(self: Pin<&mut UiScaleSettings>) -> f64;
     }
 
     unsafe extern "RustQt" {
@@ -297,6 +363,21 @@ mod ffi {
 
         #[qinvokable]
         fn default_accent_for(self: Pin<&mut ThemeSettings>, id: &QString) -> QColor;
+
+        #[qinvokable]
+        fn persist(self: Pin<&mut ThemeSettings>);
+
+        #[qinvokable]
+        fn reload(self: Pin<&mut ThemeSettings>);
+
+        #[qinvokable]
+        fn reset_to_default(self: Pin<&mut ThemeSettings>);
+
+        #[qinvokable]
+        fn default_mode(self: Pin<&mut ThemeSettings>) -> QString;
+
+        #[qinvokable]
+        fn default_accent_color(self: Pin<&mut ThemeSettings>) -> QColor;
     }
 
     unsafe extern "RustQt" {
@@ -324,6 +405,21 @@ mod ffi {
 
         #[qinvokable]
         fn set_point_size(self: Pin<&mut FontSettings>, size: f64);
+
+        #[qinvokable]
+        fn persist(self: Pin<&mut FontSettings>);
+
+        #[qinvokable]
+        fn reload(self: Pin<&mut FontSettings>);
+
+        #[qinvokable]
+        fn reset_to_default(self: Pin<&mut FontSettings>);
+
+        #[qinvokable]
+        fn default_family(self: Pin<&mut FontSettings>) -> QString;
+
+        #[qinvokable]
+        fn default_point_size(self: Pin<&mut FontSettings>) -> f64;
     }
 }
 
@@ -353,9 +449,24 @@ impl ffi::StyleInfo {
     }
 
     fn save_style(mut self: Pin<&mut Self>, style: &QString) {
-        let style = style.to_string();
-        self.as_mut().rust_mut().saved_style = style.clone();
+        self.as_mut().rust_mut().saved_style = style.to_string();
+    }
+
+    fn persist(self: Pin<&mut Self>) {
+        let style = self.rust().saved_style.clone();
         persist_style(|s| s.saved_style = style);
+    }
+
+    fn reload(mut self: Pin<&mut Self>) {
+        self.as_mut().rust_mut().saved_style = ayame_config::Settings::load().style.saved_style;
+    }
+
+    fn reset_to_default(mut self: Pin<&mut Self>) {
+        self.as_mut().rust_mut().saved_style = ayame_config::StyleSettings::default().saved_style;
+    }
+
+    fn default_saved_style(self: Pin<&mut Self>) -> QString {
+        QString::from(ayame_config::StyleSettings::default().saved_style.as_str())
     }
 }
 
@@ -377,9 +488,24 @@ impl ffi::CornerRadiusSettings {
     }
 
     fn set_option(mut self: Pin<&mut Self>, option: &QString) {
-        let option = option.to_string();
-        self.as_mut().rust_mut().option = option.clone();
+        self.as_mut().rust_mut().option = option.to_string();
+    }
+
+    fn persist(self: Pin<&mut Self>) {
+        let option = self.rust().option.clone();
         persist_style(|s| s.corner_radius = option);
+    }
+
+    fn reload(mut self: Pin<&mut Self>) {
+        self.as_mut().rust_mut().option = ayame_config::Settings::load().style.corner_radius;
+    }
+
+    fn reset_to_default(mut self: Pin<&mut Self>) {
+        self.as_mut().rust_mut().option = ayame_config::StyleSettings::default().corner_radius;
+    }
+
+    fn default_option(self: Pin<&mut Self>) -> QString {
+        QString::from(ayame_config::StyleSettings::default().corner_radius.as_str())
     }
 }
 
@@ -401,9 +527,24 @@ impl ffi::BorderWidthSettings {
     }
 
     fn set_option(mut self: Pin<&mut Self>, option: &QString) {
-        let option = option.to_string();
-        self.as_mut().rust_mut().option = option.clone();
+        self.as_mut().rust_mut().option = option.to_string();
+    }
+
+    fn persist(self: Pin<&mut Self>) {
+        let option = self.rust().option.clone();
         persist_style(|s| s.border_width = option);
+    }
+
+    fn reload(mut self: Pin<&mut Self>) {
+        self.as_mut().rust_mut().option = ayame_config::Settings::load().style.border_width;
+    }
+
+    fn reset_to_default(mut self: Pin<&mut Self>) {
+        self.as_mut().rust_mut().option = ayame_config::StyleSettings::default().border_width;
+    }
+
+    fn default_option(self: Pin<&mut Self>) -> QString {
+        QString::from(ayame_config::StyleSettings::default().border_width.as_str())
     }
 }
 
@@ -426,7 +567,23 @@ impl ffi::UiScaleSettings {
 
     fn set_scale(mut self: Pin<&mut Self>, scale: f64) {
         self.as_mut().rust_mut().scale = scale;
+    }
+
+    fn persist(self: Pin<&mut Self>) {
+        let scale = self.rust().scale;
         persist_style(|s| s.ui_scale = scale);
+    }
+
+    fn reload(mut self: Pin<&mut Self>) {
+        self.as_mut().rust_mut().scale = ayame_config::Settings::load().style.ui_scale;
+    }
+
+    fn reset_to_default(mut self: Pin<&mut Self>) {
+        self.as_mut().rust_mut().scale = ayame_config::StyleSettings::default().ui_scale;
+    }
+
+    fn default_scale(self: Pin<&mut Self>) -> f64 {
+        ayame_config::StyleSettings::default().ui_scale
     }
 }
 
@@ -451,9 +608,7 @@ impl ffi::AnimationSettings {
     }
 
     fn set_speed_option(mut self: Pin<&mut Self>, option: &QString) {
-        let option = option.to_string();
-        self.as_mut().rust_mut().speed_option = option.clone();
-        persist_style(|s| s.animation_speed = option);
+        self.as_mut().rust_mut().speed_option = option.to_string();
     }
 
     fn enabled(self: Pin<&mut Self>) -> bool {
@@ -462,7 +617,37 @@ impl ffi::AnimationSettings {
 
     fn set_enabled(mut self: Pin<&mut Self>, enabled: bool) {
         self.as_mut().rust_mut().enabled = enabled;
-        persist_style(|s| s.animations_enabled = enabled);
+    }
+
+    fn persist(self: Pin<&mut Self>) {
+        let speed_option = self.rust().speed_option.clone();
+        let enabled = self.rust().enabled;
+        persist_style(|s| {
+            s.animation_speed = speed_option;
+            s.animations_enabled = enabled;
+        });
+    }
+
+    fn reload(mut self: Pin<&mut Self>) {
+        let style = ayame_config::Settings::load().style;
+        let mut rust = self.as_mut().rust_mut();
+        rust.speed_option = style.animation_speed;
+        rust.enabled = style.animations_enabled;
+    }
+
+    fn reset_to_default(mut self: Pin<&mut Self>) {
+        let style = ayame_config::StyleSettings::default();
+        let mut rust = self.as_mut().rust_mut();
+        rust.speed_option = style.animation_speed;
+        rust.enabled = style.animations_enabled;
+    }
+
+    fn default_speed_option(self: Pin<&mut Self>) -> QString {
+        QString::from(ayame_config::StyleSettings::default().animation_speed.as_str())
+    }
+
+    fn default_enabled(self: Pin<&mut Self>) -> bool {
+        ayame_config::StyleSettings::default().animations_enabled
     }
 }
 
@@ -504,7 +689,6 @@ impl ffi::ThemeSettings {
         self.as_mut().rust_mut().mode = mode_str.clone();
         let accent = self.rust().accent.clone();
         apply_theme(&mode_str, &accent);
-        persist_style(|s| s.theme_mode = mode_str);
     }
 
     fn accent_color(self: Pin<&mut Self>) -> QColor {
@@ -518,7 +702,6 @@ impl ffi::ThemeSettings {
         self.as_mut().rust_mut().accent = hex.clone();
         let mode = self.rust().mode.clone();
         apply_theme(&mode, &hex);
-        persist_style(|s| s.accent_color = hex);
     }
 
     fn available_scheme_ids(self: Pin<&mut Self>) -> QString {
@@ -587,6 +770,41 @@ impl ffi::ThemeSettings {
     fn default_accent_for(self: Pin<&mut Self>, id: &QString) -> QColor {
         ayame_colors::default_accent_for(&id.to_string()).to_qcolor()
     }
+
+    fn persist(self: Pin<&mut Self>) {
+        let mode = self.rust().mode.clone();
+        let accent = self.rust().accent.clone();
+        persist_style(|s| {
+            s.theme_mode = mode;
+            s.accent_color = accent;
+        });
+    }
+
+    fn reload(mut self: Pin<&mut Self>) {
+        let style = ayame_config::Settings::load().style;
+        apply_theme(&style.theme_mode, &style.accent_color);
+        let mut rust = self.as_mut().rust_mut();
+        rust.mode = style.theme_mode;
+        rust.accent = style.accent_color;
+    }
+
+    fn reset_to_default(mut self: Pin<&mut Self>) {
+        let style = ayame_config::StyleSettings::default();
+        apply_theme(&style.theme_mode, &style.accent_color);
+        let mut rust = self.as_mut().rust_mut();
+        rust.mode = style.theme_mode;
+        rust.accent = style.accent_color;
+    }
+
+    fn default_mode(self: Pin<&mut Self>) -> QString {
+        QString::from(ayame_config::StyleSettings::default().theme_mode.as_str())
+    }
+
+    fn default_accent_color(self: Pin<&mut Self>) -> QColor {
+        ayame_colors::RgbColor::from_hex(&ayame_config::StyleSettings::default().accent_color)
+            .unwrap_or(ayame_colors::DEFAULT_ACCENT)
+            .to_qcolor()
+    }
 }
 
 pub struct FontSettingsRust {
@@ -628,7 +846,6 @@ impl ffi::FontSettings {
             if f.is_empty() { None } else { Some(&f) },
             self.rust().point_size,
         );
-        persist_style(|s| s.font_family = f);
     }
 
     fn point_size(self: Pin<&mut Self>) -> f64 {
@@ -646,6 +863,44 @@ impl ffi::FontSettings {
             },
             size,
         );
-        persist_style(|s| s.font_point_size = size);
+    }
+
+    fn persist(self: Pin<&mut Self>) {
+        let family = self.rust().family.clone();
+        let point_size = self.rust().point_size;
+        persist_style(|s| {
+            s.font_family = family;
+            s.font_point_size = point_size;
+        });
+    }
+
+    fn reload(mut self: Pin<&mut Self>) {
+        let style = ayame_config::Settings::load().style;
+        apply_ui_font(
+            (!style.font_family.is_empty()).then_some(style.font_family.as_str()),
+            style.font_point_size,
+        );
+        let mut rust = self.as_mut().rust_mut();
+        rust.family = style.font_family;
+        rust.point_size = style.font_point_size;
+    }
+
+    fn reset_to_default(mut self: Pin<&mut Self>) {
+        let style = ayame_config::StyleSettings::default();
+        apply_ui_font(
+            (!style.font_family.is_empty()).then_some(style.font_family.as_str()),
+            style.font_point_size,
+        );
+        let mut rust = self.as_mut().rust_mut();
+        rust.family = style.font_family;
+        rust.point_size = style.font_point_size;
+    }
+
+    fn default_family(self: Pin<&mut Self>) -> QString {
+        QString::from(ayame_config::StyleSettings::default().font_family.as_str())
+    }
+
+    fn default_point_size(self: Pin<&mut Self>) -> f64 {
+        ayame_config::StyleSettings::default().font_point_size
     }
 }

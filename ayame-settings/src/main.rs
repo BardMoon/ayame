@@ -1,5 +1,3 @@
-mod cxxqt_object;
-
 use cxx_qt_lib::QGuiApplication;
 use std::ffi::CString;
 
@@ -13,6 +11,16 @@ unsafe extern "C" {
 fn main() {
     // Ensure ayame crate and its Cxx-Qt static QML plugin initializers are linked
     std::hint::black_box(ayame::apply_theme);
+
+    // ayame-settings edits the Ayame QQC2 style, so it renders its own
+    // controls with that style too -- lets Appearance-page changes preview
+    // live in the very widgets the user is looking at. Same
+    // set-env-before-QGuiApplication pattern as cettila's desktop-qml
+    // (QQuickStyle is fixed for the process's lifetime, decided the first
+    // time a QQC2 control loads).
+    unsafe {
+        std::env::set_var("QT_QUICK_CONTROLS_STYLE", "Ayame");
+    }
 
     let mut app = QGuiApplication::new();
 

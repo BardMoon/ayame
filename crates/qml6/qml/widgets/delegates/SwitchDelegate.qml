@@ -12,6 +12,11 @@ T.SwitchDelegate {
 
     hoverEnabled: true
 
+    // See widgets/Button.qml's own icon.width/height for why this is here
+    // despite contentItem below having no icon rendering yet.
+    icon.width: Ayame.Units.iconSizes.smallMedium
+    icon.height: Ayame.Units.iconSizes.smallMedium
+
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
@@ -19,9 +24,15 @@ T.SwitchDelegate {
         color: control.pressed ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
     }
 
-    contentItem: Text {
+    contentItem: Ayame.IconLabel {
+        centered: false
         rightPadding: control.indicator ? control.indicator.width + control.spacing : 0
-        verticalAlignment: Text.AlignVCenter
+        iconSource: control.icon.source
+        iconWidth: control.icon.width
+        iconHeight: control.icon.height
+        display: control.display
+        mirrored: control.mirrored
+        spacing: Ayame.Units.smallSpacing
         text: control.text
         font: control.font
         color: control.highlighted ? control.colors.highlightedTextColor : control.colors.textColor

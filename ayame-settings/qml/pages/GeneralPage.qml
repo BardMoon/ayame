@@ -1,12 +1,9 @@
 import QtQuick
 import QtQuick.Controls as QQC2
 import QtQuick.Layouts
-import org.ayame.settings
 
 QQC2.Page {
     id: root
-
-    required property AyameSettingsObject settings
 
     ColumnLayout {
         anchors.fill: parent
@@ -19,32 +16,11 @@ QQC2.Page {
             font.bold: true
         }
 
-        QQC2.CheckBox {
-            text: "Draw Widget Borders"
-            checked: root.settings.draw_widget_borders
-            onCheckedChanged: root.settings.draw_widget_borders = checked
-        }
-
-        QQC2.CheckBox {
-            id: animCheck
-            text: "Enable UI Animations"
-            checked: root.settings.animations_enabled
-            onCheckedChanged: root.settings.animations_enabled = checked
-        }
-
-        RowLayout {
-            enabled: animCheck.checked
-            spacing: 8
-
-            QQC2.Label { text: "Animation Duration (ms):" }
-
-            QQC2.SpinBox {
-                from: 50
-                to: 1000
-                stepSize: 25
-                value: root.settings.animation_duration_ms
-                onValueChanged: root.settings.animation_duration_ms = value
-            }
+        QQC2.Label {
+            text: "Not yet implemented -- these settings target the kstyle6 plugin, which does not exist yet."
+            wrapMode: Text.WordWrap
+            Layout.fillWidth: true
+            opacity: 0.7
         }
 
         Item { Layout.fillHeight: true }

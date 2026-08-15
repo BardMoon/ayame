@@ -4,11 +4,14 @@ import QtQuick.Layouts
 import Ayame 1.0 as Ayame
 
 // Editor for the settings Ayame itself (crates/qml6) reads from `ayamerc`
-// on startup and persists on every change -- theme, font, and the QQC2
-// style's own corner-radius/border-width/animation/UI-scale presets. Each
-// control writes straight through to the corresponding Ayame QML
-// singleton, no local buffering: the same objects `Units.qml` and app
-// startup already read.
+// at startup -- theme, font, and the QQC2 style's own
+// corner-radius/border-width/animation/UI-scale presets. Every change here
+// applies live immediately (this whole app runs under the Ayame style, see
+// `ayame-settings/src/main.rs`, so the effect is visible right in this
+// window's own controls) but is *not* written to `ayamerc` until
+// `commit()` runs (the settings window's "Save" button) -- see
+// `commit()`/`cancel()`/`resetToDefaults()` below, wired to
+// Save/Cancel/Defaults respectively.
 //
 // Every value below is seeded once from its singleton (`option()`/`mode()`/
 // etc. are plain qinvokables, not NOTIFYing properties, so a direct
@@ -21,22 +24,100 @@ QQC2.Page {
 
     Ayame.ThemeSettings { id: theme }
     Ayame.FontSettings { id: fontSettings }
-    Ayame.CornerRadiusSettings { id: cornerRadiusSettings }
-    Ayame.BorderWidthSettings { id: borderWidthSettings }
-    Ayame.AnimationSettings { id: animationSettings }
-    Ayame.UiScaleSettings { id: uiScaleSettings }
     Ayame.StyleInfo { id: styleInfo }
 
     property string themeMode: theme.mode()
     property color accentColor: theme.accent_color()
     property string fontFamily: fontSettings.family()
     property real fontPointSize: fontSettings.point_size() > 0 ? fontSettings.point_size() : fontSettings.current_point_size()
-    property string cornerRadiusOption: cornerRadiusSettings.option()
-    property string borderWidthOption: borderWidthSettings.option()
-    property string animationSpeedOption: animationSettings.speed_option()
-    property bool animationsEnabled: animationSettings.enabled()
-    property real uiScale: uiScaleSettings.scale()
+    // Corner radius / border width / animation / UI scale are driven
+    // through the `Ayame.Units` singleton (not a private instance here)
+    // so that changing them re-styles every Ayame-styled control in this
+    // process live, including this settings window's own -- see
+    // Units.qml's own seed-once-then-update-live properties.
+    property string cornerRadiusOption: Ayame.Units.cornerRadiusOption
+    property string borderWidthOption: Ayame.Units.borderWidthOption
+    property string animationSpeedOption: Ayame.Units.animationSpeedOption
+    property bool animationsEnabled: Ayame.Units.animationsEnabled
+    property real uiScale: Ayame.Units.uiScale
     property string savedStyle: styleInfo.saved_style()
+
+    // Snapshot of what's actually on `ayamerc` right now, used only to
+    // compute `dirty` below -- captured imperatively (`snapshotDisk()`,
+    // called from `Component.onCompleted` and after `commit()`/`cancel()`)
+    // rather than as bindings, since some of the live properties above
+    // (the `Ayame.Units`-backed ones) are themselves live bindings; a
+    // binding here would just always mirror them and never show a diff.
+    property string diskThemeMode
+    property color diskAccentColor
+    property string diskFontFamily
+    property real diskFontPointSize
+    property string diskCornerRadiusOption
+    property string diskBorderWidthOption
+    property string diskAnimationSpeedOption
+    property bool diskAnimationsEnabled
+    property real diskUiScale
+    property string diskSavedStyle
+
+    function snapshotDisk() {
+        root.diskThemeMode = root.themeMode;
+        root.diskAccentColor = root.accentColor;
+        root.diskFontFamily = root.fontFamily;
+        root.diskFontPointSize = root.fontPointSize;
+        root.diskCornerRadiusOption = root.cornerRadiusOption;
+        root.diskBorderWidthOption = root.borderWidthOption;
+        root.diskAnimationSpeedOption = root.animationSpeedOption;
+        root.diskAnimationsEnabled = root.animationsEnabled;
+        root.diskUiScale = root.uiScale;
+        root.diskSavedStyle = root.savedStyle;
+    }
+    Component.onCompleted: root.snapshotDisk()
+
+    // True whenever anything on this page differs from what's persisted --
+    // wired to enable/disable the settings window's Save/Cancel buttons.
+    readonly property bool dirty: root.themeMode !== root.diskThemeMode
+        || !Qt.colorEqual(root.accentColor, root.diskAccentColor)
+        || root.fontFamily !== root.diskFontFamily
+        || root.fontPointSize !== root.diskFontPointSize
+        || root.cornerRadiusOption !== root.diskCornerRadiusOption
+        || root.borderWidthOption !== root.diskBorderWidthOption
+        || root.animationSpeedOption !== root.diskAnimationSpeedOption
+        || root.animationsEnabled !== root.diskAnimationsEnabled
+        || root.uiScale !== root.diskUiScale
+        || root.savedStyle !== root.diskSavedStyle
+
+    // `Settings::default()`'s values, for the "Defaults" button's own
+    // enabled state (no point offering to reset to defaults when already
+    // there). Seeded once, same idiom as the live properties above --
+    // `default_*()` are plain qinvokables with no reactive dependencies.
+    // `defaultFontPointSize` mirrors `fontPointSize`'s own
+    // system-default-resolution fallback above (the raw default is `0`,
+    // meaning "use the system default point size", so comparing against
+    // the raw `0` would never match the resolved display value).
+    property string defaultThemeMode: theme.default_mode()
+    property color defaultAccentColor: theme.default_accent_color()
+    property string defaultFontFamily: fontSettings.default_family()
+    property real defaultFontPointSize: fontSettings.default_point_size() > 0 ? fontSettings.default_point_size() : fontSettings.current_point_size()
+    property string defaultCornerRadiusOption: Ayame.Units.defaultCornerRadiusOption()
+    property string defaultBorderWidthOption: Ayame.Units.defaultBorderWidthOption()
+    property string defaultAnimationSpeedOption: Ayame.Units.defaultAnimationSpeedOption()
+    property bool defaultAnimationsEnabled: Ayame.Units.defaultAnimationsEnabled()
+    property real defaultUiScale: Ayame.Units.defaultUiScale()
+    property string defaultSavedStyle: styleInfo.default_saved_style()
+
+    // True whenever everything on this page already matches
+    // `Settings::default()` -- wired to disable the settings window's
+    // "Defaults" button when clicking it wouldn't change anything.
+    readonly property bool atDefaults: root.themeMode === root.defaultThemeMode
+        && Qt.colorEqual(root.accentColor, root.defaultAccentColor)
+        && root.fontFamily === root.defaultFontFamily
+        && root.fontPointSize === root.defaultFontPointSize
+        && root.cornerRadiusOption === root.defaultCornerRadiusOption
+        && root.borderWidthOption === root.defaultBorderWidthOption
+        && root.animationSpeedOption === root.defaultAnimationSpeedOption
+        && root.animationsEnabled === root.defaultAnimationsEnabled
+        && root.uiScale === root.defaultUiScale
+        && root.savedStyle === root.defaultSavedStyle
 
     function setThemeMode(mode) {
         theme.set_mode(mode);
@@ -46,6 +127,48 @@ QQC2.Page {
     function setAccentColor(color) {
         theme.set_accent_color(color);
         root.accentColor = color;
+    }
+
+    // Commits everything currently live (possibly unsaved) on this page to
+    // `ayamerc` -- wired to the settings window's "Save" button.
+    function commit() {
+        theme.persist();
+        fontSettings.persist();
+        styleInfo.persist();
+        Ayame.Units.persist();
+        root.snapshotDisk();
+    }
+
+    // Discards unsaved changes on this page: reloads from `ayamerc`,
+    // applies it live, and re-seeds the page's own buffered properties so
+    // the controls reflect it -- wired to the settings window's "Cancel"
+    // button.
+    function cancel() {
+        theme.reload();
+        fontSettings.reload();
+        styleInfo.reload();
+        Ayame.Units.cancel();
+        root.themeMode = theme.mode();
+        root.accentColor = theme.accent_color();
+        root.fontFamily = fontSettings.family();
+        root.fontPointSize = fontSettings.point_size() > 0 ? fontSettings.point_size() : fontSettings.current_point_size();
+        root.savedStyle = styleInfo.saved_style();
+        root.snapshotDisk();
+    }
+
+    // Resets everything on this page to `Settings::default()`, applied
+    // live but not persisted until `commit()` runs -- wired to the
+    // settings window's "Defaults" button.
+    function resetToDefaults() {
+        theme.reset_to_default();
+        fontSettings.reset_to_default();
+        styleInfo.reset_to_default();
+        Ayame.Units.resetToDefaults();
+        root.themeMode = theme.mode();
+        root.accentColor = theme.accent_color();
+        root.fontFamily = fontSettings.family();
+        root.fontPointSize = fontSettings.point_size() > 0 ? fontSettings.point_size() : fontSettings.current_point_size();
+        root.savedStyle = styleInfo.saved_style();
     }
 
     readonly property var schemeIds: ["system"].concat(theme.available_scheme_ids().split("\n").filter(s => s.length > 0))
@@ -196,7 +319,7 @@ QQC2.Page {
                     model: ["disabled", "small", "medium", "large", "circle"]
                     currentIndex: Math.max(0, model.indexOf(root.cornerRadiusOption))
                     onActivated: (index) => {
-                        cornerRadiusSettings.set_option(model[index]);
+                        Ayame.Units.setCornerRadiusOption(model[index]);
                         root.cornerRadiusOption = model[index];
                     }
                 }
@@ -209,7 +332,7 @@ QQC2.Page {
                     model: ["thin", "default", "thick"]
                     currentIndex: Math.max(0, model.indexOf(root.borderWidthOption))
                     onActivated: (index) => {
-                        borderWidthSettings.set_option(model[index]);
+                        Ayame.Units.setBorderWidthOption(model[index]);
                         root.borderWidthOption = model[index];
                     }
                 }
@@ -223,7 +346,7 @@ QQC2.Page {
                     model: ["slow", "normal", "fast"]
                     currentIndex: Math.max(0, model.indexOf(root.animationSpeedOption))
                     onActivated: (index) => {
-                        animationSettings.set_speed_option(model[index]);
+                        Ayame.Units.setAnimationSpeedOption(model[index]);
                         root.animationSpeedOption = model[index];
                     }
                 }
@@ -231,7 +354,7 @@ QQC2.Page {
                     text: "Enabled"
                     checked: root.animationsEnabled
                     onToggled: {
-                        animationSettings.set_enabled(checked);
+                        Ayame.Units.setAnimationsEnabled(checked);
                         root.animationsEnabled = checked;
                     }
                 }
@@ -248,7 +371,7 @@ QQC2.Page {
                     textFromValue: (value) => value + "%"
                     valueFromText: (text) => parseInt(text)
                     onValueModified: {
-                        uiScaleSettings.set_scale(value / 100);
+                        Ayame.Units.setUiScale(value / 100);
                         root.uiScale = value / 100;
                     }
                 }

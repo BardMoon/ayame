@@ -4,7 +4,6 @@ use std::path::Path;
 fn main() {
     println!("cargo:rerun-if-changed=qml");
     println!("cargo:rerun-if-changed=cpp");
-    println!("cargo:rerun-if-changed=src/cxxqt_object.rs");
 
     let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
     let cpp_dir = Path::new(&manifest_dir).join("cpp");
@@ -16,7 +15,6 @@ fn main() {
         QmlFile::from("qml/pages/AppearancePage.qml"),
         QmlFile::from("qml/pages/ExceptionsPage.qml"),
     ]))
-    .files(["src/cxxqt_object.rs"])
     .qt_module("Quick")
     .qt_module("QuickControls2")
     .cpp_file(cpp_dir.join("app_bootstrap.h"))

@@ -5,52 +5,18 @@
 //! rc-file name, consistent with `docs/roadmap.tm`'s note, directly under
 //! the XDG config dir (not nested in an `ayame/` subdirectory).
 //!
-//! `general`/`decoration`/`exceptions` are aimed at the not-yet-implemented
-//! `kstyle6`/`kdecoration6` KDE plugins (still empty stub dirs, not in the
-//! workspace). `style` is aimed at `crates/qml6`, the actually-working
-//! runtime today.
+//! `exceptions` is aimed at the not-yet-implemented `kdecoration6` KDE
+//! plugin (still an empty stub dir, not in the workspace) -- kept around
+//! since its shape doesn't depend on that plugin existing yet. `general`/
+//! `decoration` (window-border/shadow/titlebar knobs owned by the
+//! not-yet-implemented `kstyle6`/`kdecoration6` plugins) were removed
+//! entirely rather than kept as unused struct fields with no UI behind
+//! them; revive them once those plugins exist to actually consume them.
+//! `style` is aimed at `crates/qml6`, the actually-working runtime today.
 
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct GeneralSettings {
-    pub draw_widget_borders: bool,
-    pub animations_enabled: bool,
-    pub animation_duration_ms: u32,
-}
-
-impl Default for GeneralSettings {
-    fn default() -> Self {
-        Self {
-            draw_widget_borders: true,
-            animations_enabled: true,
-            animation_duration_ms: 200,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
-pub struct DecorationSettings {
-    pub shadow_size: String,
-    pub shadow_strength: u32,
-    pub corner_radius: u32,
-    pub border_size: String,
-    pub titlebar_alignment: String,
-}
-
-impl Default for DecorationSettings {
-    fn default() -> Self {
-        Self {
-            shadow_size: "Medium".to_string(),
-            shadow_strength: 60,
-            corner_radius: 8,
-            border_size: "Normal".to_string(),
-            titlebar_alignment: "Center".to_string(),
-        }
-    }
-}
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct ExceptionRule {
@@ -113,8 +79,6 @@ impl Default for StyleSettings {
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct Settings {
-    pub general: GeneralSettings,
-    pub decoration: DecorationSettings,
     pub exceptions: Vec<ExceptionRule>,
     pub style: StyleSettings,
 }

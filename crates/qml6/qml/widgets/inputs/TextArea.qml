@@ -19,6 +19,10 @@ T.TextArea {
     implicitWidth: Math.max(contentWidth + leftPadding + rightPadding, implicitBackgroundWidth + leftInset + rightInset, placeholder.implicitWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(contentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset, placeholder.implicitHeight + topPadding + bottomPadding)
 
+    T.ContextMenu.menu: Ayame.TextEditingContextMenu {
+        editor: control
+    }
+
     background: Rectangle {
         radius: Ayame.Units.cornerRadius
         color: control.colors.backgroundColor

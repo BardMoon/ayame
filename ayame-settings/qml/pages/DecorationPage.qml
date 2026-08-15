@@ -1,12 +1,9 @@
 import QtQuick
 import QtQuick.Controls as QQC2
 import QtQuick.Layouts
-import org.ayame.settings
 
 QQC2.Page {
     id: root
-
-    required property AyameSettingsObject settings
 
     ColumnLayout {
         anchors.fill: parent
@@ -19,57 +16,11 @@ QQC2.Page {
             font.bold: true
         }
 
-        RowLayout {
-            spacing: 8
-            QQC2.Label { text: "Shadow Size:" }
-            QQC2.ComboBox {
-                model: ["None", "Small", "Medium", "Large", "VeryLarge"]
-                currentIndex: Math.max(0, model.indexOf(root.settings.shadow_size))
-                onActivated: (index) => root.settings.shadow_size = model[index]
-            }
-        }
-
-        RowLayout {
-            spacing: 8
-            QQC2.Label { text: "Shadow Strength (%):" }
-            QQC2.Slider {
-                from: 0
-                to: 100
-                value: root.settings.shadow_strength
-                onValueChanged: root.settings.shadow_strength = Math.round(value)
-            }
-            QQC2.Label { text: root.settings.shadow_strength + "%" }
-        }
-
-        RowLayout {
-            spacing: 8
-            QQC2.Label { text: "Corner Radius (px):" }
-            QQC2.SpinBox {
-                from: 0
-                to: 30
-                value: root.settings.corner_radius
-                onValueChanged: root.settings.corner_radius = value
-            }
-        }
-
-        RowLayout {
-            spacing: 8
-            QQC2.Label { text: "Border Size:" }
-            QQC2.ComboBox {
-                model: ["None", "Tiny", "Normal", "Large"]
-                currentIndex: Math.max(0, model.indexOf(root.settings.border_size))
-                onActivated: (index) => root.settings.border_size = model[index]
-            }
-        }
-
-        RowLayout {
-            spacing: 8
-            QQC2.Label { text: "Titlebar Alignment:" }
-            QQC2.ComboBox {
-                model: ["Left", "Center", "Right"]
-                currentIndex: Math.max(0, model.indexOf(root.settings.titlebar_alignment))
-                onActivated: (index) => root.settings.titlebar_alignment = model[index]
-            }
+        QQC2.Label {
+            text: "Not yet implemented -- these settings target the kdecoration6 plugin, which does not exist yet."
+            wrapMode: Text.WordWrap
+            Layout.fillWidth: true
+            opacity: 0.7
         }
 
         Item { Layout.fillHeight: true }

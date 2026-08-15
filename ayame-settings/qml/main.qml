@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls as QQC2
 import QtQuick.Layouts
-import org.ayame.settings
 import "pages"
 
 QQC2.ApplicationWindow {
@@ -10,10 +9,6 @@ QQC2.ApplicationWindow {
     height: 540
     visible: true
     title: "Ayame Settings"
-
-    AyameSettingsObject {
-        id: settingsObj
-    }
 
     RowLayout {
         anchors.fill: parent
@@ -41,6 +36,7 @@ QQC2.ApplicationWindow {
                 }
 
                 QQC2.ToolButton {
+                    enabled: false
                     text: "General"
                     Layout.fillWidth: true
                     highlighted: stackLayout.currentIndex === 0
@@ -48,6 +44,7 @@ QQC2.ApplicationWindow {
                 }
 
                 QQC2.ToolButton {
+                    enabled: false
                     text: "Decoration"
                     Layout.fillWidth: true
                     highlighted: stackLayout.currentIndex === 1
@@ -62,6 +59,7 @@ QQC2.ApplicationWindow {
                 }
 
                 QQC2.ToolButton {
+                    enabled: false
                     text: "Exceptions"
                     Layout.fillWidth: true
                     highlighted: stackLayout.currentIndex === 3
@@ -84,19 +82,15 @@ QQC2.ApplicationWindow {
                 Layout.fillHeight: true
                 currentIndex: 0
 
-                GeneralPage {
-                    settings: settingsObj
+                GeneralPage {}
+
+                DecorationPage {}
+
+                AppearancePage {
+                    id: appearancePage
                 }
 
-                DecorationPage {
-                    settings: settingsObj
-                }
-
-                AppearancePage {}
-
-                ExceptionsPage {
-                    settings: settingsObj
-                }
+                ExceptionsPage {}
             }
 
             Rectangle {
@@ -112,20 +106,23 @@ QQC2.ApplicationWindow {
 
                 QQC2.Button {
                     text: "Defaults"
-                    onClicked: settingsObj.reset_defaults()
+                    enabled: !appearancePage.atDefaults
+                    onClicked: appearancePage.resetToDefaults()
                 }
 
                 Item { Layout.fillWidth: true }
 
                 QQC2.Button {
-                    text: "Reset"
-                    onClicked: settingsObj.load()
+                    text: "Cancel"
+                    enabled: appearancePage.dirty
+                    onClicked: appearancePage.cancel()
                 }
 
                 QQC2.Button {
-                    text: "Apply"
+                    text: "Save"
                     highlighted: true
-                    onClicked: settingsObj.save()
+                    enabled: appearancePage.dirty
+                    onClicked: appearancePage.commit()
                 }
             }
         }

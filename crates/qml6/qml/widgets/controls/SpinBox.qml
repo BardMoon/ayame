@@ -27,6 +27,16 @@ T.SpinBox {
     leftPadding: padding + (control.mirrored ? (up.indicator ? up.indicator.width : 0) : (down.indicator ? down.indicator.width : 0))
     rightPadding: padding + (control.mirrored ? (down.indicator ? down.indicator.width : 0) : (up.indicator ? up.indicator.width : 0))
 
+    // contentItem below reads control.validator; without a validator here
+    // it stays null, so typing in an editable SpinBox never gets
+    // constrained to the from/to range. Matches QtQuick.Controls.Basic's
+    // own SpinBox.qml.
+    validator: IntValidator {
+        locale: control.locale.name
+        bottom: Math.min(control.from, control.to)
+        top: Math.max(control.from, control.to)
+    }
+
     background: Rectangle {
         radius: Ayame.Units.cornerRadius
         color: control.colors.backgroundColor

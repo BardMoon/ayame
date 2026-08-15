@@ -10,8 +10,13 @@ fn main() {
     let cpp_dir = Path::new(&manifest_dir).join("cpp");
 
     let widget_files = [
+        // Essenntial
         "qml/widgets/ApplicationWindow.qml",
         "qml/widgets/Button.qml",
+        // impl
+        "qml/impl/HighlightRing.qml",
+        "qml/impl/IconLabel.qml",
+        // widgets
         "qml/widgets/buttons/AbstractButton.qml",
         "qml/widgets/buttons/DelayButton.qml",
         "qml/widgets/buttons/RadioButton.qml",
@@ -48,6 +53,7 @@ fn main() {
         "qml/widgets/delegates/SwipeDelegate.qml",
         "qml/widgets/delegates/SwitchDelegate.qml",
         "qml/widgets/inputs/TextArea.qml",
+        "qml/widgets/inputs/TextEditingContextMenu.qml",
         "qml/widgets/inputs/TextField.qml",
         "qml/widgets/menus/Action.qml",
         "qml/widgets/menus/ActionGroup.qml",

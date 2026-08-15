@@ -21,6 +21,10 @@ T.TextField {
     implicitHeight: Ayame.Units.gridUnit * 1.6
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentWidth + leftPadding + rightPadding, placeholder.implicitWidth + leftPadding + rightPadding)
 
+    T.ContextMenu.menu: Ayame.TextEditingContextMenu {
+        editor: control
+    }
+
     background: Rectangle {
         radius: Ayame.Units.cornerRadius
         color: control.colors.backgroundColor

@@ -19,11 +19,11 @@ QtObject {
     // cornerRadiusOption/borderWidthOption below.
     property real uiScale: units._uiScaleSettings.scale()
 
-    // Called from the settings screen: persists the pick and applies it
-    // app-wide immediately -- gridUnit and iconSizes below both derive
-    // from this, so every size bound to Units.gridUnit or
-    // Units.iconSizes.* rescales the instant this changes, no restart
-    // needed.
+    // Called from the settings screen: applies it app-wide immediately --
+    // gridUnit and iconSizes below both derive from this, so every size
+    // bound to Units.gridUnit or Units.iconSizes.* rescales the instant
+    // this changes, no restart needed. Not persisted to `ayamerc` until
+    // `persist()` is called (the settings window's "Save" button).
     function setUiScale(scale) {
         units._uiScaleSettings.set_scale(scale);
         units.uiScale = scale;
@@ -69,8 +69,8 @@ QtObject {
     // cornerRadiusOption changes -- no restart needed.
     readonly property int cornerRadius: units._cornerRadiusPresets[units.cornerRadiusOption] ?? 4
 
-    // Called from the settings screen: persists the pick and applies it
-    // app-wide immediately.
+    // Called from the settings screen: applies it app-wide immediately.
+    // Not persisted until `persist()` is called.
     function setCornerRadiusOption(option) {
         units._cornerRadiusSettings.set_option(option);
         units.cornerRadiusOption = option;
@@ -95,8 +95,8 @@ QtObject {
     // borderWidthOption changes -- no restart needed.
     readonly property real borderWidth: units._borderWidthPresets[units.borderWidthOption] ?? 1
 
-    // Called from the settings screen: persists the pick and applies it
-    // app-wide immediately.
+    // Called from the settings screen: applies it app-wide immediately.
+    // Not persisted until `persist()` is called.
     function setBorderWidthOption(option) {
         units._borderWidthSettings.set_option(option);
         units.borderWidthOption = option;
@@ -130,9 +130,10 @@ QtObject {
 
     readonly property real _animationSpeedMultiplier: units._animationSpeedPresets[units.animationSpeedOption] ?? 1.0
 
-    // Called from the settings screen: persists the pick and applies it
-    // app-wide immediately (every duration constant below re-evaluates the
-    // instant either property changes, no restart needed).
+    // Called from the settings screen: applies it app-wide immediately
+    // (every duration constant below re-evaluates the instant either
+    // property changes, no restart needed). Not persisted until
+    // `persist()` is called.
     function setAnimationSpeedOption(option) {
         units._animationSettings.set_speed_option(option);
         units.animationSpeedOption = option;
@@ -142,6 +143,52 @@ QtObject {
         units._animationSettings.set_enabled(enabled);
         units.animationsEnabled = enabled;
     }
+
+    // Commits whatever's currently live (possibly unsaved) to `ayamerc`.
+    function persist() {
+        units._uiScaleSettings.persist();
+        units._cornerRadiusSettings.persist();
+        units._borderWidthSettings.persist();
+        units._animationSettings.persist();
+    }
+
+    // Discards unsaved changes: reloads each setting from `ayamerc` and
+    // re-seeds the live properties from it, same shape as the initial
+    // seed-at-startup bindings above.
+    function cancel() {
+        units._uiScaleSettings.reload();
+        units._cornerRadiusSettings.reload();
+        units._borderWidthSettings.reload();
+        units._animationSettings.reload();
+        units.uiScale = units._uiScaleSettings.scale();
+        units.cornerRadiusOption = units._cornerRadiusSettings.option();
+        units.borderWidthOption = units._borderWidthSettings.option();
+        units.animationSpeedOption = units._animationSettings.speed_option();
+        units.animationsEnabled = units._animationSettings.enabled();
+    }
+
+    // Resets everything to `Settings::default()`, applied live but not
+    // persisted until `persist()` is called.
+    function resetToDefaults() {
+        units._uiScaleSettings.reset_to_default();
+        units._cornerRadiusSettings.reset_to_default();
+        units._borderWidthSettings.reset_to_default();
+        units._animationSettings.reset_to_default();
+        units.uiScale = units._uiScaleSettings.scale();
+        units.cornerRadiusOption = units._cornerRadiusSettings.option();
+        units.borderWidthOption = units._borderWidthSettings.option();
+        units.animationSpeedOption = units._animationSettings.speed_option();
+        units.animationsEnabled = units._animationSettings.enabled();
+    }
+
+    // Plain default-value getters (no side effects, unlike resetToDefaults()
+    // above) -- for callers that just need to know what "at defaults" looks
+    // like, e.g. to disable a "Defaults" button once already there.
+    function defaultUiScale() { return units._uiScaleSettings.default_scale(); }
+    function defaultCornerRadiusOption() { return units._cornerRadiusSettings.default_option(); }
+    function defaultBorderWidthOption() { return units._borderWidthSettings.default_option(); }
+    function defaultAnimationSpeedOption() { return units._animationSettings.default_speed_option(); }
+    function defaultAnimationsEnabled() { return units._animationSettings.default_enabled(); }
 
     // 0 when animations are turned off app-wide -- a Behavior/NumberAnimation
     // bound to any of these then applies its target value immediately

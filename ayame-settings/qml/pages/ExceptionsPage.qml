@@ -1,12 +1,9 @@
 import QtQuick
 import QtQuick.Controls as QQC2
 import QtQuick.Layouts
-import org.ayame.settings
 
 QQC2.Page {
     id: root
-
-    required property AyameSettingsObject settings
 
     ColumnLayout {
         anchors.fill: parent
@@ -20,28 +17,12 @@ QQC2.Page {
         }
 
         QQC2.Label {
-            text: "Configure custom window decoration rules for specific applications (e.g. matching window class or title)."
+            text: "Not yet implemented -- these settings target the kdecoration6 plugin, which does not exist yet."
             wrapMode: Text.WordWrap
             Layout.fillWidth: true
+            opacity: 0.7
         }
 
-        ListView {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            clip: true
-            model: ListModel {
-                ListElement { ruleName: "Example Rule (No Titlebar for Alacritty)"; matchStr: "alacritty" }
-            }
-
-            delegate: QQC2.ItemDelegate {
-                width: ListView.view.width
-                text: model.ruleName + " [" + model.matchStr + "]"
-            }
-        }
-
-        RowLayout {
-            QQC2.Button { text: "Add Exception Rule" }
-            QQC2.Button { text: "Remove Selected" }
-        }
+        Item { Layout.fillHeight: true }
     }
 }

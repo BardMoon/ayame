@@ -21,7 +21,7 @@ T.Dial {
         radius: width / 2
         color: control.colors.backgroundColor
         border.width: Ayame.Units.borderWidth
-        border.color: control.hovered ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
+        border.color: control.hovered ? control.colors.highlightColor : control.colors.borderColor
     }
 
     handle: Rectangle {

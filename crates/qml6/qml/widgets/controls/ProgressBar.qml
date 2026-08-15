@@ -19,7 +19,7 @@ T.ProgressBar {
         radius: 3
         color: control.colors.backgroundColor
         border.width: Ayame.Units.borderWidth
-        border.color: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
+        border.color: control.colors.borderColor
     }
 
     contentItem: Item {

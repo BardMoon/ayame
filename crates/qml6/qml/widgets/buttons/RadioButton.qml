@@ -26,7 +26,7 @@ T.RadioButton {
         radius: width / 2
         color: "transparent"
         border.width: Ayame.Units.borderWidth
-        border.color: control.checked ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, control.hovered ? 0.4 : 0.3)
+        border.color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
 
         Rectangle {
             anchors.centerIn: parent

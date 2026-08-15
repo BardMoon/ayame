@@ -26,7 +26,7 @@ T.CheckBox {
         radius: Ayame.Units.cornerRadius
         color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
         border.width: Ayame.Units.borderWidth
-        border.color: control.checked ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, control.hovered ? 0.4 : 0.3)
+        border.color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
 
         Text {
             anchors.centerIn: parent

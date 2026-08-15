@@ -22,7 +22,7 @@ T.PageIndicator {
         implicitWidth: 8
         implicitHeight: 8
         radius: 4
-        color: index === control.currentIndex ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
+        color: index === control.currentIndex ? control.colors.highlightColor : control.colors.subColor
     }
 
     // T.PageIndicator has no built-in layout for its delegates -- without

@@ -18,6 +18,6 @@ T.MenuSeparator {
     contentItem: Rectangle {
         implicitWidth: 100
         implicitHeight: 1
-        color: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.2)
+        color: control.colors.subColor
     }
 }

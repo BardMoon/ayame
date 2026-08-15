@@ -11,7 +11,7 @@ T.TextArea {
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     color: control.colors.textColor
-    placeholderTextColor: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.5)
+    placeholderTextColor: control.colors.subColor
     selectedTextColor: control.colors.highlightedTextColor
     selectionColor: control.colors.highlightColor
     padding: Ayame.Units.smallSpacing
@@ -27,7 +27,7 @@ T.TextArea {
         radius: Ayame.Units.cornerRadius
         color: control.colors.backgroundColor
         border.width: Ayame.Units.borderWidth
-        border.color: control.activeFocus ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
+        border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
     }
 
     // T.TextArea never renders `placeholderText` on its own -- see

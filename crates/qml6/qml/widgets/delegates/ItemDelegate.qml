@@ -22,7 +22,7 @@ T.ItemDelegate {
 
     background: Rectangle {
         radius: Ayame.Units.cornerRadius
-        color: control.pressed ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
+        color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : "transparent")
     }
 
     contentItem: Ayame.IconLabel {

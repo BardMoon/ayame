@@ -19,6 +19,6 @@ T.Frame {
         radius: Ayame.Units.cornerRadius
         color: control.colors.backgroundColor
         border.width: Ayame.Units.borderWidth
-        border.color: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.2)
+        border.color: control.colors.borderColor
     }
 }

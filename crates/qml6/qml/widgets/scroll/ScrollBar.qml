@@ -14,10 +14,7 @@ T.ScrollBar {
     implicitHeight: Math.max(implicitBackgroundHeight + topPadding + bottomPadding, implicitContentHeight + topPadding + bottomPadding)
 
     padding: 2
-    // T.ScrollBar.policy doesn't hide the bar on its own -- every style
-    // has to bind `visible` itself (same as QtQuick.Controls.Basic's own
-    // ScrollBar.qml), or `policy: T.ScrollBar.AlwaysOff` silently does
-    // nothing here.
+
     visible: control.policy !== T.ScrollBar.AlwaysOff
     // Keeps the handle from shrinking to an unusably thin/unclickable
     // sliver on a very short or very narrow ScrollBar. Same formula as
@@ -28,7 +25,7 @@ T.ScrollBar {
         implicitWidth: control.interactive ? 8 : 4
         implicitHeight: control.interactive ? 8 : 4
         radius: width / 2
-        color: control.pressed ? control.colors.highlightColor : (control.hovered ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.4))
+        color: (control.pressed || control.hovered) ? control.colors.highlightColor : control.colors.subColor
         opacity: control.active ? 1.0 : 0.0
 
         Behavior on opacity {

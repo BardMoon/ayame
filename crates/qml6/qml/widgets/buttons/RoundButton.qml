@@ -23,9 +23,9 @@ T.RoundButton {
 
     background: Rectangle {
         radius: control.radius
-        color: control.pressed ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
+        color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
         border.width: Ayame.Units.borderWidth
-        border.color: control.activeFocus ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
+        border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
     }
 
     contentItem: Ayame.IconLabel {

@@ -60,10 +60,18 @@ QtObject {
 
         return {
             backgroundColor: backgroundColor,
-            textColor: textColor,
+            subColor: Qt.rgba(textColor.r, textColor.g, textColor.b, 0.3),
+            disabledColor: Qt.rgba(textColor.r, textColor.g, textColor.b, 0.25),
+            // Highlighted
             highlightColor: pal.highlight,
             highlightedTextColor: pal.highlightedText,
             hoverColor: Qt.rgba(pal.highlight.r, pal.highlight.g, pal.highlight.b, 0.15),
+            pressedColor: Qt.rgba(pal.highlight.r, pal.highlight.g, pal.highlight.b, 0.5),
+            // Border
+            borderColor: Qt.rgba(textColor.r, textColor.g, textColor.b, 0.3),
+            hoverBorderColor: Qt.rgba(textColor.r, textColor.g, textColor.b, 0.4),
+            // Text
+            textColor: textColor,
             positiveTextColor: theme.positiveTextColor,
             negativeTextColor: theme.negativeTextColor,
             neutralTextColor: theme.neutralTextColor

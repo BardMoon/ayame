@@ -21,7 +21,7 @@ T.SwitchDelegate {
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     background: Rectangle {
-        color: control.pressed ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
+        color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : "transparent")
     }
 
     contentItem: Ayame.IconLabel {
@@ -46,7 +46,7 @@ T.SwitchDelegate {
         radius: 10
         color: control.checked ? control.colors.highlightColor : control.colors.backgroundColor
         border.width: Ayame.Units.borderWidth
-        border.color: control.checked ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
+        border.color: control.checked ? control.colors.highlightColor : control.colors.borderColor
 
         Rectangle {
             x: control.checked ? parent.width - width - 2 : 2

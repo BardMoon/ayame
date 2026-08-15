@@ -41,7 +41,7 @@ T.SpinBox {
         radius: Ayame.Units.cornerRadius
         color: control.colors.backgroundColor
         border.width: Ayame.Units.borderWidth
-        border.color: control.activeFocus ? control.colors.highlightColor : Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
+        border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
     }
 
     contentItem: TextInput {
@@ -60,7 +60,7 @@ T.SpinBox {
         height: parent.height
         implicitWidth: Ayame.Units.gridUnit * 1.2
         radius: Ayame.Units.cornerRadius
-        color: control.up.pressed ? control.colors.highlightColor : (control.up.hovered ? control.colors.hoverColor : "transparent")
+        color: control.up.pressed ? control.colors.pressedColor : (control.up.hovered ? control.colors.hoverColor : "transparent")
 
         Text {
             text: "+"
@@ -74,7 +74,7 @@ T.SpinBox {
         height: parent.height
         implicitWidth: Ayame.Units.gridUnit * 1.2
         radius: Ayame.Units.cornerRadius
-        color: control.down.pressed ? control.colors.highlightColor : (control.down.hovered ? control.colors.hoverColor : "transparent")
+        color: control.down.pressed ? control.colors.pressedColor : (control.down.hovered ? control.colors.hoverColor : "transparent")
 
         Text {
             text: "-"

@@ -28,21 +28,21 @@ T.Button {
         Rectangle {
             anchors.fill: parent
             radius: Ayame.Units.cornerRadius
-            color: control.pressed ? Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.5) : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
+            color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
             border.width: Ayame.Units.borderWidth
-            border.color: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, control.hovered ? 0.4 : 0.3)
+            border.color: control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor
         }
 
         // Highlighted -> a bright arc chases around the border in an
         // infinite loop. activeFocus -> a solid border fades in/out,
         // replacing the old instant activeFocus-swaps-border-to-
         // highlightColor treatment. See HighlightRing.qml for both.
-        Ayame.HighlightRing {
-            anchors.fill: parent
-            animating: control.enabled && control.highlighted && Ayame.Units.animationsEnabled
-            active: control.enabled && control.activeFocus
-            ringColor: control.colors.highlightColor
-        }
+        // Ayame.HighlightRing {
+        //     anchors.fill: parent
+        //     animating: control.enabled && control.highlighted && Ayame.Units.animationsEnabled
+        //     active: control.enabled && control.activeFocus
+        //     ringColor: control.colors.highlightColor
+        // }
     }
 
     contentItem: Ayame.IconLabel {

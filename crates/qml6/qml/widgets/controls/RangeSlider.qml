@@ -22,7 +22,7 @@ T.RangeSlider {
         radius: 3
         color: control.colors.backgroundColor
         border.width: Ayame.Units.borderWidth
-        border.color: Qt.rgba(control.colors.textColor.r, control.colors.textColor.g, control.colors.textColor.b, 0.3)
+        border.color: control.colors.borderColor
 
         Rectangle {
             x: control.horizontal ? control.first.position * parent.width : 0
@@ -40,7 +40,7 @@ T.RangeSlider {
         implicitWidth: 14
         implicitHeight: 14
         radius: 7
-        color: control.first.pressed ? control.colors.highlightColor : (control.first.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
+        color: control.first.pressed ? control.colors.pressedColor : (control.first.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
         border.width: Ayame.Units.borderWidth
         border.color: control.colors.highlightColor
     }
@@ -51,7 +51,7 @@ T.RangeSlider {
         implicitWidth: 14
         implicitHeight: 14
         radius: 7
-        color: control.second.pressed ? control.colors.highlightColor : (control.second.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
+        color: control.second.pressed ? control.colors.pressedColor : (control.second.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
         border.width: Ayame.Units.borderWidth
         border.color: control.colors.highlightColor
     }

@@ -23,7 +23,6 @@ mkShell rec {
   #[ https://github.com/NixOS/nixpkgs/blob/master/pkgs/kde/plasma/breeze/default.nix ]
   buildInputs = with pkgs; [
     ayame
-    inputs.origami.packages.${pkgs.system}.origami-gallery
 
     #[ Develop ]
     ##[ Rust ]

@@ -16,6 +16,7 @@ fn main() {
         // impl
         "qml/impl/HighlightRing.qml",
         "qml/impl/IconLabel.qml",
+        "qml/impl/TrackBar.qml",
         // widgets
         "qml/widgets/buttons/AbstractButton.qml",
         "qml/widgets/buttons/DelayButton.qml",

@@ -21,11 +21,25 @@ T.RoundButton {
     implicitHeight: Ayame.Units.gridUnit * 1.8
     radius: width / 2
 
-    background: Rectangle {
-        radius: control.radius
-        color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
-        border.width: Ayame.Units.borderWidth
-        border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
+    background: Item {
+        Rectangle {
+            anchors.fill: parent
+            radius: control.radius
+            color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
+            border.width: Ayame.Units.borderWidth
+            border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
+        }
+
+        // Same highlighted/activeFocus cues as widgets/Button.qml -- see
+        // HighlightRing.qml -- just with cornerRadius pinned to
+        // control.radius so the ring/pulse stay circular here too.
+        Ayame.HighlightRing {
+            anchors.fill: parent
+            cornerRadius: control.radius
+            animating: control.enabled && control.highlighted && Ayame.Units.animationsEnabled
+            active: control.enabled && control.activeFocus
+            ringColor: control.colors.highlightColor
+        }
     }
 
     contentItem: Ayame.IconLabel {

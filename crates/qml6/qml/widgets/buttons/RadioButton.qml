@@ -9,7 +9,14 @@ T.RadioButton {
 
     property int colorSet: Ayame.Theme.view
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
-    readonly property real _indicatorSize: Ayame.Units.iconSizes.small
+    // Snapped to a multiple of 4, not just to a whole pixel: the
+    // indicator below is halved once for its own size and halved again
+    // (implicitly, via (outer - inner) / 2) to center the checked dot,
+    // so only a multiple-of-4 size guarantees both halvings land on
+    // whole pixels with zero rounding -- a plain Math.round() on the
+    // raw icon size still left a systematic ~0.5px centering bias at
+    // some uiScale values, since outer/2 could come out odd.
+    readonly property real _indicatorSize: Math.round(Ayame.Units.iconSizes.small / 4) * 4
 
     hoverEnabled: true
     spacing: Ayame.Units.smallSpacing
@@ -29,20 +36,25 @@ T.RadioButton {
         border.color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
 
         Rectangle {
-            // Rounded independently (not just `parent.width * 0.5`) and
-            // re-centered via explicit, separately-rounded x/y instead of
-            // anchors.centerIn: at odd _indicatorSize/uiScale combinations
-            // the raw half-size and its centering offset both land on
-            // fractional pixels, and the two fractional roundings don't
-            // always cancel out the same way on screen, which is what
-            // made the dot look off-center at some UI scales.
-            width: Math.round(parent.width * 0.5)
-            height: Math.round(parent.height * 0.5)
-            x: Math.round((parent.width - width) / 2)
-            y: Math.round((parent.height - height) / 2)
+            // parent.width is always a multiple of 4 (see _indicatorSize
+            // above), so both of these divisions land exactly on whole
+            // pixels -- no Math.round() needed, and no rounding bias left
+            // to make the dot look off-center.
+            width: parent.width * 0.5
+            height: parent.height * 0.5
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2
             radius: width / 2
-            visible: control.checked
             color: control.colors.highlightColor
+
+            // Grows in from nothing on check, shrinks back out on
+            // uncheck, instead of popping straight to full size --
+            // scale (not visible/opacity) so it actually animates.
+            scale: control.checked ? 1.0 : 0.0
+
+            Behavior on scale {
+                NumberAnimation { duration: Ayame.Units.shortDuration; easing.type: Easing.OutCubic }
+            }
         }
     }
 

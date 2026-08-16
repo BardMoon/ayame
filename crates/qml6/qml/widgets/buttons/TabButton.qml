@@ -17,11 +17,16 @@ T.TabButton {
     icon.width: Ayame.Units.iconSizes.smallMedium
     icon.height: Ayame.Units.iconSizes.smallMedium
 
-    implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
-    implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
+    implicitHeight: Ayame.Units.gridUnit * 1.6
+    implicitWidth: contentItem.implicitWidth + Ayame.Units.largeSpacing * 2
+    leftPadding: Ayame.Units.largeSpacing
+    rightPadding: Ayame.Units.largeSpacing
 
+    // The checked-tab underline itself now lives in TabBar.qml (a single
+    // indicator that slides between tabs) -- this only needs the
+    // subtle hover/press wash.
     background: Rectangle {
-        color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
+        color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : "transparent")
     }
 
     contentItem: Ayame.IconLabel {
@@ -33,6 +38,6 @@ T.TabButton {
         spacing: Ayame.Units.smallSpacing
         text: control.text
         font: control.font
-        color: control.checked ? control.colors.highlightedTextColor : control.colors.textColor
+        color: control.colors.textColor
     }
 }

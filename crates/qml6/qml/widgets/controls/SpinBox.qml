@@ -11,9 +11,10 @@ T.SpinBox {
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
+    padding: Ayame.Units.smallSpacing
     implicitHeight: Ayame.Units.gridUnit * 1.6
-    // The indicators' width is reserved via leftPadding/rightPadding below
-    // (not added again here), same as QtQuick.Controls.Basic's own
+    // The indicator column's width is reserved via leftPadding/rightPadding
+    // below (not added again here), same as QtQuick.Controls.Basic's own
     // SpinBox.qml -- otherwise it'd be double-counted.
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
 
@@ -37,11 +38,23 @@ T.SpinBox {
         top: Math.max(control.from, control.to)
     }
 
-    background: Rectangle {
-        radius: Ayame.Units.cornerRadius
-        color: control.colors.backgroundColor
-        border.width: Ayame.Units.borderWidth
-        border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
+    background: Item {
+        Rectangle {
+            anchors.fill: parent
+            radius: Ayame.Units.cornerRadius
+            color: control.colors.backgroundColor
+            border.width: Ayame.Units.borderWidth
+            border.color: control.colors.borderColor
+        }
+
+        // Same activeFocus cue as widgets/Button.qml -- see
+        // HighlightRing.qml -- SpinBox has no `highlighted` state so
+        // only the fade+pulse `active` ring applies here.
+        Ayame.HighlightRing {
+            anchors.fill: parent
+            active: control.activeFocus
+            ringColor: control.colors.highlightColor
+        }
     }
 
     contentItem: TextInput {

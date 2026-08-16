@@ -23,11 +23,23 @@ T.TextArea {
         editor: control
     }
 
-    background: Rectangle {
-        radius: Ayame.Units.cornerRadius
-        color: control.colors.backgroundColor
-        border.width: Ayame.Units.borderWidth
-        border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
+    background: Item {
+        Rectangle {
+            anchors.fill: parent
+            radius: Ayame.Units.cornerRadius
+            color: control.colors.backgroundColor
+            border.width: Ayame.Units.borderWidth
+            border.color: control.colors.borderColor
+        }
+
+        // Same activeFocus cue as widgets/Button.qml -- see
+        // HighlightRing.qml -- TextArea has no `highlighted` state so
+        // only the fade+pulse `active` ring applies here.
+        Ayame.HighlightRing {
+            anchors.fill: parent
+            active: control.activeFocus
+            ringColor: control.colors.highlightColor
+        }
     }
 
     // T.TextArea never renders `placeholderText` on its own -- see

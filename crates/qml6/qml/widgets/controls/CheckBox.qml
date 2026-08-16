@@ -24,17 +24,32 @@ T.CheckBox {
         width: control._indicatorSize
         height: control._indicatorSize
         radius: Ayame.Units.cornerRadius
+        clip: true
         color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
         border.width: Ayame.Units.borderWidth
         border.color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
 
         Text {
-            anchors.centerIn: parent
-            visible: control.checked
+            // anchors.fill + alignment (not anchors.centerIn on an
+            // implicitly-sized Text) so the glyph is centered against
+            // the font's actual rendered bounds rather than the text
+            // item's ascent/descent box, which for "✓" sat visibly
+            // off-center.
+            anchors.fill: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
             text: "✓"
-            font.pixelSize: parent.height * 0.8
-            font.bold: true
+            font.pixelSize: parent.height * 1.15
+            font.weight: Font.Black
             color: control.colors.highlightedTextColor
+
+            // Grows in from nothing on check, shrinks back out on
+            // uncheck -- same feel as RadioButton's dot.
+            scale: control.checked ? 1.0 : 0.0
+
+            Behavior on scale {
+                NumberAnimation { duration: Ayame.Units.shortDuration; easing.type: Easing.OutCubic }
+            }
         }
     }
 

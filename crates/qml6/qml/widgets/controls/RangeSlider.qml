@@ -14,22 +14,21 @@ T.RangeSlider {
     implicitWidth: control.horizontal ? Ayame.Units.gridUnit * 8 : Ayame.Units.gridUnit * 1.4
     implicitHeight: control.horizontal ? Ayame.Units.gridUnit * 1.4 : Ayame.Units.gridUnit * 8
 
-    background: Rectangle {
-        x: control.leftPadding + (control.horizontal ? 0 : (control.availableWidth - width) / 2)
-        y: control.topPadding + (control.horizontal ? (control.availableHeight - height) / 2 : 0)
-        width: control.horizontal ? control.availableWidth : 6
-        height: control.horizontal ? 6 : control.availableHeight
-        radius: 3
-        color: control.colors.backgroundColor
-        border.width: Ayame.Units.borderWidth
-        border.color: control.colors.borderColor
+    background: Ayame.TrackBar {
+        id: track
+        x: control.leftPadding + (control.horizontal ? 0 : Math.round((control.availableWidth - width) / 2))
+        y: control.topPadding + (control.horizontal ? Math.round((control.availableHeight - height) / 2) : 0)
+        width: control.horizontal ? control.availableWidth : track.thickness
+        height: control.horizontal ? track.thickness : control.availableHeight
+        trackColor: control.colors.backgroundColor
+        trackBorderColor: control.colors.borderColor
 
         Rectangle {
             x: control.horizontal ? control.first.position * parent.width : 0
             y: control.horizontal ? 0 : control.first.visualPosition * parent.height
             width: control.horizontal ? (control.second.position - control.first.position) * parent.width : parent.width
             height: control.horizontal ? parent.height : (control.second.position - control.first.position) * parent.height
-            radius: 3
+            radius: parent.radius
             color: control.colors.highlightColor
         }
     }

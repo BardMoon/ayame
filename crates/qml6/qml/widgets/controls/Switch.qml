@@ -10,6 +10,14 @@ T.Switch {
     property int colorSet: Ayame.Theme.view
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
+    // Proportioned off gridUnit (not hardcoded px) so the switch scales
+    // with uiScale like every other control here, same 36:20:16:2 ratio
+    // the old hardcoded numbers had.
+    readonly property real _trackHeight: Ayame.Units.gridUnit
+    readonly property real _trackWidth: Math.round(control._trackHeight * 1.8)
+    readonly property real _thumbMargin: Math.max(1, Math.round(control._trackHeight * 0.1))
+    readonly property real _thumbSize: control._trackHeight - control._thumbMargin * 2
+
     hoverEnabled: true
     spacing: Ayame.Units.smallSpacing
     opacity: control.enabled ? 1.0 : 0.5
@@ -18,27 +26,28 @@ T.Switch {
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     indicator: Rectangle {
-        implicitWidth: 36
-        implicitHeight: 20
+        implicitWidth: control._trackWidth
+        implicitHeight: control._trackHeight
         x: control.leftPadding
         y: parent.height / 2 - height / 2
-        radius: 10
+        radius: height / 2
         color: control.checked ? control.colors.highlightColor : control.colors.backgroundColor
         border.width: Ayame.Units.borderWidth
-        border.color: control.checked ? control.colors.highlightColor : control.colors.borderColor
+        border.color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
 
         Rectangle {
-            x: control.checked ? parent.width - width - 2 : 2
-            y: 2
-            width: 16
-            height: 16
-            radius: 8
+            x: control.checked ? parent.width - width - control._thumbMargin : control._thumbMargin
+            y: control._thumbMargin
+            width: control._thumbSize
+            height: control._thumbSize
+            radius: width / 2
             color: control.checked ? control.colors.highlightedTextColor : control.colors.textColor
 
             Behavior on x {
-                NumberAnimation {
-                    duration: 100
-                }
+                NumberAnimation { duration: Ayame.Units.shortDuration; easing.type: Easing.OutCubic }
+            }
+            Behavior on color {
+                ColorAnimation { duration: Ayame.Units.shortDuration; easing.type: Easing.OutCubic }
             }
         }
     }

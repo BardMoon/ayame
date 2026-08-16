@@ -37,12 +37,12 @@ T.Button {
         // infinite loop. activeFocus -> a solid border fades in/out,
         // replacing the old instant activeFocus-swaps-border-to-
         // highlightColor treatment. See HighlightRing.qml for both.
-        // Ayame.HighlightRing {
-        //     anchors.fill: parent
-        //     animating: control.enabled && control.highlighted && Ayame.Units.animationsEnabled
-        //     active: control.enabled && control.activeFocus
-        //     ringColor: control.colors.highlightColor
-        // }
+        Ayame.HighlightRing {
+            anchors.fill: parent
+            animating: control.enabled && control.highlighted && Ayame.Units.animationsEnabled
+            active: control.enabled && control.activeFocus
+            ringColor: control.colors.highlightColor
+        }
     }
 
     contentItem: Ayame.IconLabel {

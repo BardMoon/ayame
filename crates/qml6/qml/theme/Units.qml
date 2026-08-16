@@ -116,8 +116,8 @@ QtObject {
     // Maps the settings screen's 3-step Appearance/animation-speed preset
     // onto a duration multiplier applied to every constant below.
     readonly property var _animationSpeedPresets: ({
-            slow: 1.5,
-            normal: 1.0,
+            slow: 1.75,
+            normal: 1.2,
             fast: 0.5
         })
 

@@ -8,12 +8,14 @@ import Ayame 1.0 as Ayame
 //  - `animating`: a bright arc chases around the border in an infinite
 //    loop (the ConicalGradient-filled ring Shape below) -- e.g. Button.qml
 //    drives this from `highlighted`.
-//  - `active`: a solid border in `ringColor` fades in/out (via
-//    `fadeDuration`, 0 -- i.e. an instant snap -- whenever
-//    `Ayame.Units.animationsEnabled` is off, same as every other duration
-//    constant on Units) -- e.g. Button.qml drives this from `activeFocus`,
-//    replacing the old "activeFocus instantly swaps the border to
-//    highlightColor" treatment with a soft fade.
+//  - `active`: a solid border in `ringColor` fades in (via `fadeDuration`,
+//    0 -- i.e. an instant snap -- whenever `Ayame.Units.animationsEnabled`
+//    is off, same as every other duration constant on Units), then
+//    keeps breathing between `pulseMinOpacity` and full opacity for as
+//    long as `active` stays true, and fades back out on deactivation --
+//    e.g. Button.qml drives this from `activeFocus`, replacing the old
+//    "activeFocus instantly swaps the border to highlightColor"
+//    treatment with a soft fade plus a continuous pulse.
 // Anchor this to `parent.fill`; both cues are independent and can be
 // active at once.
 Item {
@@ -26,6 +28,26 @@ Item {
     property real ringThickness: Ayame.Units.borderWidth
     property int duration: Ayame.Units.veryLongDuration * 4
     property int fadeDuration: Ayame.Units.shortDuration
+    property int pulseDuration: Ayame.Units.veryLongDuration
+    property real pulseMinOpacity: 0.35
+
+    // Driven by pulseAnimation below while `active`: its first leg is
+    // the fade-in (from whatever it was frozen at on the previous
+    // deactivation, normally 0), then it keeps breathing between
+    // pulseMinOpacity and 1.0. Kept separate from the Rectangle's own
+    // `opacity` so the fade-out Behavior below -- which must react to
+    // every opacity change -- doesn't also intercept and re-smooth
+    // each pulse tick.
+    property real pulsePhase: 0.0
+
+    SequentialAnimation {
+        id: pulseAnimation
+        running: root.active && Ayame.Units.animationsEnabled
+        loops: Animation.Infinite
+        NumberAnimation { target: root; property: "pulsePhase"; to: 1.0; duration: root.fadeDuration; easing.type: Easing.OutCubic }
+        NumberAnimation { target: root; property: "pulsePhase"; to: root.pulseMinOpacity; duration: root.pulseDuration; easing.type: Easing.InOutSine }
+        NumberAnimation { target: root; property: "pulsePhase"; to: 1.0; duration: root.pulseDuration; easing.type: Easing.InOutSine }
+    }
 
     Rectangle {
         anchors.fill: parent
@@ -33,9 +55,10 @@ Item {
         color: "transparent"
         border.width: root.ringThickness
         border.color: root.ringColor
-        opacity: root.active ? 1.0 : 0.0
+        opacity: root.active ? (Ayame.Units.animationsEnabled ? root.pulsePhase : 1.0) : 0.0
 
         Behavior on opacity {
+            enabled: !root.active
             NumberAnimation { duration: root.fadeDuration; easing.type: Easing.OutCubic }
         }
     }

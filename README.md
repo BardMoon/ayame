@@ -9,6 +9,8 @@ shared with sibling apps in this workspace's neighboring repos
 
 ## Icons
 
+- https://tabler.io/icons
+
 UI icons are bundled at build time (Tabler Icons, MIT-licensed) rather
 than resolved against whatever icon theme happens to be installed on
 the host OS -- this is what keeps icon rendering consistent across

@@ -138,6 +138,44 @@ symptom, not a hypothetical -- caught by running `origami-gallery` and
 `cettila` and visually seeing Breeze icons instead of Tabler ones.
 Fixed by removing the `name` binding entirely, per the snippet above.
 
+### Bug found after that: the original inventory missed Rust-generated names
+
+The initial `MAPPING` was built by grepping consumer QML for icon-name
+literals (`iconName:`, `icon.name:`, bare `source:`), which covers
+every *static* icon name but misses names computed dynamically in
+Rust -- e.g. `origami-frameworks/origami/src/fs_entries.rs`'s
+extension-to-icon-name function (`text-markdown`, `text-x-generic`,
+`video-x-generic`, `application-pdf`), or `cettila`'s bookmarks-sidebar
+folder icons (`user-home`, `user-desktop`, `folder-documents`,
+`folder-download`, `folder-pictures`, `folder-videos`,
+`folder-music`, `folder-bookmarks`). With no OS-theme fallback left,
+these rendered blank at runtime (`QML IconImage: Cannot open:
+qrc:/cettila/icons/text-x-generic.svg` and similar) instead of failing
+loudly at build time -- caught by the user actually using the file
+explorer/bookmarks sidebar, not by any of the checks above. Added to
+`MAPPING` once found; see `src/mapping.rs` for the picks. When adding a
+new consumer, grep *implementation* code for icon-name construction,
+not just QML literals.
+
+### Bug found after that: a third, smaller round of missed literals
+
+Even the QML-literal inventory itself wasn't complete: `chevron-down`/
+`chevron-right` (`PaneDrawer.qml`, `ViewTypePickerButton.qml`,
+`ToggleGroup.qml`) and `arrow-left` (`CollapsiblePanel.qml`) were
+missed by the original single-pass grep -- all inside ternaries
+(`iconName: cond ? "a" : "b"`), which a naive "first string literal
+after the property name" search silently drops the second branch of.
+Found by re-running the audit with a line-based extraction (every
+quoted string on any line containing `iconName:`/`icon.name:`/`icon:`,
+not just the first match) across both `../origami-frameworks` and
+`../cettila`, diffed against `MAPPING`'s existing keys. Also turned up
+several false positives worth noting so they aren't "fixed" by
+mistake: `block`/`memo`/`osm` come from `===` mode comparisons on the
+*same line* as an icon ternary, not icon names themselves; `edit` and
+`edit-rename` only ever appear inside a `//`-commented-out example.
+If auditing this again, prefer that line-based, ternary-aware grep
+over a first-match one.
+
 ## Removed: the Breeze fallback stopgap
 
 Before this package existed, `crates/qml6/cpp/icon_theme.cpp` called

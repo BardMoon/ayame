@@ -24,9 +24,19 @@ neutral outline style doesn't carry an OS-specific design identity the
 way Breeze (KDE) or Fluent (Windows 11) do.
 
 Only the subset of icons actually referenced across consumer apps is
-vendored (`vendor/tabler-icons/outline/`, 67 files as of this writing),
-not the full ~5,900-icon set. See `vendor/tabler-icons/NOTICE.md` for
-exactly what was vendored, from which commit, and under what license.
+vendored (`vendor/tabler-icons/outline/`), not the full ~5,900-icon
+set -- see `vendor/tabler-icons/NOTICE.md` for exactly what was
+vendored, from which commit, and under what license.
+
+That inventory was built by grepping consumer QML for icon-name
+literals, which missed icon names computed dynamically in Rust (e.g.
+`origami-frameworks/origami/src/fs_entries.rs`'s extension -> icon-name
+function, or `cettila`'s bookmarks-sidebar folder icons) -- several
+were only caught by an icon rendering blank at runtime after step 6/7
+removed the OS-theme-fallback stopgap. When adding a new consumer or a
+new dynamically-generated icon name, grep the *implementation*, not
+just literal QML, and check the name is in `src/mapping.rs` before
+relying on it -- there is no fallback for a name that isn't.
 
 Consumers use stable, freedesktop-style names (`document-new`,
 `edit-delete`, ...); the mapping from those names to the underlying

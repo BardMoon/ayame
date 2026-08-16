@@ -5,7 +5,7 @@ License: MIT (see `LICENSE` in this directory)
 Vendored at commit: `183e715d5a81ba1959e285f69c08235fe34b04ce` (2026-08-16)
 Variant: `outline` (thin-stroke, `stroke="currentColor"` -- tintable as-is)
 
-Only the 67 icons actually referenced by `ayame-icons`' name mapping are
+Only the icons actually referenced by `ayame-icons`' name mapping are
 vendored here (`outline/<tabler-name>.svg`), not the full ~5,900-icon set.
 Each file is downloaded unmodified from the upstream repo at the commit
 above -- to update, re-fetch the same paths at a newer commit and update

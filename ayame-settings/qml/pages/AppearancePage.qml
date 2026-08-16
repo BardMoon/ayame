@@ -366,10 +366,10 @@ QQC2.Page {
                 QQC2.SpinBox {
                     from: 50
                     to: 200
-                    stepSize: 10
+                    stepSize: 1
                     value: Math.round(root.uiScale * 100)
-                    textFromValue: (value) => value + "%"
-                    valueFromText: (text) => parseInt(text)
+                    textFromValue: (value) => (value / 100).toFixed(2)
+                    valueFromText: (text) => Math.round(parseFloat(text) * 100)
                     onValueModified: {
                         Ayame.Units.setUiScale(value / 100);
                         root.uiScale = value / 100;

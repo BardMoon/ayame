@@ -1,0 +1,12 @@
+[package]
+name = "ayame-icons"
+links = "ayame-icons"
+version.workspace = true
+edition.workspace = true
+readme = "README.md"
+
+[dependencies]
+
+[build-dependencies]
+cxx-qt-build = { workspace = true }
+qt-build-utils = { workspace = true }

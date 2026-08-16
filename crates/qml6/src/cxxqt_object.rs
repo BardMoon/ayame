@@ -17,6 +17,14 @@ use cxx_qt_lib::{QColor, QString};
 /// can't when something applied a value without saving it.
 static LAST_APPLIED_THEME: Mutex<Option<(String, String)>> = Mutex::new(None);
 
+// ayame-icons is a dependency purely for its build.rs side effect (bundling
+// the Tabler Icons Qt resource -- see crates/icons). Nothing here calls into
+// it at the Rust level, and without *some* real reference, rustc drops the
+// never-referenced rlib (and therefore its linked-in Qt resource) from the
+// final binary entirely -- this keeps it alive. Confirmed by testing: the
+// vendored icons fail to link with this line removed.
+const _KEEP_AYAME_ICONS_LINKED: &[(&str, &str)] = ayame_icons::MAPPING;
+
 fn last_applied_theme() -> Option<(String, String)> {
     LAST_APPLIED_THEME.lock().ok()?.clone()
 }

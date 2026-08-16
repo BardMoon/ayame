@@ -11,6 +11,7 @@ T.SwipeDelegate {
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
+    padding: Ayame.Units.smallSpacing
 
     // See widgets/Button.qml's own icon.width/height for why this is here
     // despite contentItem below having no icon rendering yet.

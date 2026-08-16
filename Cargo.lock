@@ -20,6 +20,7 @@ version = "0.1.0"
 dependencies = [
  "ayame-colors",
  "ayame-config",
+ "ayame-icons",
  "cxx",
  "cxx-qt",
  "cxx-qt-build",
@@ -41,6 +42,14 @@ dependencies = [
  "directories",
  "serde",
  "toml",
+]
+
+[[package]]
+name = "ayame-icons"
+version = "0.1.0"
+dependencies = [
+ "cxx-qt-build",
+ "qt-build-utils",
 ]
 
 [[package]]

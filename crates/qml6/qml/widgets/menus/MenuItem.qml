@@ -11,6 +11,7 @@ T.MenuItem {
     readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
+    padding: Ayame.Units.smallSpacing
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding + (implicitIndicatorWidth > 0 ? implicitIndicatorWidth + spacing : 0) + (arrow ? arrow.implicitWidth + spacing : 0))
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, Math.max(implicitContentHeight, implicitIndicatorHeight, arrow ? arrow.implicitHeight : 0) + topPadding + bottomPadding)

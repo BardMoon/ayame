@@ -4,12 +4,33 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.SwitchDelegate {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // Same split as CheckDelegate.qml/RadioDelegate.qml: background/text
+    // reuse `itemDelegate`, indicator reuses `switchControl` (widgets/
+    // controls/Switch.qml's own slot).
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.ItemDelegate
+        enabled: control.enabled
+        focused: control.activeFocus
+        highlighted: control.highlighted
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
+
+    LabsStyleKit.StyleReader {
+        id: indicatorStyleReader
+        controlType: LabsStyleKit.StyleReader.SwitchControl
+        enabled: control.enabled
+        checked: control.checked
+        hovered: control.hovered
+        palette: control.palette
+    }
 
     hoverEnabled: true
     padding: StyleKit.Units.smallSpacing
@@ -23,7 +44,7 @@ T.SwitchDelegate {
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     background: Rectangle {
-        color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : "transparent")
+        color: styleReader.background.color
     }
 
     contentItem: Ayame.IconLabel {
@@ -37,7 +58,7 @@ T.SwitchDelegate {
         spacing: StyleKit.Units.smallSpacing
         text: control.text
         font: control.font
-        color: control.highlighted ? control.colors.highlightedTextColor : control.colors.textColor
+        color: styleReader.text.color
     }
 
     indicator: Rectangle {
@@ -46,9 +67,9 @@ T.SwitchDelegate {
         x: control.width - width - control.rightPadding
         y: parent.height / 2 - height / 2
         radius: 10
-        color: control.checked ? control.colors.highlightColor : control.colors.backgroundColor
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.checked ? control.colors.highlightColor : control.colors.borderColor
+        color: indicatorStyleReader.background.color
+        border.width: indicatorStyleReader.background.border.width
+        border.color: indicatorStyleReader.background.border.color
 
         Rectangle {
             x: control.checked ? parent.width - width - 2 : 2
@@ -56,7 +77,7 @@ T.SwitchDelegate {
             width: 16
             height: 16
             radius: 8
-            color: control.checked ? control.colors.highlightedTextColor : control.colors.textColor
+            color: control.checked ? control.palette.highlightedText : control.palette.text
 
             Behavior on x {
                 NumberAnimation {

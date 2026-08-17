@@ -4,12 +4,21 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.ToolButton {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.ToolButton
+        enabled: control.enabled
+        focused: control.activeFocus
+        checked: control.checked
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
 
     hoverEnabled: true
 
@@ -23,7 +32,7 @@ T.ToolButton {
 
     background: Rectangle {
         radius: StyleKit.Units.cornerRadius
-        color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : "transparent")
+        color: styleReader.background.color
     }
 
     contentItem: Ayame.IconLabel {
@@ -35,6 +44,6 @@ T.ToolButton {
         spacing: StyleKit.Units.smallSpacing
         text: control.text
         font: control.font
-        color: control.pressed ? control.colors.highlightedTextColor : control.colors.textColor
+        color: styleReader.text.color
     }
 }

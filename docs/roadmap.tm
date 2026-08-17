@@ -11,3 +11,7 @@ ThemeSettingsRust::default()は常にmode: "auto"から始まり、実際にデ�
 apply_saved_theme_mode()経由で正しい)。accentもこのバグを同じ形で継承す
 る。直すにはqml6がorigami-configに依存する新しい層構造が要り、今回の頼ま
 れた範囲を超えるため据え置く。
+
+
+- ライブプレビュー
+  - Stylekit非対応

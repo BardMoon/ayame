@@ -4,12 +4,20 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.ComboBox {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.ComboBox
+        enabled: control.enabled
+        focused: control.activeFocus
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
 
     hoverEnabled: true
     spacing: StyleKit.Units.smallSpacing
@@ -29,16 +37,16 @@ T.ComboBox {
 
     background: Rectangle {
         radius: StyleKit.Units.cornerRadius
-        color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
+        color: styleReader.background.color
+        border.width: styleReader.background.border.width
+        border.color: styleReader.background.border.color
     }
 
     contentItem: Text {
         verticalAlignment: Text.AlignVCenter
         text: control.displayText
         font: control.font
-        color: control.colors.textColor
+        color: styleReader.text.color
         elide: Text.ElideRight
     }
 
@@ -47,7 +55,7 @@ T.ComboBox {
         y: control.topPadding + (control.availableHeight - height) / 2
         text: "▾"
         font: control.font
-        color: control.colors.textColor
+        color: styleReader.text.color
     }
 
     // Without delegate/popup, T.ComboBox (headless) has nothing to show on

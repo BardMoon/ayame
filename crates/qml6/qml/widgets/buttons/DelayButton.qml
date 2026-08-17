@@ -4,24 +4,33 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.DelayButton {
     id: control
-
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
     implicitHeight: StyleKit.Units.gridUnit * 1.6
     implicitWidth: contentItem.implicitWidth + StyleKit.Units.largeSpacing * 2
 
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.AbstractButton
+        enabled: control.enabled
+        focused: control.activeFocus
+        checked: control.checked
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
+
     background: Item {
         Rectangle {
             anchors.fill: parent
             radius: StyleKit.Units.cornerRadius
-            color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
-            border.width: StyleKit.Units.borderWidth
-            border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
+            color: styleReader.background.color
+            border.width: styleReader.background.border.width
+            border.color: styleReader.background.border.color
         }
 
         // Sweeps a highlighted border + tinted fill in from the left as
@@ -38,10 +47,10 @@ T.DelayButton {
                 width: control.width
                 height: control.height
                 radius: StyleKit.Units.cornerRadius
-                color: control.colors.highlightColor
+                color: control.palette.highlight
                 opacity: 0.5
-                border.width: StyleKit.Units.borderWidth
-                border.color: control.colors.highlightColor
+                border.width: styleReader.background.border.width
+                border.color: control.palette.highlight
             }
         }
     }
@@ -51,6 +60,6 @@ T.DelayButton {
         verticalAlignment: Text.AlignVCenter
         text: control.text
         font: control.font
-        color: control.colors.textColor
+        color: styleReader.text.color
     }
 }

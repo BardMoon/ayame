@@ -5,12 +5,25 @@ import QtQuick.Shapes
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.Dial {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // No dedicated StyleReader.ControlType for Dial -- falls back to
+    // AyameStyle's generic `control` slot, same as PageIndicator/Tumbler/
+    // RangeSlider below. `hovered` deliberately not fed in: the old ring
+    // background never reacted to hover, only its border did (swapping to
+    // full highlight, not `control`'s translucent hover-border tint) --
+    // handled below with a direct control.hovered ternary instead, same
+    // "opaque highlight passthrough" pattern as Slider.qml's handle.
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.Control
+        enabled: control.enabled
+        focused: control.activeFocus
+        palette: control.palette
+    }
 
     hoverEnabled: true
 
@@ -18,6 +31,7 @@ T.Dial {
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     background: Item {
+        id: backgroundItem
         implicitWidth: StyleKit.Units.gridUnit * 3.5
         implicitHeight: StyleKit.Units.gridUnit * 3.5
 
@@ -38,9 +52,9 @@ T.Dial {
             anchors.fill: parent
             anchors.margins: parent.ringThickness / 2
             radius: width / 2
-            color: control.colors.backgroundColor
-            border.width: StyleKit.Units.borderWidth
-            border.color: control.hovered ? control.colors.highlightColor : control.colors.borderColor
+            color: styleReader.background.color
+            border.width: styleReader.background.border.width
+            border.color: control.hovered ? control.palette.highlight : styleReader.background.border.color
         }
 
         // A ProgressBar-like ring wrapped around the dial: a full-sweep
@@ -67,8 +81,15 @@ T.Dial {
             readonly property real _trackFillStrokeWidth: Math.max(1, parent.ringThickness - StyleKit.Units.borderWidth * 2)
 
             ShapePath {
-                strokeWidth: parent.ringThickness
-                strokeColor: control.colors.borderColor
+                // ShapePath isn't an Item -- `parent` here means the
+                // Shape it's declared in (progressRing), not
+                // progressRing's own visual parent, unlike every other
+                // `parent.ringThickness` use in this file. Pre-existing
+                // bug (undefined strokeWidth), caught by this migration's
+                // headless verification since Dial had never actually
+                // been instantiated in a headless run before.
+                strokeWidth: backgroundItem.ringThickness
+                strokeColor: styleReader.background.border.color
                 fillColor: "transparent"
                 capStyle: ShapePath.RoundCap
 
@@ -84,7 +105,7 @@ T.Dial {
 
             ShapePath {
                 strokeWidth: progressRing._trackFillStrokeWidth
-                strokeColor: control.colors.backgroundColor
+                strokeColor: styleReader.background.color
                 fillColor: "transparent"
                 capStyle: ShapePath.RoundCap
 
@@ -103,8 +124,8 @@ T.Dial {
             // solid highlightColor for both border and background, so
             // no separate layering is needed here).
             ShapePath {
-                strokeWidth: parent.ringThickness
-                strokeColor: control.colors.highlightColor
+                strokeWidth: backgroundItem.ringThickness
+                strokeColor: control.palette.highlight
                 fillColor: "transparent"
                 capStyle: ShapePath.RoundCap
 
@@ -127,7 +148,7 @@ T.Dial {
         width: 10
         height: 10
         radius: 5
-        color: control.colors.highlightColor
+        color: control.palette.highlight
         transform: [
             Translate {
                 y: -control.background.height / 2 + 8

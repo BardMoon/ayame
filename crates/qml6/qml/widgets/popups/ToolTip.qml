@@ -4,12 +4,30 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.ToolTip {
     id: control
 
-    property int colorSet: StyleKit.Theme.tooltip
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // Neither a StyleReader.ControlType nor an AbstractStylableControls
+    // slot exists for ToolTip (the Phase 0 open question this task file
+    // flagged, now resolved: still missing even after everything else in
+    // this migration landed) -- the old `tooltip` colorSet
+    // (`palette.light`/`.windowText`, unlike any other colorSet) is
+    // computed locally instead, off the live palette. Only
+    // `background.border.width` still comes through a StyleReader (falls
+    // back to `control`, same value either way) -- see Menu.qml's
+    // identical approach.
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.Control
+        enabled: control.enabled
+        palette: control.palette
+    }
+
+    readonly property color _tooltipBackground: control.palette.light
+    readonly property color _tooltipText: control.palette.windowText
+    readonly property color _tooltipBorder: Qt.rgba(control._tooltipText.r, control._tooltipText.g, control._tooltipText.b, 0.3)
 
     // T.Popup's default position is (0, 0) relative to its parent -- for
     // a ToolTip that parent is the hovered item itself, so without this
@@ -34,15 +52,15 @@ T.ToolTip {
 
     background: Rectangle {
         radius: StyleKit.Units.cornerRadius
-        color: control.colors.backgroundColor
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.colors.borderColor
+        color: control._tooltipBackground
+        border.width: styleReader.background.border.width
+        border.color: control._tooltipBorder
     }
 
     contentItem: Text {
         verticalAlignment: Text.AlignVCenter
         text: control.text
         font: control.font
-        color: control.colors.textColor
+        color: control._tooltipText
     }
 }

@@ -4,17 +4,28 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.TextField {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // `textField` has a dedicated slot, but its old look was identical to
+    // `control`'s (view colorSet) -- no AyameStyle override needed.
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.TextField
+        enabled: control.enabled
+        focused: control.activeFocus
+        palette: control.palette
+    }
 
-    color: control.colors.textColor
-    placeholderTextColor: control.colors.subColor
-    selectedTextColor: control.colors.highlightedTextColor
-    selectionColor: control.colors.highlightColor
+    // Same local blend as TextArea.qml's own placeholderTextColor.
+    readonly property color _subColor: Qt.rgba(control.palette.text.r, control.palette.text.g, control.palette.text.b, 0.3)
+
+    color: styleReader.text.color
+    placeholderTextColor: control._subColor
+    selectedTextColor: control.palette.highlightedText
+    selectionColor: control.palette.highlight
     verticalAlignment: TextInput.AlignVCenter
     leftPadding: StyleKit.Units.smallSpacing
     rightPadding: StyleKit.Units.smallSpacing
@@ -30,9 +41,9 @@ T.TextField {
         Rectangle {
             anchors.fill: parent
             radius: StyleKit.Units.cornerRadius
-            color: control.colors.backgroundColor
-            border.width: StyleKit.Units.borderWidth
-            border.color: control.colors.borderColor
+            color: styleReader.background.color
+            border.width: styleReader.background.border.width
+            border.color: styleReader.background.border.color
         }
 
         // Same activeFocus cue as widgets/Button.qml -- see
@@ -41,7 +52,7 @@ T.TextField {
         Ayame.HighlightRing {
             anchors.fill: parent
             active: control.activeFocus
-            ringColor: control.colors.highlightColor
+            ringColor: control.palette.highlight
         }
     }
 

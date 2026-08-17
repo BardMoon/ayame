@@ -4,12 +4,20 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.Frame {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // `frame` has a dedicated AbstractStylableControls slot, but its old
+    // look was identical to `control`'s (view colorSet) -- no AyameStyle
+    // override needed, just cascades.
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.Frame
+        enabled: control.enabled
+        palette: control.palette
+    }
 
     padding: StyleKit.Units.smallSpacing
 
@@ -18,8 +26,8 @@ T.Frame {
 
     background: Rectangle {
         radius: StyleKit.Units.cornerRadius
-        color: control.colors.backgroundColor
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.colors.borderColor
+        color: styleReader.background.color
+        border.width: styleReader.background.border.width
+        border.color: styleReader.background.border.color
     }
 }

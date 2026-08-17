@@ -16,11 +16,6 @@ import StyleKit 1.0 as StyleKit
 T.BusyIndicator {
     id: control
 
-    // Same knob as widgets/Label.qml/widgets/inputs/CheckBox.qml.
-    property int colorSet: StyleKit.Theme.view
-
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
-
     readonly property int _dotCount: 8
 
     implicitWidth: StyleKit.Units.iconSizes.medium
@@ -43,7 +38,7 @@ T.BusyIndicator {
                 width: Math.max(2, ring.width * 0.14)
                 height: width
                 radius: width / 2
-                color: control.colors.highlightColor
+                color: control.palette.highlight
                 opacity: 0.25 + 0.75 * (index / control._dotCount)
 
                 x: ring.width / 2 + Math.cos(dot._angle) * dot._radius - width / 2

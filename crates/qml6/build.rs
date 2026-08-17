@@ -10,6 +10,8 @@ fn main() {
     let cpp_dir = Path::new(&manifest_dir).join("cpp");
 
     let widget_files = [
+        // Style
+        "qml/style/AyameStyle.qml",
         // Essenntial
         "qml/widgets/ApplicationWindow.qml",
         "qml/widgets/Button.qml",

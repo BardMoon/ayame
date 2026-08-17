@@ -8,8 +8,13 @@ import StyleKit 1.0 as StyleKit
 T.MenuItem {
     id: control
 
-    property int colorSet: StyleKit.Theme.header
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // Same situation as Menu.qml right above it in this directory: no
+    // AbstractStylableControls slot exists for MenuItem either, so its
+    // header-colorSet text color is computed locally. `highlighted`'s
+    // background/text swap reads straight off `control.palette.highlight`/
+    // `.highlightedText` -- a direct pass-through, same as every other
+    // highlight-state read in this migration (no blending involved).
+    readonly property color _headerText: control.palette.buttonText
 
     hoverEnabled: true
     padding: StyleKit.Units.smallSpacing
@@ -19,7 +24,7 @@ T.MenuItem {
 
     background: Rectangle {
         radius: StyleKit.Units.cornerRadius
-        color: control.highlighted ? control.colors.highlightColor : "transparent"
+        color: control.highlighted ? control.palette.highlight : "transparent"
     }
 
     contentItem: Text {
@@ -28,7 +33,7 @@ T.MenuItem {
         verticalAlignment: Text.AlignVCenter
         text: control.text
         font: control.font
-        color: control.highlighted ? control.colors.highlightedTextColor : control.colors.textColor
+        color: control.highlighted ? control.palette.highlightedText : control._headerText
         elide: Text.ElideRight
     }
 
@@ -43,7 +48,7 @@ T.MenuItem {
         visible: control.checkable
         text: "✓"
         opacity: control.checked ? 1 : 0
-        color: control.highlighted ? control.colors.highlightedTextColor : control.colors.textColor
+        color: control.highlighted ? control.palette.highlightedText : control._headerText
     }
 
     arrow: Text {
@@ -51,6 +56,6 @@ T.MenuItem {
         y: control.topPadding + (control.availableHeight - height) / 2
         visible: control.subMenu
         text: "▸"
-        color: control.highlighted ? control.colors.highlightedTextColor : control.colors.textColor
+        color: control.highlighted ? control.palette.highlightedText : control._headerText
     }
 }

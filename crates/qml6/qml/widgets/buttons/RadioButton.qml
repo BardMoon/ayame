@@ -4,12 +4,22 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.RadioButton {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.RadioButton
+        enabled: control.enabled
+        focused: control.activeFocus
+        checked: control.checked
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
+
     // Snapped to a multiple of 4, not just to a whole pixel: the
     // indicator below is halved once for its own size and halved again
     // (implicitly, via (outer - inner) / 2) to center the checked dot,
@@ -33,8 +43,8 @@ T.RadioButton {
         height: control._indicatorSize
         radius: width / 2
         color: "transparent"
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
+        border.width: styleReader.background.border.width
+        border.color: styleReader.background.border.color
 
         Rectangle {
             // parent.width is always a multiple of 4 (see _indicatorSize
@@ -46,7 +56,7 @@ T.RadioButton {
             x: (parent.width - width) / 2
             y: (parent.height - height) / 2
             radius: width / 2
-            color: control.colors.highlightColor
+            color: control.palette.highlight
 
             // Grows in from nothing on check, shrinks back out on
             // uncheck, instead of popping straight to full size --
@@ -64,6 +74,6 @@ T.RadioButton {
         verticalAlignment: Text.AlignVCenter
         text: control.text
         font: control.font
-        color: control.colors.textColor
+        color: styleReader.text.color
     }
 }

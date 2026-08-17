@@ -4,13 +4,23 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.CheckBox {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
     readonly property real _indicatorSize: StyleKit.Units.iconSizes.small
+
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.CheckBox
+        enabled: control.enabled
+        focused: control.activeFocus
+        checked: control.checked
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
 
     hoverEnabled: true
     spacing: StyleKit.Units.smallSpacing
@@ -26,9 +36,9 @@ T.CheckBox {
         height: control._indicatorSize
         radius: StyleKit.Units.cornerRadius
         clip: true
-        color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
+        color: styleReader.background.color
+        border.width: styleReader.background.border.width
+        border.color: styleReader.background.border.color
 
         Text {
             // anchors.fill + alignment (not anchors.centerIn on an
@@ -42,7 +52,7 @@ T.CheckBox {
             text: "✓"
             font.pixelSize: parent.height * 1.15
             font.weight: Font.Black
-            color: control.colors.highlightedTextColor
+            color: control.palette.highlightedText
 
             // Grows in from nothing on check, shrinks back out on
             // uncheck -- same feel as RadioButton's dot.
@@ -59,6 +69,6 @@ T.CheckBox {
         verticalAlignment: Text.AlignVCenter
         text: control.text
         font: control.font
-        color: control.colors.textColor
+        color: styleReader.text.color
     }
 }

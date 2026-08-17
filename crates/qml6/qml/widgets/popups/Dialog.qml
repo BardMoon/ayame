@@ -4,12 +4,23 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.Dialog {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // StyleReader.ControlType.Dialog exists but has no matching
+    // AbstractStylableControls slot (same situation as Menu.qml) -- falls
+    // back to `control`, which is the exact same view-colorSet look this
+    // file had before, so no local color computation needed here unlike
+    // Menu.qml/MenuItem.qml (those needed *header* colors, which really
+    // do differ from `control`'s view-colorSet default).
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.Dialog
+        enabled: control.enabled
+        palette: control.palette
+    }
 
     padding: StyleKit.Units.largeSpacing
 
@@ -18,9 +29,9 @@ T.Dialog {
 
     background: Rectangle {
         radius: StyleKit.Units.cornerRadius
-        color: control.colors.backgroundColor
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.colors.borderColor
+        color: styleReader.background.color
+        border.width: styleReader.background.border.width
+        border.color: styleReader.background.border.color
     }
 
     header: Ayame.Label {

@@ -4,12 +4,40 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.SpinBox {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.SpinBox
+        enabled: control.enabled
+        focused: control.activeFocus
+        palette: control.palette
+    }
+
+    // up/down are "ghost" buttons (transparent at rest, tinted on
+    // hover/press, no border) -- the exact same shape as ToolButton, so
+    // reused directly instead of inventing a separate SpinBox-indicator
+    // slot in AyameStyle.
+    LabsStyleKit.StyleReader {
+        id: upStyleReader
+        controlType: LabsStyleKit.StyleReader.ToolButton
+        enabled: control.enabled
+        hovered: control.up.hovered
+        pressed: control.up.pressed
+        palette: control.palette
+    }
+
+    LabsStyleKit.StyleReader {
+        id: downStyleReader
+        controlType: LabsStyleKit.StyleReader.ToolButton
+        enabled: control.enabled
+        hovered: control.down.hovered
+        pressed: control.down.pressed
+        palette: control.palette
+    }
 
     hoverEnabled: true
     padding: StyleKit.Units.smallSpacing
@@ -43,9 +71,9 @@ T.SpinBox {
         Rectangle {
             anchors.fill: parent
             radius: StyleKit.Units.cornerRadius
-            color: control.colors.backgroundColor
-            border.width: StyleKit.Units.borderWidth
-            border.color: control.colors.borderColor
+            color: styleReader.background.color
+            border.width: styleReader.background.border.width
+            border.color: styleReader.background.border.color
         }
 
         // Same activeFocus cue as widgets/Button.qml -- see
@@ -54,14 +82,14 @@ T.SpinBox {
         Ayame.HighlightRing {
             anchors.fill: parent
             active: control.activeFocus
-            ringColor: control.colors.highlightColor
+            ringColor: control.palette.highlight
         }
     }
 
     contentItem: TextInput {
         text: control.displayText
         font: control.font
-        color: control.colors.textColor
+        color: styleReader.text.color
         horizontalAlignment: Qt.AlignHCenter
         verticalAlignment: Qt.AlignVCenter
         readOnly: !control.editable
@@ -74,12 +102,12 @@ T.SpinBox {
         height: parent.height
         implicitWidth: StyleKit.Units.gridUnit * 1.2
         radius: StyleKit.Units.cornerRadius
-        color: control.up.pressed ? control.colors.pressedColor : (control.up.hovered ? control.colors.hoverColor : "transparent")
+        color: upStyleReader.background.color
 
         Text {
             text: "+"
             anchors.centerIn: parent
-            color: control.colors.textColor
+            color: upStyleReader.text.color
         }
     }
 
@@ -88,12 +116,12 @@ T.SpinBox {
         height: parent.height
         implicitWidth: StyleKit.Units.gridUnit * 1.2
         radius: StyleKit.Units.cornerRadius
-        color: control.down.pressed ? control.colors.pressedColor : (control.down.hovered ? control.colors.hoverColor : "transparent")
+        color: downStyleReader.background.color
 
         Text {
             text: "-"
             anchors.centerIn: parent
-            color: control.colors.textColor
+            color: downStyleReader.text.color
         }
     }
 }

@@ -4,12 +4,21 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.TabButton {
     id: control
 
-    property int colorSet: StyleKit.Theme.header
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.TabButton
+        enabled: control.enabled
+        focused: control.activeFocus
+        checked: control.checked
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
 
     hoverEnabled: true
 
@@ -27,7 +36,7 @@ T.TabButton {
     // indicator that slides between tabs) -- this only needs the
     // subtle hover/press wash.
     background: Rectangle {
-        color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : "transparent")
+        color: styleReader.background.color
     }
 
     contentItem: Ayame.IconLabel {
@@ -39,6 +48,6 @@ T.TabButton {
         spacing: StyleKit.Units.smallSpacing
         text: control.text
         font: control.font
-        color: control.colors.textColor
+        color: styleReader.text.color
     }
 }

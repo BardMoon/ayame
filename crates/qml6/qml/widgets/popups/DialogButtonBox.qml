@@ -4,12 +4,19 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.DialogButtonBox {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // No dedicated StyleReader.ControlType for DialogButtonBox -- falls
+    // back to `control` (view colorSet, same as before).
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.Control
+        enabled: control.enabled
+        palette: control.palette
+    }
 
     spacing: StyleKit.Units.smallSpacing
     padding: StyleKit.Units.smallSpacing
@@ -38,6 +45,6 @@ T.DialogButtonBox {
 
     background: Rectangle {
         radius: StyleKit.Units.cornerRadius
-        color: control.colors.backgroundColor
+        color: styleReader.background.color
     }
 }

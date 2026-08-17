@@ -4,12 +4,21 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.Switch {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.SwitchControl
+        enabled: control.enabled
+        focused: control.activeFocus
+        checked: control.checked
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
 
     // Proportioned off gridUnit (not hardcoded px) so the switch scales
     // with uiScale like every other control here, same 36:20:16:2 ratio
@@ -32,9 +41,9 @@ T.Switch {
         x: control.leftPadding
         y: parent.height / 2 - height / 2
         radius: height / 2
-        color: control.checked ? control.colors.highlightColor : control.colors.backgroundColor
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
+        color: styleReader.background.color
+        border.width: styleReader.background.border.width
+        border.color: styleReader.background.border.color
 
         Rectangle {
             x: control.checked ? parent.width - width - control._thumbMargin : control._thumbMargin
@@ -42,7 +51,7 @@ T.Switch {
             width: control._thumbSize
             height: control._thumbSize
             radius: width / 2
-            color: control.checked ? control.colors.highlightedTextColor : control.colors.textColor
+            color: control.checked ? control.palette.highlightedText : control.palette.text
 
             Behavior on x {
                 NumberAnimation { duration: StyleKit.Units.shortDuration; easing.type: Easing.OutCubic }
@@ -58,6 +67,6 @@ T.Switch {
         verticalAlignment: Text.AlignVCenter
         text: control.text
         font: control.font
-        color: control.colors.textColor
+        color: styleReader.text.color
     }
 }

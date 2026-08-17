@@ -4,12 +4,10 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.Button {
     id: control
-
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
     opacity: control.enabled ? 1.0 : 0.5
@@ -25,13 +23,24 @@ T.Button {
     implicitHeight: StyleKit.Units.gridUnit * 1.6
     implicitWidth: contentItem.implicitWidth + StyleKit.Units.largeSpacing * 2
 
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: control.flat ? LabsStyleKit.StyleReader.FlatButton : LabsStyleKit.StyleReader.Button
+        enabled: control.enabled
+        focused: control.activeFocus
+        checked: control.checked
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
+
     background: Item {
         Rectangle {
             anchors.fill: parent
             radius: StyleKit.Units.cornerRadius
-            color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
-            border.width: StyleKit.Units.borderWidth
-            border.color: control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor
+            color: styleReader.background.color
+            border.width: styleReader.background.border.width
+            border.color: styleReader.background.border.color
         }
 
         // Highlighted -> a bright arc chases around the border in an
@@ -42,7 +51,7 @@ T.Button {
             anchors.fill: parent
             animating: control.enabled && control.highlighted && StyleKit.Units.animationsEnabled
             active: control.enabled && control.activeFocus
-            ringColor: control.colors.highlightColor
+            ringColor: control.palette.highlight
         }
     }
 
@@ -55,7 +64,7 @@ T.Button {
         spacing: StyleKit.Units.smallSpacing
         text: control.text
         font: control.font
-        color: control.colors.textColor
+        color: styleReader.text.color
 
         Behavior on color {
             ColorAnimation { duration: StyleKit.Units.shortDuration; easing.type: Easing.OutCubic }

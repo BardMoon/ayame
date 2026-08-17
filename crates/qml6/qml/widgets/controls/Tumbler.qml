@@ -4,12 +4,19 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.Tumbler {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // No dedicated StyleReader.ControlType for Tumbler -- falls back to
+    // the generic `control` slot, same as Dial/PageIndicator/RangeSlider.
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.Control
+        enabled: control.enabled
+        palette: control.palette
+    }
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
@@ -38,9 +45,9 @@ T.Tumbler {
 
     background: Rectangle {
         radius: StyleKit.Units.cornerRadius
-        color: control.colors.backgroundColor
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.colors.borderColor
+        color: styleReader.background.color
+        border.width: styleReader.background.border.width
+        border.color: styleReader.background.border.color
     }
 
     delegate: Text {
@@ -48,7 +55,7 @@ T.Tumbler {
         verticalAlignment: Text.AlignVCenter
         text: modelData
         font: control.font
-        color: control.colors.textColor
+        color: styleReader.text.color
         opacity: 0.4 + (1.0 - Math.abs(Tumbler.displacement) / (control.visibleItemCount / 2)) * 0.6
     }
 }

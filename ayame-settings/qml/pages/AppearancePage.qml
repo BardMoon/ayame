@@ -6,20 +6,33 @@ import StyleKit 1.0 as StyleKit
 
 // Editor for the settings Ayame itself (crates/qml6) reads from `ayamerc`
 // at startup -- theme, font, and the QQC2 style's own
-// corner-radius/border-width/animation/UI-scale presets. Every change here
-// applies live immediately (this whole app runs under the Ayame style, see
-// `ayame-settings/src/main.rs`, so the effect is visible right in this
-// window's own controls) but is *not* written to `ayamerc` until
-// `commit()` runs (the settings window's "Save" button) -- see
-// `commit()`/`cancel()`/`resetToDefaults()` below, wired to
-// Save/Cancel/Defaults respectively.
+// corner-radius/border-width/animation/UI-scale presets.
+//
+// No live preview: every control here only updates this page's own
+// buffered `root.*` property (see below) -- it does NOT call into
+// `theme`/`fontSettings`/`styleInfo`/`StyleKit.Units`'s live-apply methods
+// (`set_mode`/`set_accent_color`/`set_family`/`set_point_size`/`set*Option`
+// etc.) until `commit()` runs (the settings window's "Save" button), which
+// applies everything staged here in one go and then persists it. Changes
+// are only guaranteed visible after an app restart -- some already-open
+// windows' controls may not pick up an applied-but-not-restarted change
+// even after Save (see `.agents/tasks/migrate-to-qt-labs-stylekit.md`:
+// `Qt.labs.StyleKit`'s `StyleReader` doesn't reliably re-resolve for
+// already-instantiated widgets, which made a true live-preview design
+// unworkable once Ayame's own widgets started reading from it -- removing
+// live preview entirely, for every setting here, keeps the UX consistent
+// instead of only some controls updating live and others not).
+// `cancel()`/`resetToDefaults()` (Cancel/Defaults) only ever touch this
+// page's own buffered properties too -- neither needs to call into the
+// singletons at all, since nothing was ever live-applied to begin with.
 //
 // Every value below is seeded once from its singleton (`option()`/`mode()`/
 // etc. are plain qinvokables, not NOTIFYing properties, so a direct
 // `color: theme.accent_color()` binding would never refresh) then kept in
-// a root property that setters update explicitly -- same "seed once,
-// update live" idiom `crates/qml6/qml/theme/Units.qml` already uses for
-// these exact singletons.
+// a root property that setters update explicitly -- same "seed once, keep
+// in a root property" idiom `crates/qml6/qml/theme/Units.qml` uses for
+// these exact singletons, just without that file's "...then update live"
+// half anymore.
 QQC2.Page {
     id: root
 
@@ -31,16 +44,20 @@ QQC2.Page {
     property color accentColor: theme.accent_color()
     property string fontFamily: fontSettings.family()
     property real fontPointSize: fontSettings.point_size() > 0 ? fontSettings.point_size() : fontSettings.current_point_size()
-    // Corner radius / border width / animation / UI scale are driven
-    // through the `StyleKit.Units` singleton (not a private instance here)
-    // so that changing them re-styles every Ayame-styled control in this
-    // process live, including this settings window's own -- see
-    // Units.qml's own seed-once-then-update-live properties.
-    property string cornerRadiusOption: StyleKit.Units.cornerRadiusOption
-    property string borderWidthOption: StyleKit.Units.borderWidthOption
-    property string animationSpeedOption: StyleKit.Units.animationSpeedOption
-    property bool animationsEnabled: StyleKit.Units.animationsEnabled
-    property real uiScale: StyleKit.Units.uiScale
+    // Corner radius / border width / animation / UI scale read from the
+    // `StyleKit.Units` singleton, but only as a one-shot seed via
+    // Component.onCompleted below -- `StyleKit.Units.cornerRadiusOption`
+    // etc. are themselves live properties (Units.qml's own
+    // seed-once-then-update-live idiom), so declaring these as ordinary
+    // property-initializer bindings here (`property string
+    // cornerRadiusOption: StyleKit.Units.cornerRadiusOption`) would keep
+    // permanently mirroring the live singleton and this page could never
+    // hold a staged-but-not-yet-applied value distinct from it.
+    property string cornerRadiusOption
+    property string borderWidthOption
+    property string animationSpeedOption
+    property bool animationsEnabled
+    property real uiScale
     property string savedStyle: styleInfo.saved_style()
 
     // Snapshot of what's actually on `ayamerc` right now, used only to
@@ -72,7 +89,14 @@ QQC2.Page {
         root.diskUiScale = root.uiScale;
         root.diskSavedStyle = root.savedStyle;
     }
-    Component.onCompleted: root.snapshotDisk()
+    Component.onCompleted: {
+        root.cornerRadiusOption = StyleKit.Units.cornerRadiusOption;
+        root.borderWidthOption = StyleKit.Units.borderWidthOption;
+        root.animationSpeedOption = StyleKit.Units.animationSpeedOption;
+        root.animationsEnabled = StyleKit.Units.animationsEnabled;
+        root.uiScale = StyleKit.Units.uiScale;
+        root.snapshotDisk();
+    }
 
     // True whenever anything on this page differs from what's persisted --
     // wired to enable/disable the settings window's Save/Cancel buttons.
@@ -121,18 +145,29 @@ QQC2.Page {
         && root.savedStyle === root.defaultSavedStyle
 
     function setThemeMode(mode) {
-        theme.set_mode(mode);
         root.themeMode = mode;
         root.setAccentColor(theme.default_accent_for(mode));
     }
     function setAccentColor(color) {
-        theme.set_accent_color(color);
         root.accentColor = color;
     }
 
-    // Commits everything currently live (possibly unsaved) on this page to
-    // `ayamerc` -- wired to the settings window's "Save" button.
+    // Applies everything staged on this page (see class comment above --
+    // nothing below was live-applied yet) to the underlying singletons,
+    // then persists it to `ayamerc` -- wired to the settings window's
+    // "Save" button.
     function commit() {
+        theme.set_mode(root.themeMode);
+        theme.set_accent_color(root.accentColor);
+        fontSettings.set_family(root.fontFamily);
+        fontSettings.set_point_size(root.fontPointSize);
+        styleInfo.save_style(root.savedStyle);
+        StyleKit.Units.setCornerRadiusOption(root.cornerRadiusOption);
+        StyleKit.Units.setBorderWidthOption(root.borderWidthOption);
+        StyleKit.Units.setAnimationSpeedOption(root.animationSpeedOption);
+        StyleKit.Units.setAnimationsEnabled(root.animationsEnabled);
+        StyleKit.Units.setUiScale(root.uiScale);
+
         theme.persist();
         fontSettings.persist();
         styleInfo.persist();
@@ -140,36 +175,38 @@ QQC2.Page {
         root.snapshotDisk();
     }
 
-    // Discards unsaved changes on this page: reloads from `ayamerc`,
-    // applies it live, and re-seeds the page's own buffered properties so
-    // the controls reflect it -- wired to the settings window's "Cancel"
-    // button.
+    // Discards unsaved changes on this page: nothing was ever live-applied
+    // (see class comment above), so this just resets the page's own
+    // buffered properties back to the last-saved snapshot -- wired to the
+    // settings window's "Cancel" button.
     function cancel() {
-        theme.reload();
-        fontSettings.reload();
-        styleInfo.reload();
-        StyleKit.Units.cancel();
-        root.themeMode = theme.mode();
-        root.accentColor = theme.accent_color();
-        root.fontFamily = fontSettings.family();
-        root.fontPointSize = fontSettings.point_size() > 0 ? fontSettings.point_size() : fontSettings.current_point_size();
-        root.savedStyle = styleInfo.saved_style();
-        root.snapshotDisk();
+        root.themeMode = root.diskThemeMode;
+        root.accentColor = root.diskAccentColor;
+        root.fontFamily = root.diskFontFamily;
+        root.fontPointSize = root.diskFontPointSize;
+        root.cornerRadiusOption = root.diskCornerRadiusOption;
+        root.borderWidthOption = root.diskBorderWidthOption;
+        root.animationSpeedOption = root.diskAnimationSpeedOption;
+        root.animationsEnabled = root.diskAnimationsEnabled;
+        root.uiScale = root.diskUiScale;
+        root.savedStyle = root.diskSavedStyle;
     }
 
-    // Resets everything on this page to `Settings::default()`, applied
-    // live but not persisted until `commit()` runs -- wired to the
-    // settings window's "Defaults" button.
+    // Resets everything on this page's buffered properties to
+    // `Settings::default()` -- not applied to the singletons or persisted
+    // until `commit()` runs, same as any other change on this page --
+    // wired to the settings window's "Defaults" button.
     function resetToDefaults() {
-        theme.reset_to_default();
-        fontSettings.reset_to_default();
-        styleInfo.reset_to_default();
-        StyleKit.Units.resetToDefaults();
-        root.themeMode = theme.mode();
-        root.accentColor = theme.accent_color();
-        root.fontFamily = fontSettings.family();
-        root.fontPointSize = fontSettings.point_size() > 0 ? fontSettings.point_size() : fontSettings.current_point_size();
-        root.savedStyle = styleInfo.saved_style();
+        root.themeMode = root.defaultThemeMode;
+        root.accentColor = root.defaultAccentColor;
+        root.fontFamily = root.defaultFontFamily;
+        root.fontPointSize = root.defaultFontPointSize;
+        root.cornerRadiusOption = root.defaultCornerRadiusOption;
+        root.borderWidthOption = root.defaultBorderWidthOption;
+        root.animationSpeedOption = root.defaultAnimationSpeedOption;
+        root.animationsEnabled = root.defaultAnimationsEnabled;
+        root.uiScale = root.defaultUiScale;
+        root.savedStyle = root.defaultSavedStyle;
     }
 
     readonly property var schemeIds: ["system"].concat(theme.available_scheme_ids().split("\n").filter(s => s.length > 0))
@@ -282,17 +319,11 @@ QQC2.Page {
                         const i = families.indexOf(f);
                         return i >= 0 ? i : -1;
                     }
-                    onActivated: (index) => {
-                        fontSettings.set_family(families[index]);
-                        root.fontFamily = families[index];
-                    }
+                    onActivated: (index) => root.fontFamily = families[index]
                 }
                 QQC2.Button {
                     text: "System Default"
-                    onClicked: {
-                        fontSettings.set_family("");
-                        root.fontFamily = "";
-                    }
+                    onClicked: root.fontFamily = ""
                 }
             }
 
@@ -303,10 +334,7 @@ QQC2.Page {
                     from: 0
                     to: 72
                     value: root.fontPointSize
-                    onValueModified: {
-                        fontSettings.set_point_size(value);
-                        root.fontPointSize = value;
-                    }
+                    onValueModified: root.fontPointSize = value
                 }
             }
 
@@ -319,10 +347,7 @@ QQC2.Page {
                 QQC2.ComboBox {
                     model: ["disabled", "small", "medium", "large", "circle"]
                     currentIndex: Math.max(0, model.indexOf(root.cornerRadiusOption))
-                    onActivated: (index) => {
-                        StyleKit.Units.setCornerRadiusOption(model[index]);
-                        root.cornerRadiusOption = model[index];
-                    }
+                    onActivated: (index) => root.cornerRadiusOption = model[index]
                 }
             }
 
@@ -332,10 +357,7 @@ QQC2.Page {
                 QQC2.ComboBox {
                     model: ["thin", "default", "thick"]
                     currentIndex: Math.max(0, model.indexOf(root.borderWidthOption))
-                    onActivated: (index) => {
-                        StyleKit.Units.setBorderWidthOption(model[index]);
-                        root.borderWidthOption = model[index];
-                    }
+                    onActivated: (index) => root.borderWidthOption = model[index]
                 }
             }
 
@@ -346,18 +368,12 @@ QQC2.Page {
                     enabled: root.animationsEnabled
                     model: ["slow", "normal", "fast"]
                     currentIndex: Math.max(0, model.indexOf(root.animationSpeedOption))
-                    onActivated: (index) => {
-                        StyleKit.Units.setAnimationSpeedOption(model[index]);
-                        root.animationSpeedOption = model[index];
-                    }
+                    onActivated: (index) => root.animationSpeedOption = model[index]
                 }
                 QQC2.CheckBox {
                     text: "Enabled"
                     checked: root.animationsEnabled
-                    onToggled: {
-                        StyleKit.Units.setAnimationsEnabled(checked);
-                        root.animationsEnabled = checked;
-                    }
+                    onToggled: root.animationsEnabled = checked
                 }
             }
 
@@ -371,10 +387,7 @@ QQC2.Page {
                     value: Math.round(root.uiScale * 100)
                     textFromValue: (value) => (value / 100).toFixed(2)
                     valueFromText: (text) => Math.round(parseFloat(text) * 100)
-                    onValueModified: {
-                        StyleKit.Units.setUiScale(value / 100);
-                        root.uiScale = value / 100;
-                    }
+                    onValueModified: root.uiScale = value / 100
                 }
             }
 
@@ -385,10 +398,7 @@ QQC2.Page {
                     readonly property var styles: styleInfo.available_styles().split("\n").filter(s => s.length > 0)
                     model: styles
                     currentIndex: Math.max(0, styles.indexOf(root.savedStyle))
-                    onActivated: (index) => {
-                        styleInfo.save_style(styles[index]);
-                        root.savedStyle = styles[index];
-                    }
+                    onActivated: (index) => root.savedStyle = styles[index]
                 }
             }
 

@@ -4,12 +4,30 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.Slider {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // No dedicated StyleReader.ControlType for Slider -- falls back to
+    // the generic `control` slot. Track (rest-only, not interactive) and
+    // handle (reacts to hover/pressed) get separate StyleReaders since
+    // they need different state.
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.Control
+        enabled: control.enabled
+        palette: control.palette
+    }
+
+    LabsStyleKit.StyleReader {
+        id: handleStyleReader
+        controlType: LabsStyleKit.StyleReader.Control
+        enabled: control.enabled
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
 
     hoverEnabled: true
     implicitWidth: control.horizontal ? StyleKit.Units.gridUnit * 8 : StyleKit.Units.gridUnit * 1.4
@@ -23,8 +41,8 @@ T.Slider {
         y: control.topPadding + (control.horizontal ? Math.round((control.availableHeight - height) / 2) : 0)
         width: control.horizontal ? control.availableWidth : track.thickness
         height: control.horizontal ? track.thickness : control.availableHeight
-        trackColor: control.colors.backgroundColor
-        trackBorderColor: control.colors.borderColor
+        trackColor: styleReader.background.color
+        trackBorderColor: styleReader.background.border.color
 
         // Same size as the track (not inset). Matches ProgressBar's
         // fill so both read the same way.
@@ -33,9 +51,9 @@ T.Slider {
             width: control.horizontal ? control.position * parent.width : parent.width
             height: control.horizontal ? parent.height : control.position * parent.height
             radius: parent.radius
-            color: control.colors.highlightColor
-            border.width: StyleKit.Units.borderWidth
-            border.color: control.colors.highlightColor
+            color: control.palette.highlight
+            border.width: styleReader.background.border.width
+            border.color: control.palette.highlight
         }
     }
 
@@ -45,18 +63,19 @@ T.Slider {
         implicitWidth: control._handleSize
         implicitHeight: control._handleSize
 
-        // colors.hoverColor/pressedColor are translucent (designed as a
-        // wash over some other opaque background, e.g. Button.qml's
-        // fill) -- using them directly here made the handle look like
-        // it was turning see-through against the track underneath it.
-        // highlightColor itself is opaque, so it's fine to use directly
-        // for the pressed fill.
+        // `control`'s translucent pressed/hovered tints are designed as
+        // a wash over some other opaque background (e.g. Button.qml's
+        // fill) -- using them directly here made the handle look like it
+        // was turning see-through against the track underneath it, so
+        // pressed still forces the opaque palette.highlight fill/border
+        // directly instead of going through handleStyleReader for that
+        // one state.
         Rectangle {
             anchors.fill: parent
             radius: width / 2
-            color: control.pressed ? control.colors.highlightColor : control.colors.backgroundColor
-            border.width: StyleKit.Units.borderWidth
-            border.color: control.pressed ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
+            color: control.pressed ? control.palette.highlight : handleStyleReader.background.color
+            border.width: handleStyleReader.background.border.width
+            border.color: control.pressed ? control.palette.highlight : handleStyleReader.background.border.color
         }
 
         // Same activeFocus cue as widgets/Button.qml -- see
@@ -66,7 +85,7 @@ T.Slider {
             anchors.fill: parent
             cornerRadius: parent.width / 2
             active: control.activeFocus
-            ringColor: control.colors.highlightColor
+            ringColor: control.palette.highlight
         }
     }
 }

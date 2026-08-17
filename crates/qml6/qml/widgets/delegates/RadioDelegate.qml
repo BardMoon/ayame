@@ -4,12 +4,33 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.RadioDelegate {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // Same split as CheckDelegate.qml right above it: background/text
+    // reuse `itemDelegate`, indicator reuses `radioButton` (widgets/
+    // buttons/RadioButton.qml's own slot).
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.ItemDelegate
+        enabled: control.enabled
+        focused: control.activeFocus
+        highlighted: control.highlighted
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
+
+    LabsStyleKit.StyleReader {
+        id: indicatorStyleReader
+        controlType: LabsStyleKit.StyleReader.RadioButton
+        enabled: control.enabled
+        checked: control.checked
+        hovered: control.hovered
+        palette: control.palette
+    }
 
     hoverEnabled: true
     padding: StyleKit.Units.smallSpacing
@@ -23,7 +44,7 @@ T.RadioDelegate {
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     background: Rectangle {
-        color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : "transparent")
+        color: styleReader.background.color
     }
 
     contentItem: Ayame.IconLabel {
@@ -37,7 +58,7 @@ T.RadioDelegate {
         spacing: StyleKit.Units.smallSpacing
         text: control.text
         font: control.font
-        color: control.highlighted ? control.colors.highlightedTextColor : control.colors.textColor
+        color: styleReader.text.color
     }
 
     indicator: Rectangle {
@@ -47,8 +68,8 @@ T.RadioDelegate {
         height: StyleKit.Units.iconSizes.small
         radius: width / 2
         color: "transparent"
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.checked ? control.colors.highlightColor : control.colors.borderColor
+        border.width: indicatorStyleReader.background.border.width
+        border.color: indicatorStyleReader.background.border.color
 
         Rectangle {
             anchors.centerIn: parent
@@ -56,7 +77,7 @@ T.RadioDelegate {
             height: parent.height * 0.5
             radius: width / 2
             visible: control.checked
-            color: control.colors.highlightColor
+            color: control.palette.highlight
         }
     }
 }

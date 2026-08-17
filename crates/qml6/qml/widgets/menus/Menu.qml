@@ -5,12 +5,31 @@ import QtQuick.Window
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.Menu {
     id: control
 
-    property int colorSet: StyleKit.Theme.header
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // StyleReader.ControlType.Menu exists, but Qt.labs.StyleKit's
+    // AbstractStylableControls has no matching `menu` slot to set it on
+    // -- there's simply nowhere in a Style definition to give Menu/
+    // MenuItem/MenuSeparator their own look, unlike every other
+    // header-colorSet widget in this migration (TabBar/ToolBar both got
+    // a real AyameStyle slot). Header colors are computed locally here
+    // instead, off the live palette, same `palette.button`/`.buttonText`
+    // formula as AyameStyle.qml's own private `_header*` helpers -- only
+    // `background.border.width` still comes through a StyleReader (falls
+    // back to `control`, same value either way).
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.Control
+        enabled: control.enabled
+        palette: control.palette
+    }
+
+    readonly property color _headerBackground: control.palette.button
+    readonly property color _headerText: control.palette.buttonText
+    readonly property color _headerBorder: Qt.rgba(control._headerText.r, control._headerText.g, control._headerText.b, 0.3)
 
     // T.Menu (like T.Popup, which it extends) never computes its own root
     // implicitWidth/implicitHeight from contentItem/background -- every
@@ -63,8 +82,8 @@ T.Menu {
 
     background: Rectangle {
         radius: StyleKit.Units.cornerRadius
-        color: control.colors.backgroundColor
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.colors.borderColor
+        color: control._headerBackground
+        border.width: styleReader.background.border.width
+        border.color: control._headerBorder
     }
 }

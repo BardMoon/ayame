@@ -4,12 +4,17 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.ProgressBar {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.ProgressBar
+        enabled: control.enabled
+        palette: control.palette
+    }
 
     // Pinned to the shared track thickness (not derived via the usual
     // implicitContentHeight + padding formula) -- same reasoning as
@@ -21,8 +26,8 @@ T.ProgressBar {
     background: Ayame.TrackBar {
         id: track
         implicitWidth: StyleKit.Units.gridUnit * 8
-        trackColor: control.colors.backgroundColor
-        trackBorderColor: control.colors.borderColor
+        trackColor: styleReader.background.color
+        trackBorderColor: styleReader.background.border.color
     }
 
     contentItem: Item {
@@ -36,9 +41,9 @@ T.ProgressBar {
             width: control.position * parent.width
             height: parent.height
             radius: track.radius
-            color: control.colors.highlightColor
-            border.width: StyleKit.Units.borderWidth
-            border.color: control.colors.highlightColor
+            color: control.palette.highlight
+            border.width: styleReader.background.border.width
+            border.color: control.palette.highlight
         }
 
         // control.position isn't meaningful while indeterminate -- a
@@ -75,7 +80,7 @@ T.ProgressBar {
                         width: index % 2 === 0 ? indeterminateLayer.stripeWidth : indeterminateLayer.gapWidth
                         height: parent.height
                         radius: track.radius
-                        color: index % 2 === 0 ? control.colors.borderColor : "transparent"
+                        color: index % 2 === 0 ? styleReader.background.border.color : "transparent"
                     }
                 }
 

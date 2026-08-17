@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
-import StyleKit 1.0 as StyleKit
 
 // Themed drop-in for QQC2's ScrollView. Placed at `widgets/` root (like
 // Label.qml/Popup.qml), not `widgets/inputs/`: it's chrome wrapping other
@@ -25,17 +24,13 @@ import StyleKit 1.0 as StyleKit
 T.ScrollView {
     id: control
 
-    // Same knob as widgets/Label.qml/widgets/inputs/CheckBox.qml.
-    property int colorSet: StyleKit.Theme.view
-
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(contentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
-    T.ScrollBar.vertical: Ayame.ScrollBar {
-        colorSet: control.colorSet
-    }
+    // widgets/scroll/ScrollBar.qml no longer takes a `colorSet` --
+    // migrated (this batch) to read colors straight off its own
+    // `control.palette` instead, so there's nothing left to forward here.
+    T.ScrollBar.vertical: Ayame.ScrollBar {}
 
-    T.ScrollBar.horizontal: Ayame.ScrollBar {
-        colorSet: control.colorSet
-    }
+    T.ScrollBar.horizontal: Ayame.ScrollBar {}
 }

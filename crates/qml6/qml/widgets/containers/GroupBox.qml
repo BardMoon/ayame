@@ -4,12 +4,19 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.GroupBox {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // `groupBox` has a dedicated slot, but its old look was identical to
+    // `control`'s (view colorSet) -- no AyameStyle override needed.
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.GroupBox
+        enabled: control.enabled
+        palette: control.palette
+    }
 
     padding: StyleKit.Units.largeSpacing
 
@@ -21,7 +28,7 @@ T.GroupBox {
         width: control.availableWidth
         text: control.title
         font: Qt.font({ family: control.font.family, pointSize: control.font.pointSize, bold: true })
-        color: control.colors.textColor
+        color: styleReader.text.color
         elide: Text.ElideRight
     }
 
@@ -31,7 +38,7 @@ T.GroupBox {
         height: parent.height - control.topPadding + control.bottomPadding
         radius: StyleKit.Units.cornerRadius
         color: "transparent"
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.colors.borderColor
+        border.width: styleReader.background.border.width
+        border.color: styleReader.background.border.color
     }
 }

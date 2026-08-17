@@ -8,8 +8,12 @@ import StyleKit 1.0 as StyleKit
 T.PageIndicator {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // Inactive dots want a translucent text color ("subColor" in the old
+    // StyleKit.Theme) with no Qt.labs.StyleKit ControlStyle equivalent
+    // (no dedicated PageIndicator slot, and no "sub"/dimmed color concept
+    // in ControlStyle at all) -- kept as a local blend off the live
+    // palette instead, same formula the old Theme.paletteFor() used.
+    readonly property color _subColor: Qt.rgba(control.palette.text.r, control.palette.text.g, control.palette.text.b, 0.3)
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
@@ -23,7 +27,7 @@ T.PageIndicator {
         implicitWidth: 8
         implicitHeight: 8
         radius: 4
-        color: index === control.currentIndex ? control.colors.highlightColor : control.colors.subColor
+        color: index === control.currentIndex ? control.palette.highlight : control._subColor
     }
 
     // T.PageIndicator has no built-in layout for its delegates -- without

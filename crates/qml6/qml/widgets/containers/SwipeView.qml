@@ -4,12 +4,28 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.SwipeView {
     id: control
 
-    property int colorSet: StyleKit.Theme.window
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // Same passthrough-only situation as StackView.qml right above it in
+    // this migration -- `colors` has never been read anywhere in this
+    // file either (the ListView contentItem below has no color bindings).
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.Control
+        enabled: control.enabled
+        palette: control.palette
+    }
+
+    readonly property var colors: ({
+        backgroundColor: styleReader.background.color,
+        borderColor: styleReader.background.border.color,
+        textColor: styleReader.text.color,
+        highlightColor: control.palette.highlight,
+        highlightedTextColor: control.palette.highlightedText
+    })
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(contentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)

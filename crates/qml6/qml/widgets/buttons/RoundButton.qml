@@ -4,12 +4,21 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.RoundButton {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.AbstractButton
+        enabled: control.enabled
+        focused: control.activeFocus
+        checked: control.checked
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
 
     hoverEnabled: true
 
@@ -26,9 +35,9 @@ T.RoundButton {
         Rectangle {
             anchors.fill: parent
             radius: control.radius
-            color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
-            border.width: StyleKit.Units.borderWidth
-            border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
+            color: styleReader.background.color
+            border.width: styleReader.background.border.width
+            border.color: styleReader.background.border.color
         }
 
         // Same highlighted/activeFocus cues as widgets/Button.qml -- see
@@ -39,7 +48,7 @@ T.RoundButton {
             cornerRadius: control.radius
             animating: control.enabled && control.highlighted && StyleKit.Units.animationsEnabled
             active: control.enabled && control.activeFocus
-            ringColor: control.colors.highlightColor
+            ringColor: control.palette.highlight
         }
     }
 
@@ -52,6 +61,6 @@ T.RoundButton {
         spacing: StyleKit.Units.smallSpacing
         text: control.text
         font: control.font
-        color: control.pressed ? control.colors.highlightedTextColor : control.colors.textColor
+        color: styleReader.text.color
     }
 }

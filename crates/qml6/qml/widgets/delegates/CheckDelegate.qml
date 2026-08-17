@@ -4,12 +4,35 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.CheckDelegate {
     id: control
 
-    property int colorSet: StyleKit.Theme.view
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    // No dedicated StyleReader.ControlType for CheckDelegate -- background
+    // and text reuse `itemDelegate` (same ghost-background shape as
+    // ItemDelegate.qml). The indicator below gets its own StyleReader
+    // reusing `checkBox` (widgets/controls/CheckBox.qml's own slot) --
+    // same shape as SpinBox.qml's up/down indicators reusing `toolButton`.
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.ItemDelegate
+        enabled: control.enabled
+        focused: control.activeFocus
+        highlighted: control.highlighted
+        hovered: control.hovered
+        pressed: control.pressed
+        palette: control.palette
+    }
+
+    LabsStyleKit.StyleReader {
+        id: indicatorStyleReader
+        controlType: LabsStyleKit.StyleReader.CheckBox
+        enabled: control.enabled
+        checked: control.checked
+        hovered: control.hovered
+        palette: control.palette
+    }
 
     hoverEnabled: true
     padding: StyleKit.Units.smallSpacing
@@ -23,7 +46,7 @@ T.CheckDelegate {
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     background: Rectangle {
-        color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : "transparent")
+        color: styleReader.background.color
     }
 
     contentItem: Ayame.IconLabel {
@@ -37,7 +60,7 @@ T.CheckDelegate {
         spacing: StyleKit.Units.smallSpacing
         text: control.text
         font: control.font
-        color: control.highlighted ? control.colors.highlightedTextColor : control.colors.textColor
+        color: styleReader.text.color
     }
 
     indicator: Rectangle {
@@ -46,9 +69,9 @@ T.CheckDelegate {
         width: StyleKit.Units.iconSizes.small
         height: StyleKit.Units.iconSizes.small
         radius: StyleKit.Units.cornerRadius
-        color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
-        border.width: StyleKit.Units.borderWidth
-        border.color: control.checked ? control.colors.highlightColor : control.colors.borderColor
+        color: indicatorStyleReader.background.color
+        border.width: indicatorStyleReader.background.border.width
+        border.color: indicatorStyleReader.background.border.color
 
         Text {
             anchors.centerIn: parent
@@ -56,7 +79,7 @@ T.CheckDelegate {
             text: "✓"
             font.pixelSize: parent.height * 0.8
             font.bold: true
-            color: control.colors.highlightedTextColor
+            color: control.palette.highlightedText
         }
     }
 }

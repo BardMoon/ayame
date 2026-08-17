@@ -4,12 +4,17 @@ import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
 import StyleKit 1.0 as StyleKit
+import Qt.labs.StyleKit as LabsStyleKit
 
 T.TabBar {
     id: control
 
-    property int colorSet: StyleKit.Theme.header
-    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    LabsStyleKit.StyleReader {
+        id: styleReader
+        controlType: LabsStyleKit.StyleReader.TabBar
+        enabled: control.enabled
+        palette: control.palette
+    }
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(contentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
@@ -34,7 +39,7 @@ T.TabBar {
     }
 
     background: Rectangle {
-        color: control.colors.backgroundColor
+        color: styleReader.background.color
 
         // The checked tab's underline, moved up here from TabButton.qml
         // so there's a single indicator that slides to the current tab
@@ -48,7 +53,7 @@ T.TabBar {
         Rectangle {
             height: StyleKit.Units.borderWidth
             y: parent.height - height
-            color: control.colors.highlightColor
+            color: control.palette.highlight
             visible: tabsView.currentItem !== null
             x: tabsView.x + (tabsView.currentItem ? tabsView.currentItem.x - tabsView.contentX : 0)
             width: tabsView.currentItem ? tabsView.currentItem.width : 0

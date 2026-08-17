@@ -103,7 +103,8 @@ pub fn apply_theme(mode: &str, accent_hex: &str) {
     if current_style_raw() != "Ayame" {
         return;
     }
-    let accent = ayame_colors::RgbColor::from_hex(accent_hex).unwrap_or(ayame_colors::DEFAULT_ACCENT);
+    let accent =
+        ayame_colors::RgbColor::from_hex(accent_hex).unwrap_or(ayame_colors::DEFAULT_ACCENT);
     let preset = ayame_colors::preset_by_id(mode);
     let p = ayame_colors::compose_palette(preset, accent);
     unsafe {
@@ -522,7 +523,11 @@ impl ffi::CornerRadiusSettings {
     }
 
     fn default_option(self: Pin<&mut Self>) -> QString {
-        QString::from(ayame_config::StyleSettings::default().corner_radius.as_str())
+        QString::from(
+            ayame_config::StyleSettings::default()
+                .corner_radius
+                .as_str(),
+        )
     }
 }
 
@@ -660,7 +665,11 @@ impl ffi::AnimationSettings {
     }
 
     fn default_speed_option(self: Pin<&mut Self>) -> QString {
-        QString::from(ayame_config::StyleSettings::default().animation_speed.as_str())
+        QString::from(
+            ayame_config::StyleSettings::default()
+                .animation_speed
+                .as_str(),
+        )
     }
 
     fn default_enabled(self: Pin<&mut Self>) -> bool {

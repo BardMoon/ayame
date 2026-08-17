@@ -24,13 +24,10 @@ fn main() {
     // pure-QML, no-native-bridge module -- ayame-settings's build.rs
     // (also QML-only-plus-app-glue, no downstream consumers) follows the
     // same no-export() pattern.
-    CxxQtBuilder::new_qml_module(
-        QmlModule::new("StyleKit")
-            .qml_files([
-                QmlFile::from("qml/theme/Units.qml").singleton(true),
-                QmlFile::from("qml/theme/Theme.qml").singleton(true),
-            ]),
-    )
+    CxxQtBuilder::new_qml_module(QmlModule::new("StyleKit").qml_files([
+        QmlFile::from("qml/theme/Units.qml").singleton(true),
+        QmlFile::from("qml/theme/Theme.qml").singleton(true),
+    ]))
     .qt_module("Quick")
     .build();
 }

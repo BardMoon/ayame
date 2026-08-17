@@ -13,12 +13,12 @@ fn main() {
     let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
     let tabler_dir = Path::new(&manifest_dir).join("vendor/tabler-icons/outline");
 
-    let icons = QResource::new().prefix("/cettila/icons").files(
-        MAPPING.iter().map(|(freedesktop_name, tabler_name)| {
+    let icons = QResource::new()
+        .prefix("/cettila/icons")
+        .files(MAPPING.iter().map(|(freedesktop_name, tabler_name)| {
             QResourceFile::new(tabler_dir.join(format!("{tabler_name}.svg")))
                 .alias(format!("{freedesktop_name}.svg"))
-        }),
-    );
+        }));
 
     CxxQtBuilder::new()
         .qrc_resources(QResources::new().resource(icons))

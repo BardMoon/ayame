@@ -11,6 +11,7 @@ pub use cxxqt_object::apply_ui_font;
 pub fn apply_saved_settings() {
     let settings = ayame_config::Settings::load();
     apply_theme(&settings.style.theme_mode, &settings.style.accent_color);
-    let family = (!settings.style.font_family.is_empty()).then_some(settings.style.font_family.as_str());
+    let family =
+        (!settings.style.font_family.is_empty()).then_some(settings.style.font_family.as_str());
     apply_ui_font(family, settings.style.font_point_size);
 }

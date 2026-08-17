@@ -180,9 +180,12 @@ const NEAR_WHITE: RgbColor = RgbColor::new(0xfc, 0xfc, 0xfc);
 const CONTRAST_LUMINANCE_THRESHOLD: f32 = 150.0;
 
 fn contrasting_text_color(accent: RgbColor) -> RgbColor {
-    let luminance =
-        0.299 * accent.r as f32 + 0.587 * accent.g as f32 + 0.114 * accent.b as f32;
-    if luminance > CONTRAST_LUMINANCE_THRESHOLD { NEAR_BLACK } else { NEAR_WHITE }
+    let luminance = 0.299 * accent.r as f32 + 0.587 * accent.g as f32 + 0.114 * accent.b as f32;
+    if luminance > CONTRAST_LUMINANCE_THRESHOLD {
+        NEAR_BLACK
+    } else {
+        NEAR_WHITE
+    }
 }
 
 /// Composes a base preset with a freely-chosen accent color into the full

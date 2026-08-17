@@ -23,7 +23,7 @@
 //!   `LIGHT_PRESET`), or the scheme's own lighter secondary
 //!   surface/foreground shade for dark-mode variants.
 
-use crate::{PalettePreset, RgbColor, DARK_PRESET, LIGHT_PRESET};
+use crate::{DARK_PRESET, LIGHT_PRESET, PalettePreset, RgbColor};
 
 /// One selectable palette within a `SchemeInfo`, e.g. Catppuccin's Mocha.
 /// `id` is the flat, persisted identifier (`origami_config::settings`'s
@@ -67,22 +67,22 @@ const AYAME_VARIANTS: &[VariantInfo] = &[
 // Night only overrides `bg`/`bg_dark` on top of Storm in the upstream Lua,
 // so its other roles below are Storm's values, not independently sourced.
 const TOKYONIGHT_STORM: PalettePreset = PalettePreset {
-    window: RgbColor::new(0x1f, 0x23, 0x35), // bg_dark
-    window_text: RgbColor::new(0xc0, 0xca, 0xf5), // fg
-    base: RgbColor::new(0x24, 0x28, 0x3b), // bg
+    window: RgbColor::new(0x1f, 0x23, 0x35),         // bg_dark
+    window_text: RgbColor::new(0xc0, 0xca, 0xf5),    // fg
+    base: RgbColor::new(0x24, 0x28, 0x3b),           // bg
     alternate_base: RgbColor::new(0x29, 0x2e, 0x42), // bg_highlight
-    text: RgbColor::new(0xc0, 0xca, 0xf5), // fg
-    button: RgbColor::new(0x1f, 0x23, 0x35), // bg_dark
-    button_text: RgbColor::new(0xc0, 0xca, 0xf5), // fg
-    tooltip_base: RgbColor::new(0x1f, 0x23, 0x35), // bg_dark
-    tooltip_text: RgbColor::new(0xc0, 0xca, 0xf5), // fg
-    light: RgbColor::new(0xa9, 0xb1, 0xd6), // fg_dark
+    text: RgbColor::new(0xc0, 0xca, 0xf5),           // fg
+    button: RgbColor::new(0x1f, 0x23, 0x35),         // bg_dark
+    button_text: RgbColor::new(0xc0, 0xca, 0xf5),    // fg
+    tooltip_base: RgbColor::new(0x1f, 0x23, 0x35),   // bg_dark
+    tooltip_text: RgbColor::new(0xc0, 0xca, 0xf5),   // fg
+    light: RgbColor::new(0xa9, 0xb1, 0xd6),          // fg_dark
 };
 
 const TOKYONIGHT_NIGHT: PalettePreset = PalettePreset {
-    window: RgbColor::new(0x16, 0x16, 0x1e), // bg_dark
-    base: RgbColor::new(0x1a, 0x1b, 0x26), // bg
-    button: RgbColor::new(0x16, 0x16, 0x1e), // bg_dark
+    window: RgbColor::new(0x16, 0x16, 0x1e),       // bg_dark
+    base: RgbColor::new(0x1a, 0x1b, 0x26),         // bg
+    button: RgbColor::new(0x16, 0x16, 0x1e),       // bg_dark
     tooltip_base: RgbColor::new(0x16, 0x16, 0x1e), // bg_dark
     ..TOKYONIGHT_STORM
 };
@@ -91,15 +91,15 @@ const TOKYONIGHT_DAY: PalettePreset = PalettePreset {
     // No distinct `bg_dark`/`bg_highlight` literal was available for Day
     // (only bg/fg/blue are published via the Alacritty export) -- window/
     // alternate_base/tooltip_base reuse `base` rather than guessing a shade.
-    window: RgbColor::new(0xe1, 0xe2, 0xe7), // bg
-    window_text: RgbColor::new(0x37, 0x60, 0xbf), // fg
-    base: RgbColor::new(0xe1, 0xe2, 0xe7), // bg
+    window: RgbColor::new(0xe1, 0xe2, 0xe7),         // bg
+    window_text: RgbColor::new(0x37, 0x60, 0xbf),    // fg
+    base: RgbColor::new(0xe1, 0xe2, 0xe7),           // bg
     alternate_base: RgbColor::new(0xe1, 0xe2, 0xe7), // bg
-    text: RgbColor::new(0x37, 0x60, 0xbf), // fg
-    button: RgbColor::new(0xe1, 0xe2, 0xe7), // bg
-    button_text: RgbColor::new(0x37, 0x60, 0xbf), // fg
-    tooltip_base: RgbColor::new(0xe1, 0xe2, 0xe7), // bg
-    tooltip_text: RgbColor::new(0x37, 0x60, 0xbf), // fg
+    text: RgbColor::new(0x37, 0x60, 0xbf),           // fg
+    button: RgbColor::new(0xe1, 0xe2, 0xe7),         // bg
+    button_text: RgbColor::new(0x37, 0x60, 0xbf),    // fg
+    tooltip_base: RgbColor::new(0xe1, 0xe2, 0xe7),   // bg
+    tooltip_text: RgbColor::new(0x37, 0x60, 0xbf),   // fg
     light: RgbColor::new(0xff, 0xff, 0xff),
 };
 
@@ -129,9 +129,9 @@ const TOKYONIGHT_VARIANTS: &[VariantInfo] = &[
 // in every flavor -- the color most associated with Catppuccin's own
 // branding.
 const CATPPUCCIN_LATTE: PalettePreset = PalettePreset {
-    window: RgbColor::new(0xe6, 0xe9, 0xef), // mantle
-    window_text: RgbColor::new(0x4c, 0x4f, 0x69), // text
-    base: RgbColor::new(0xef, 0xf1, 0xf5), // base
+    window: RgbColor::new(0xe6, 0xe9, 0xef),         // mantle
+    window_text: RgbColor::new(0x4c, 0x4f, 0x69),    // text
+    base: RgbColor::new(0xef, 0xf1, 0xf5),           // base
     alternate_base: RgbColor::new(0xcc, 0xd0, 0xda), // surface0
     text: RgbColor::new(0x4c, 0x4f, 0x69),
     button: RgbColor::new(0xe6, 0xe9, 0xef), // mantle
@@ -142,9 +142,9 @@ const CATPPUCCIN_LATTE: PalettePreset = PalettePreset {
 };
 
 const CATPPUCCIN_FRAPPE: PalettePreset = PalettePreset {
-    window: RgbColor::new(0x29, 0x2c, 0x3c), // mantle
-    window_text: RgbColor::new(0xc6, 0xd0, 0xf5), // text
-    base: RgbColor::new(0x30, 0x34, 0x46), // base
+    window: RgbColor::new(0x29, 0x2c, 0x3c),         // mantle
+    window_text: RgbColor::new(0xc6, 0xd0, 0xf5),    // text
+    base: RgbColor::new(0x30, 0x34, 0x46),           // base
     alternate_base: RgbColor::new(0x41, 0x45, 0x59), // surface0
     text: RgbColor::new(0xc6, 0xd0, 0xf5),
     button: RgbColor::new(0x29, 0x2c, 0x3c),
@@ -155,9 +155,9 @@ const CATPPUCCIN_FRAPPE: PalettePreset = PalettePreset {
 };
 
 const CATPPUCCIN_MACCHIATO: PalettePreset = PalettePreset {
-    window: RgbColor::new(0x1e, 0x20, 0x30), // mantle
-    window_text: RgbColor::new(0xca, 0xd3, 0xf5), // text
-    base: RgbColor::new(0x24, 0x27, 0x3a), // base
+    window: RgbColor::new(0x1e, 0x20, 0x30),         // mantle
+    window_text: RgbColor::new(0xca, 0xd3, 0xf5),    // text
+    base: RgbColor::new(0x24, 0x27, 0x3a),           // base
     alternate_base: RgbColor::new(0x36, 0x3a, 0x4f), // surface0
     text: RgbColor::new(0xca, 0xd3, 0xf5),
     button: RgbColor::new(0x1e, 0x20, 0x30),
@@ -168,9 +168,9 @@ const CATPPUCCIN_MACCHIATO: PalettePreset = PalettePreset {
 };
 
 const CATPPUCCIN_MOCHA: PalettePreset = PalettePreset {
-    window: RgbColor::new(0x18, 0x18, 0x25), // mantle
-    window_text: RgbColor::new(0xcd, 0xd6, 0xf4), // text
-    base: RgbColor::new(0x1e, 0x1e, 0x2e), // base
+    window: RgbColor::new(0x18, 0x18, 0x25),         // mantle
+    window_text: RgbColor::new(0xcd, 0xd6, 0xf4),    // text
+    base: RgbColor::new(0x1e, 0x1e, 0x2e),           // base
     alternate_base: RgbColor::new(0x31, 0x32, 0x44), // surface0
     text: RgbColor::new(0xcd, 0xd6, 0xf4),
     button: RgbColor::new(0x18, 0x18, 0x25),
@@ -212,9 +212,9 @@ const CATPPUCCIN_VARIANTS: &[VariantInfo] = &[
 // `base` rather than guessing a second one. Default accent is Blue (the
 // "600" light-mode / "400" dark-mode value from Flexoki's accent table).
 const FLEXOKI_LIGHT: PalettePreset = PalettePreset {
-    window: RgbColor::new(0xff, 0xfc, 0xf0), // paper
-    window_text: RgbColor::new(0x10, 0x0f, 0x0f), // tx
-    base: RgbColor::new(0xff, 0xfc, 0xf0), // paper
+    window: RgbColor::new(0xff, 0xfc, 0xf0),         // paper
+    window_text: RgbColor::new(0x10, 0x0f, 0x0f),    // tx
+    base: RgbColor::new(0xff, 0xfc, 0xf0),           // paper
     alternate_base: RgbColor::new(0xff, 0xfc, 0xf0), // paper
     text: RgbColor::new(0x10, 0x0f, 0x0f),
     button: RgbColor::new(0xff, 0xfc, 0xf0),
@@ -225,9 +225,9 @@ const FLEXOKI_LIGHT: PalettePreset = PalettePreset {
 };
 
 const FLEXOKI_DARK: PalettePreset = PalettePreset {
-    window: RgbColor::new(0x10, 0x0f, 0x0f), // bg
-    window_text: RgbColor::new(0xf2, 0xf0, 0xe5), // tx
-    base: RgbColor::new(0x10, 0x0f, 0x0f), // bg
+    window: RgbColor::new(0x10, 0x0f, 0x0f),         // bg
+    window_text: RgbColor::new(0xf2, 0xf0, 0xe5),    // tx
+    base: RgbColor::new(0x10, 0x0f, 0x0f),           // bg
     alternate_base: RgbColor::new(0x10, 0x0f, 0x0f), // bg
     text: RgbColor::new(0xf2, 0xf0, 0xe5),
     button: RgbColor::new(0x10, 0x0f, 0x0f),

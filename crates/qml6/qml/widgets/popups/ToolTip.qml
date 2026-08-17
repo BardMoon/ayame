@@ -3,12 +3,13 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.ToolTip {
     id: control
 
-    property int colorSet: Ayame.Theme.tooltip
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.tooltip
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     // T.Popup's default position is (0, 0) relative to its parent -- for
     // a ToolTip that parent is the hovered item itself, so without this
@@ -17,10 +18,10 @@ T.ToolTip {
     // positioning as both QtQuick.Controls.Basic's and
     // qqc2-breeze-style's own ToolTip.qml.
     x: control.parent ? (control.parent.width - implicitWidth) / 2 : 0
-    y: -implicitHeight - Ayame.Units.smallSpacing
+    y: -implicitHeight - StyleKit.Units.smallSpacing
     z: 999
 
-    padding: Ayame.Units.smallSpacing
+    padding: StyleKit.Units.smallSpacing
 
     // Without this, T.ToolTip falls back to its base Popup closePolicy
     // (CloseOnEscape only), so a tooltip left open by e.g. a long hover
@@ -32,9 +33,9 @@ T.ToolTip {
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     background: Rectangle {
-        radius: Ayame.Units.cornerRadius
+        radius: StyleKit.Units.cornerRadius
         color: control.colors.backgroundColor
-        border.width: Ayame.Units.borderWidth
+        border.width: StyleKit.Units.borderWidth
         border.color: control.colors.borderColor
     }
 

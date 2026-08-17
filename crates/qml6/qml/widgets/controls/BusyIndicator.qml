@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 // Themed drop-in for QQC2's BusyIndicator, same "wrap the QQC2 type,
 // replace its contentItem" approach as every other widgets/*.qml here.
@@ -16,14 +17,14 @@ T.BusyIndicator {
     id: control
 
     // Same knob as widgets/Label.qml/widgets/inputs/CheckBox.qml.
-    property int colorSet: Ayame.Theme.view
+    property int colorSet: StyleKit.Theme.view
 
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     readonly property int _dotCount: 8
 
-    implicitWidth: Ayame.Units.iconSizes.medium
-    implicitHeight: Ayame.Units.iconSizes.medium
+    implicitWidth: StyleKit.Units.iconSizes.medium
+    implicitHeight: StyleKit.Units.iconSizes.medium
 
     contentItem: Item {
         id: ring
@@ -55,7 +56,7 @@ T.BusyIndicator {
             loops: Animation.Infinite
             from: 0
             to: 360
-            duration: Ayame.Units.veryLongDuration * 2
+            duration: StyleKit.Units.veryLongDuration * 2
         }
     }
 }

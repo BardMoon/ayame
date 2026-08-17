@@ -3,12 +3,13 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.Tumbler {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
@@ -20,8 +21,8 @@ T.Tumbler {
     // missing popup/delegate. Matches QtQuick.Controls.Basic's own
     // Tumbler.qml (TumblerView + Path wiring).
     // contentItem: TumblerView {
-    //     implicitWidth: Ayame.Units.gridUnit * 3
-    //     implicitHeight: Ayame.Units.gridUnit * 1.6 * control.visibleItemCount
+    //     implicitWidth: StyleKit.Units.gridUnit * 3
+    //     implicitHeight: StyleKit.Units.gridUnit * 1.6 * control.visibleItemCount
     //     model: control.model
     //     delegate: control.delegate
     //     path: Path {
@@ -36,9 +37,9 @@ T.Tumbler {
     // }
 
     background: Rectangle {
-        radius: Ayame.Units.cornerRadius
+        radius: StyleKit.Units.cornerRadius
         color: control.colors.backgroundColor
-        border.width: Ayame.Units.borderWidth
+        border.width: StyleKit.Units.borderWidth
         border.color: control.colors.borderColor
     }
 

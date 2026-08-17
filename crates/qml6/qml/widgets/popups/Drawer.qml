@@ -3,12 +3,13 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.Drawer {
     id: control
 
-    property int colorSet: Ayame.Theme.window
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.window
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     // Without this, the Drawer attaches to its regular QML parent instead
     // of the window's overlay layer, so it doesn't get edge-anchored
@@ -21,7 +22,7 @@ T.Drawer {
 
     background: Rectangle {
         color: control.colors.backgroundColor
-        border.width: Ayame.Units.borderWidth
+        border.width: StyleKit.Units.borderWidth
         border.color: control.colors.borderColor
     }
 }

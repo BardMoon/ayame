@@ -25,6 +25,15 @@ static LAST_APPLIED_THEME: Mutex<Option<(String, String)>> = Mutex::new(None);
 // vendored icons fail to link with this line removed.
 const _KEEP_AYAME_ICONS_LINKED: &[(&str, &str)] = ayame_icons::MAPPING;
 
+// ayame-stylekit is a separate crate purely so its QML plugin (the
+// "StyleKit" module Ayame's own widgets import) is a distinct, swappable
+// QML module name -- see crates/stylekit/build.rs. cxx-qt-build's QML
+// module registration is a Rust-level static initializer: it only runs if
+// something actually links the crate, which a plain `import StyleKit` in
+// QML does not cause on its own. Same fix as _KEEP_AYAME_ICONS_LINKED
+// above, same reason.
+const _KEEP_AYAME_STYLEKIT_LINKED: &str = ayame_stylekit::MARKER;
+
 fn last_applied_theme() -> Option<(String, String)> {
     LAST_APPLIED_THEME.lock().ok()?.clone()
 }

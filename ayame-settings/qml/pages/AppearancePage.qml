@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls as QQC2
 import QtQuick.Layouts
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 // Editor for the settings Ayame itself (crates/qml6) reads from `ayamerc`
 // at startup -- theme, font, and the QQC2 style's own
@@ -31,22 +32,22 @@ QQC2.Page {
     property string fontFamily: fontSettings.family()
     property real fontPointSize: fontSettings.point_size() > 0 ? fontSettings.point_size() : fontSettings.current_point_size()
     // Corner radius / border width / animation / UI scale are driven
-    // through the `Ayame.Units` singleton (not a private instance here)
+    // through the `StyleKit.Units` singleton (not a private instance here)
     // so that changing them re-styles every Ayame-styled control in this
     // process live, including this settings window's own -- see
     // Units.qml's own seed-once-then-update-live properties.
-    property string cornerRadiusOption: Ayame.Units.cornerRadiusOption
-    property string borderWidthOption: Ayame.Units.borderWidthOption
-    property string animationSpeedOption: Ayame.Units.animationSpeedOption
-    property bool animationsEnabled: Ayame.Units.animationsEnabled
-    property real uiScale: Ayame.Units.uiScale
+    property string cornerRadiusOption: StyleKit.Units.cornerRadiusOption
+    property string borderWidthOption: StyleKit.Units.borderWidthOption
+    property string animationSpeedOption: StyleKit.Units.animationSpeedOption
+    property bool animationsEnabled: StyleKit.Units.animationsEnabled
+    property real uiScale: StyleKit.Units.uiScale
     property string savedStyle: styleInfo.saved_style()
 
     // Snapshot of what's actually on `ayamerc` right now, used only to
     // compute `dirty` below -- captured imperatively (`snapshotDisk()`,
     // called from `Component.onCompleted` and after `commit()`/`cancel()`)
     // rather than as bindings, since some of the live properties above
-    // (the `Ayame.Units`-backed ones) are themselves live bindings; a
+    // (the `StyleKit.Units`-backed ones) are themselves live bindings; a
     // binding here would just always mirror them and never show a diff.
     property string diskThemeMode
     property color diskAccentColor
@@ -98,11 +99,11 @@ QQC2.Page {
     property color defaultAccentColor: theme.default_accent_color()
     property string defaultFontFamily: fontSettings.default_family()
     property real defaultFontPointSize: fontSettings.default_point_size() > 0 ? fontSettings.default_point_size() : fontSettings.current_point_size()
-    property string defaultCornerRadiusOption: Ayame.Units.defaultCornerRadiusOption()
-    property string defaultBorderWidthOption: Ayame.Units.defaultBorderWidthOption()
-    property string defaultAnimationSpeedOption: Ayame.Units.defaultAnimationSpeedOption()
-    property bool defaultAnimationsEnabled: Ayame.Units.defaultAnimationsEnabled()
-    property real defaultUiScale: Ayame.Units.defaultUiScale()
+    property string defaultCornerRadiusOption: StyleKit.Units.defaultCornerRadiusOption()
+    property string defaultBorderWidthOption: StyleKit.Units.defaultBorderWidthOption()
+    property string defaultAnimationSpeedOption: StyleKit.Units.defaultAnimationSpeedOption()
+    property bool defaultAnimationsEnabled: StyleKit.Units.defaultAnimationsEnabled()
+    property real defaultUiScale: StyleKit.Units.defaultUiScale()
     property string defaultSavedStyle: styleInfo.default_saved_style()
 
     // True whenever everything on this page already matches
@@ -135,7 +136,7 @@ QQC2.Page {
         theme.persist();
         fontSettings.persist();
         styleInfo.persist();
-        Ayame.Units.persist();
+        StyleKit.Units.persist();
         root.snapshotDisk();
     }
 
@@ -147,7 +148,7 @@ QQC2.Page {
         theme.reload();
         fontSettings.reload();
         styleInfo.reload();
-        Ayame.Units.cancel();
+        StyleKit.Units.cancel();
         root.themeMode = theme.mode();
         root.accentColor = theme.accent_color();
         root.fontFamily = fontSettings.family();
@@ -163,7 +164,7 @@ QQC2.Page {
         theme.reset_to_default();
         fontSettings.reset_to_default();
         styleInfo.reset_to_default();
-        Ayame.Units.resetToDefaults();
+        StyleKit.Units.resetToDefaults();
         root.themeMode = theme.mode();
         root.accentColor = theme.accent_color();
         root.fontFamily = fontSettings.family();
@@ -319,7 +320,7 @@ QQC2.Page {
                     model: ["disabled", "small", "medium", "large", "circle"]
                     currentIndex: Math.max(0, model.indexOf(root.cornerRadiusOption))
                     onActivated: (index) => {
-                        Ayame.Units.setCornerRadiusOption(model[index]);
+                        StyleKit.Units.setCornerRadiusOption(model[index]);
                         root.cornerRadiusOption = model[index];
                     }
                 }
@@ -332,7 +333,7 @@ QQC2.Page {
                     model: ["thin", "default", "thick"]
                     currentIndex: Math.max(0, model.indexOf(root.borderWidthOption))
                     onActivated: (index) => {
-                        Ayame.Units.setBorderWidthOption(model[index]);
+                        StyleKit.Units.setBorderWidthOption(model[index]);
                         root.borderWidthOption = model[index];
                     }
                 }
@@ -346,7 +347,7 @@ QQC2.Page {
                     model: ["slow", "normal", "fast"]
                     currentIndex: Math.max(0, model.indexOf(root.animationSpeedOption))
                     onActivated: (index) => {
-                        Ayame.Units.setAnimationSpeedOption(model[index]);
+                        StyleKit.Units.setAnimationSpeedOption(model[index]);
                         root.animationSpeedOption = model[index];
                     }
                 }
@@ -354,7 +355,7 @@ QQC2.Page {
                     text: "Enabled"
                     checked: root.animationsEnabled
                     onToggled: {
-                        Ayame.Units.setAnimationsEnabled(checked);
+                        StyleKit.Units.setAnimationsEnabled(checked);
                         root.animationsEnabled = checked;
                     }
                 }
@@ -371,7 +372,7 @@ QQC2.Page {
                     textFromValue: (value) => (value / 100).toFixed(2)
                     valueFromText: (text) => Math.round(parseFloat(text) * 100)
                     onValueModified: {
-                        Ayame.Units.setUiScale(value / 100);
+                        StyleKit.Units.setUiScale(value / 100);
                         root.uiScale = value / 100;
                     }
                 }

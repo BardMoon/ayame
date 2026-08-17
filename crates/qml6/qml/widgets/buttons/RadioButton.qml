@@ -3,12 +3,13 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.RadioButton {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
     // Snapped to a multiple of 4, not just to a whole pixel: the
     // indicator below is halved once for its own size and halved again
     // (implicitly, via (outer - inner) / 2) to center the checked dot,
@@ -16,10 +17,10 @@ T.RadioButton {
     // whole pixels with zero rounding -- a plain Math.round() on the
     // raw icon size still left a systematic ~0.5px centering bias at
     // some uiScale values, since outer/2 could come out odd.
-    readonly property real _indicatorSize: Math.round(Ayame.Units.iconSizes.small / 4) * 4
+    readonly property real _indicatorSize: Math.round(StyleKit.Units.iconSizes.small / 4) * 4
 
     hoverEnabled: true
-    spacing: Ayame.Units.smallSpacing
+    spacing: StyleKit.Units.smallSpacing
     opacity: control.enabled ? 1.0 : 0.5
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
@@ -32,7 +33,7 @@ T.RadioButton {
         height: control._indicatorSize
         radius: width / 2
         color: "transparent"
-        border.width: Ayame.Units.borderWidth
+        border.width: StyleKit.Units.borderWidth
         border.color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
 
         Rectangle {
@@ -53,7 +54,7 @@ T.RadioButton {
             scale: control.checked ? 1.0 : 0.0
 
             Behavior on scale {
-                NumberAnimation { duration: Ayame.Units.shortDuration; easing.type: Easing.OutCubic }
+                NumberAnimation { duration: StyleKit.Units.shortDuration; easing.type: Easing.OutCubic }
             }
         }
     }

@@ -1,15 +1,16 @@
 import QtQuick
 import QtQuick.Shapes
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 // Two independent visual cues layered on top of a control's background,
-// both keyed off Ayame.Units.borderWidth/cornerRadius so they line up with
+// both keyed off StyleKit.Units.borderWidth/cornerRadius so they line up with
 // the plain border drawn by the control itself:
 //  - `animating`: a bright arc chases around the border in an infinite
 //    loop (the ConicalGradient-filled ring Shape below) -- e.g. Button.qml
 //    drives this from `highlighted`.
 //  - `active`: a solid border in `ringColor` fades in (via `fadeDuration`,
-//    0 -- i.e. an instant snap -- whenever `Ayame.Units.animationsEnabled`
+//    0 -- i.e. an instant snap -- whenever `StyleKit.Units.animationsEnabled`
 //    is off, same as every other duration constant on Units), then
 //    keeps breathing between `pulseMinOpacity` and full opacity for as
 //    long as `active` stays true, and fades back out on deactivation --
@@ -24,11 +25,11 @@ Item {
     property bool animating: false
     property bool active: false
     property color ringColor: "transparent"
-    property real cornerRadius: Ayame.Units.cornerRadius
-    property real ringThickness: Ayame.Units.borderWidth
-    property int duration: Ayame.Units.veryLongDuration * 4
-    property int fadeDuration: Ayame.Units.shortDuration
-    property int pulseDuration: Ayame.Units.veryLongDuration
+    property real cornerRadius: StyleKit.Units.cornerRadius
+    property real ringThickness: StyleKit.Units.borderWidth
+    property int duration: StyleKit.Units.veryLongDuration * 4
+    property int fadeDuration: StyleKit.Units.shortDuration
+    property int pulseDuration: StyleKit.Units.veryLongDuration
     property real pulseMinOpacity: 0.35
 
     // Driven by pulseAnimation below while `active`: its first leg is
@@ -42,7 +43,7 @@ Item {
 
     SequentialAnimation {
         id: pulseAnimation
-        running: root.active && Ayame.Units.animationsEnabled
+        running: root.active && StyleKit.Units.animationsEnabled
         loops: Animation.Infinite
         NumberAnimation { target: root; property: "pulsePhase"; to: 1.0; duration: root.fadeDuration; easing.type: Easing.OutCubic }
         NumberAnimation { target: root; property: "pulsePhase"; to: root.pulseMinOpacity; duration: root.pulseDuration; easing.type: Easing.InOutSine }
@@ -55,7 +56,7 @@ Item {
         color: "transparent"
         border.width: root.ringThickness
         border.color: root.ringColor
-        opacity: root.active ? (Ayame.Units.animationsEnabled ? root.pulsePhase : 1.0) : 0.0
+        opacity: root.active ? (StyleKit.Units.animationsEnabled ? root.pulsePhase : 1.0) : 0.0
 
         Behavior on opacity {
             enabled: !root.active

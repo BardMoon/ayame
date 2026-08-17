@@ -17,7 +17,7 @@ let
     version = "0.1.0";
 
     dontWrapQtApps = true;
-    cargoExtraArgs = "-p ayame";
+    cargoExtraArgs = "-p ayame -p ayame-stylekit";
 
     nativeBuildInputs = [
       pkg-config
@@ -70,6 +70,24 @@ craneLib.buildPackage (
       qmltypes_file=target/cxxqt/qml_modules/Ayame/plugin.qmltypes
       if [ -f "$qmltypes_file" ]; then
         cp "$qmltypes_file" $out/lib/qt-6/qml/Ayame/plugin.qmltypes
+      fi
+
+      # StyleKit is an ordinary (non-style) QML module -- unlike Ayame, it
+      # has no QT_QUICK_CONTROLS_STYLE naming/path constraint, so standard
+      # Qt module install conventions apply. It's its own crate
+      # (crates/stylekit), not part of crates/qml6, so its qmldir/qmltypes
+      # are generated under a separate target/cxxqt/qml_modules/StyleKit/.
+      mkdir -p $out/lib/qt-6/qml/StyleKit/qml/theme
+      if [ -d crates/stylekit/qml/theme ]; then
+        cp -r crates/stylekit/qml/theme/* $out/lib/qt-6/qml/StyleKit/qml/theme/
+      fi
+      stylekit_qmldir_file=target/cxxqt/qml_modules/StyleKit/qmldir
+      if [ -f "$stylekit_qmldir_file" ]; then
+        cp "$stylekit_qmldir_file" $out/lib/qt-6/qml/StyleKit/qmldir
+      fi
+      stylekit_qmltypes_file=target/cxxqt/qml_modules/StyleKit/plugin.qmltypes
+      if [ -f "$stylekit_qmltypes_file" ]; then
+        cp "$stylekit_qmltypes_file" $out/lib/qt-6/qml/StyleKit/plugin.qmltypes
       fi
     '';
   }

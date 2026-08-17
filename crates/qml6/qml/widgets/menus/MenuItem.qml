@@ -3,27 +3,28 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.MenuItem {
     id: control
 
-    property int colorSet: Ayame.Theme.header
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.header
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
-    padding: Ayame.Units.smallSpacing
+    padding: StyleKit.Units.smallSpacing
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding + (implicitIndicatorWidth > 0 ? implicitIndicatorWidth + spacing : 0) + (arrow ? arrow.implicitWidth + spacing : 0))
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, Math.max(implicitContentHeight, implicitIndicatorHeight, arrow ? arrow.implicitHeight : 0) + topPadding + bottomPadding)
 
     background: Rectangle {
-        radius: Ayame.Units.cornerRadius
+        radius: StyleKit.Units.cornerRadius
         color: control.highlighted ? control.colors.highlightColor : "transparent"
     }
 
     contentItem: Text {
-        leftPadding: Ayame.Units.smallSpacing + (control.checkable && control.indicator ? control.indicator.implicitWidth + control.spacing : 0)
-        rightPadding: Ayame.Units.smallSpacing + (control.arrow ? control.arrow.implicitWidth + control.spacing : 0)
+        leftPadding: StyleKit.Units.smallSpacing + (control.checkable && control.indicator ? control.indicator.implicitWidth + control.spacing : 0)
+        rightPadding: StyleKit.Units.smallSpacing + (control.arrow ? control.arrow.implicitWidth + control.spacing : 0)
         verticalAlignment: Text.AlignVCenter
         text: control.text
         font: control.font

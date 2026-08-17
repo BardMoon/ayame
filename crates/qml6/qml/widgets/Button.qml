@@ -3,12 +3,13 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.Button {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
     opacity: control.enabled ? 1.0 : 0.5
@@ -18,18 +19,18 @@ T.Button {
     // documented default (0), so anything reading the icon's own size
     // (e.g. Layout sizing on a future icon Image) sees a bogus 0x0.
     // Matches QtQuick.Controls.Basic's own Button.qml (24x24 there).
-    icon.width: Ayame.Units.iconSizes.smallMedium
-    icon.height: Ayame.Units.iconSizes.smallMedium
+    icon.width: StyleKit.Units.iconSizes.smallMedium
+    icon.height: StyleKit.Units.iconSizes.smallMedium
 
-    implicitHeight: Ayame.Units.gridUnit * 1.6
-    implicitWidth: contentItem.implicitWidth + Ayame.Units.largeSpacing * 2
+    implicitHeight: StyleKit.Units.gridUnit * 1.6
+    implicitWidth: contentItem.implicitWidth + StyleKit.Units.largeSpacing * 2
 
     background: Item {
         Rectangle {
             anchors.fill: parent
-            radius: Ayame.Units.cornerRadius
+            radius: StyleKit.Units.cornerRadius
             color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
-            border.width: Ayame.Units.borderWidth
+            border.width: StyleKit.Units.borderWidth
             border.color: control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor
         }
 
@@ -39,7 +40,7 @@ T.Button {
         // highlightColor treatment. See HighlightRing.qml for both.
         Ayame.HighlightRing {
             anchors.fill: parent
-            animating: control.enabled && control.highlighted && Ayame.Units.animationsEnabled
+            animating: control.enabled && control.highlighted && StyleKit.Units.animationsEnabled
             active: control.enabled && control.activeFocus
             ringColor: control.colors.highlightColor
         }
@@ -51,13 +52,13 @@ T.Button {
         iconHeight: control.icon.height
         display: control.display
         mirrored: control.mirrored
-        spacing: Ayame.Units.smallSpacing
+        spacing: StyleKit.Units.smallSpacing
         text: control.text
         font: control.font
         color: control.colors.textColor
 
         Behavior on color {
-            ColorAnimation { duration: Ayame.Units.shortDuration; easing.type: Easing.OutCubic }
+            ColorAnimation { duration: StyleKit.Units.shortDuration; easing.type: Easing.OutCubic }
         }
     }
 }

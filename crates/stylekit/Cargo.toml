@@ -1,0 +1,11 @@
+[package]
+name = "ayame-stylekit"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+cxx-qt = { workspace = true }
+cxx-qt-lib = { workspace = true, features = ["qt_full"] }
+
+[build-dependencies]
+cxx-qt-build = { workspace = true }

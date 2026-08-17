@@ -3,16 +3,17 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.SpinBox {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
-    padding: Ayame.Units.smallSpacing
-    implicitHeight: Ayame.Units.gridUnit * 1.6
+    padding: StyleKit.Units.smallSpacing
+    implicitHeight: StyleKit.Units.gridUnit * 1.6
     // The indicator column's width is reserved via leftPadding/rightPadding
     // below (not added again here), same as QtQuick.Controls.Basic's own
     // SpinBox.qml -- otherwise it'd be double-counted.
@@ -41,9 +42,9 @@ T.SpinBox {
     background: Item {
         Rectangle {
             anchors.fill: parent
-            radius: Ayame.Units.cornerRadius
+            radius: StyleKit.Units.cornerRadius
             color: control.colors.backgroundColor
-            border.width: Ayame.Units.borderWidth
+            border.width: StyleKit.Units.borderWidth
             border.color: control.colors.borderColor
         }
 
@@ -71,8 +72,8 @@ T.SpinBox {
     up.indicator: Rectangle {
         x: control.mirrored ? 0 : parent.width - width
         height: parent.height
-        implicitWidth: Ayame.Units.gridUnit * 1.2
-        radius: Ayame.Units.cornerRadius
+        implicitWidth: StyleKit.Units.gridUnit * 1.2
+        radius: StyleKit.Units.cornerRadius
         color: control.up.pressed ? control.colors.pressedColor : (control.up.hovered ? control.colors.hoverColor : "transparent")
 
         Text {
@@ -85,8 +86,8 @@ T.SpinBox {
     down.indicator: Rectangle {
         x: control.mirrored ? parent.width - width : 0
         height: parent.height
-        implicitWidth: Ayame.Units.gridUnit * 1.2
-        radius: Ayame.Units.cornerRadius
+        implicitWidth: StyleKit.Units.gridUnit * 1.2
+        radius: StyleKit.Units.cornerRadius
         color: control.down.pressed ? control.colors.pressedColor : (control.down.hovered ? control.colors.hoverColor : "transparent")
 
         Text {

@@ -4,6 +4,7 @@ resolver = "3"
 members = [
   "ayame-settings",
   "crates/qml6",
+  "crates/stylekit",
   "crates/colors",
   "crates/config",
   "crates/icons",
@@ -21,6 +22,7 @@ edition = "2024"
 ayame = { path = "crates/qml6" }
 ayame-config = { path = "crates/config" }
 ayame-icons = { path = "crates/icons" }
+ayame-stylekit = { path = "crates/stylekit" }
 
 #[ Crates.io ]
 anyhow = "1"

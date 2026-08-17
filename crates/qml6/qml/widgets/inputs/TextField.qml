@@ -3,22 +3,23 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.TextField {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     color: control.colors.textColor
     placeholderTextColor: control.colors.subColor
     selectedTextColor: control.colors.highlightedTextColor
     selectionColor: control.colors.highlightColor
     verticalAlignment: TextInput.AlignVCenter
-    leftPadding: Ayame.Units.smallSpacing
-    rightPadding: Ayame.Units.smallSpacing
+    leftPadding: StyleKit.Units.smallSpacing
+    rightPadding: StyleKit.Units.smallSpacing
 
-    implicitHeight: Ayame.Units.gridUnit * 1.6
+    implicitHeight: StyleKit.Units.gridUnit * 1.6
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentWidth + leftPadding + rightPadding, placeholder.implicitWidth + leftPadding + rightPadding)
 
     T.ContextMenu.menu: Ayame.TextEditingContextMenu {
@@ -28,9 +29,9 @@ T.TextField {
     background: Item {
         Rectangle {
             anchors.fill: parent
-            radius: Ayame.Units.cornerRadius
+            radius: StyleKit.Units.cornerRadius
             color: control.colors.backgroundColor
-            border.width: Ayame.Units.borderWidth
+            border.width: StyleKit.Units.borderWidth
             border.color: control.colors.borderColor
         }
 

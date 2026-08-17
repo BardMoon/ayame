@@ -4,12 +4,13 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.Menu {
     id: control
 
-    property int colorSet: Ayame.Theme.header
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.header
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     // T.Menu (like T.Popup, which it extends) never computes its own root
     // implicitWidth/implicitHeight from contentItem/background -- every
@@ -41,7 +42,7 @@ T.Menu {
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, implicitContentHeight + topPadding + bottomPadding)
 
-    padding: Ayame.Units.smallSpacing
+    padding: StyleKit.Units.smallSpacing
 
     // Default delegate/contentItem for direct (non-wrapped) usage of this
     // type -- a consumer like origami's ThemedMenu.qml/ThemedSubMenu.qml
@@ -61,9 +62,9 @@ T.Menu {
     }
 
     background: Rectangle {
-        radius: Ayame.Units.cornerRadius
+        radius: StyleKit.Units.cornerRadius
         color: control.colors.backgroundColor
-        border.width: Ayame.Units.borderWidth
+        border.width: StyleKit.Units.borderWidth
         border.color: control.colors.borderColor
     }
 }

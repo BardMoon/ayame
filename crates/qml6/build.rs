@@ -1,4 +1,4 @@
-use cxx_qt_build::{CxxQtBuilder, QmlFile, QmlModule};
+use cxx_qt_build::{CxxQtBuilder, QmlModule};
 use std::path::Path;
 
 fn main() {
@@ -71,24 +71,17 @@ fn main() {
         "qml/widgets/scroll/ToolSeparator.qml",
     ];
 
-    CxxQtBuilder::new_qml_module(
-        QmlModule::new("Ayame")
-            .qml_files([
-                QmlFile::from("qml/theme/Units.qml").singleton(true),
-                QmlFile::from("qml/theme/Theme.qml").singleton(true),
-            ])
-            .qml_files(widget_files),
-    )
-    .files(["src/cxxqt_object.rs"])
-    .cpp_file(cpp_dir.join("style_query.h"))
-    .cpp_file(cpp_dir.join("style_query.cpp"))
-    .cpp_file(cpp_dir.join("theme_palette.h"))
-    .cpp_file(cpp_dir.join("theme_palette.cpp"))
-    .cpp_file(cpp_dir.join("font_query.h"))
-    .cpp_file(cpp_dir.join("font_query.cpp"))
-    .qt_module("Quick")
-    .qt_module("QuickControls2")
-    .qt_module("QuickShapes")
-    .build()
-    .export();
+    CxxQtBuilder::new_qml_module(QmlModule::new("Ayame").qml_files(widget_files))
+        .files(["src/cxxqt_object.rs"])
+        .cpp_file(cpp_dir.join("style_query.h"))
+        .cpp_file(cpp_dir.join("style_query.cpp"))
+        .cpp_file(cpp_dir.join("theme_palette.h"))
+        .cpp_file(cpp_dir.join("theme_palette.cpp"))
+        .cpp_file(cpp_dir.join("font_query.h"))
+        .cpp_file(cpp_dir.join("font_query.cpp"))
+        .qt_module("Quick")
+        .qt_module("QuickControls2")
+        .qt_module("QuickShapes")
+        .build()
+        .export();
 }

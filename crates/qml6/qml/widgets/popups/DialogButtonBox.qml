@@ -3,15 +3,16 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.DialogButtonBox {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
-    spacing: Ayame.Units.smallSpacing
-    padding: Ayame.Units.smallSpacing
+    spacing: StyleKit.Units.smallSpacing
+    padding: StyleKit.Units.smallSpacing
     alignment: control.count === 1 ? Qt.AlignRight : undefined
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, (control.count === 1 ? implicitContentWidth * 2 : implicitContentWidth) + leftPadding + rightPadding)
@@ -36,7 +37,7 @@ T.DialogButtonBox {
     }
 
     background: Rectangle {
-        radius: Ayame.Units.cornerRadius
+        radius: StyleKit.Units.cornerRadius
         color: control.colors.backgroundColor
     }
 }

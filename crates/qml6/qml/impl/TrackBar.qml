@@ -1,5 +1,6 @@
 import QtQuick
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 // Shared pill-shaped track background for Slider, RangeSlider, and
 // ProgressBar's "bar" -- same rounded-rect look (fill + border, fully
@@ -13,7 +14,7 @@ Rectangle {
     // rounded-rect renders visibly blurry (same class of issue as
     // RadioButton's centering bug -- subpixel geometry doesn't align to
     // the pixel grid the rasterizer snaps to).
-    property real thickness: Math.round(Ayame.Units.smallSpacing * 1.4)
+    property real thickness: Math.round(StyleKit.Units.smallSpacing * 1.4)
     property color trackColor: "transparent"
     property color trackBorderColor: "transparent"
 
@@ -21,6 +22,6 @@ Rectangle {
     implicitHeight: thickness
     radius: thickness / 2
     color: trackColor
-    border.width: Ayame.Units.borderWidth
+    border.width: StyleKit.Units.borderWidth
     border.color: trackBorderColor
 }

@@ -3,16 +3,17 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.CheckBox {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
-    readonly property real _indicatorSize: Ayame.Units.iconSizes.small
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
+    readonly property real _indicatorSize: StyleKit.Units.iconSizes.small
 
     hoverEnabled: true
-    spacing: Ayame.Units.smallSpacing
+    spacing: StyleKit.Units.smallSpacing
     opacity: control.enabled ? 1.0 : 0.5
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
@@ -23,10 +24,10 @@ T.CheckBox {
         y: control.topPadding + (control.availableHeight - height) / 2
         width: control._indicatorSize
         height: control._indicatorSize
-        radius: Ayame.Units.cornerRadius
+        radius: StyleKit.Units.cornerRadius
         clip: true
         color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverColor : "transparent")
-        border.width: Ayame.Units.borderWidth
+        border.width: StyleKit.Units.borderWidth
         border.color: control.checked ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
 
         Text {
@@ -48,7 +49,7 @@ T.CheckBox {
             scale: control.checked ? 1.0 : 0.0
 
             Behavior on scale {
-                NumberAnimation { duration: Ayame.Units.shortDuration; easing.type: Easing.OutCubic }
+                NumberAnimation { duration: StyleKit.Units.shortDuration; easing.type: Easing.OutCubic }
             }
         }
     }

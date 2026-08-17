@@ -3,18 +3,19 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.Slider {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
-    implicitWidth: control.horizontal ? Ayame.Units.gridUnit * 8 : Ayame.Units.gridUnit * 1.4
-    implicitHeight: control.horizontal ? Ayame.Units.gridUnit * 1.4 : Ayame.Units.gridUnit * 8
+    implicitWidth: control.horizontal ? StyleKit.Units.gridUnit * 8 : StyleKit.Units.gridUnit * 1.4
+    implicitHeight: control.horizontal ? StyleKit.Units.gridUnit * 1.4 : StyleKit.Units.gridUnit * 8
 
-    readonly property real _handleSize: Ayame.Units.iconSizes.small
+    readonly property real _handleSize: StyleKit.Units.iconSizes.small
 
     background: Ayame.TrackBar {
         id: track
@@ -33,7 +34,7 @@ T.Slider {
             height: control.horizontal ? parent.height : control.position * parent.height
             radius: parent.radius
             color: control.colors.highlightColor
-            border.width: Ayame.Units.borderWidth
+            border.width: StyleKit.Units.borderWidth
             border.color: control.colors.highlightColor
         }
     }
@@ -54,7 +55,7 @@ T.Slider {
             anchors.fill: parent
             radius: width / 2
             color: control.pressed ? control.colors.highlightColor : control.colors.backgroundColor
-            border.width: Ayame.Units.borderWidth
+            border.width: StyleKit.Units.borderWidth
             border.color: control.pressed ? control.colors.highlightColor : (control.hovered ? control.colors.hoverBorderColor : control.colors.borderColor)
         }
 

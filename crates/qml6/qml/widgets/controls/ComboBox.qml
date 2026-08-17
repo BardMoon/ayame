@@ -3,17 +3,18 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.ComboBox {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
-    spacing: Ayame.Units.smallSpacing
-    padding: Ayame.Units.smallSpacing
-    implicitHeight: Ayame.Units.gridUnit * 1.6
+    spacing: StyleKit.Units.smallSpacing
+    padding: StyleKit.Units.smallSpacing
+    implicitHeight: StyleKit.Units.gridUnit * 1.6
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
 
     // Reserve room for `indicator` by shrinking the control's own
@@ -27,9 +28,9 @@ T.ComboBox {
     rightPadding: padding + (!control.mirrored && control.indicator ? control.indicator.width + control.spacing : 0)
 
     background: Rectangle {
-        radius: Ayame.Units.cornerRadius
+        radius: StyleKit.Units.cornerRadius
         color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
-        border.width: Ayame.Units.borderWidth
+        border.width: StyleKit.Units.borderWidth
         border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
     }
 
@@ -66,8 +67,8 @@ T.ComboBox {
         y: control.height
         width: control.width
         height: Math.min(contentItem.implicitHeight, control.Window.height - topMargin - bottomMargin)
-        topMargin: Ayame.Units.smallSpacing
-        bottomMargin: Ayame.Units.smallSpacing
+        topMargin: StyleKit.Units.smallSpacing
+        bottomMargin: StyleKit.Units.smallSpacing
 
         contentItem: ListView {
             clip: true

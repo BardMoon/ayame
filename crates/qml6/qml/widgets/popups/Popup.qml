@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 // Themed drop-in for QQC2's Popup, same "wrap the QQC2 type, replace its
 // background" approach as widgets/Label.qml/widgets/inputs/TextField.qml.
@@ -18,9 +19,9 @@ T.Popup {
     id: control
 
     // Same knob as widgets/Label.qml/widgets/inputs/CheckBox.qml.
-    property int colorSet: Ayame.Theme.view
+    property int colorSet: StyleKit.Theme.view
 
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     // Opt-in: renders as a real top-level QWindow rather than an item
     // confined to the app's own QQuickWindow (the Popup.Item default this
@@ -61,15 +62,15 @@ T.Popup {
 
     popupType: control.detachedWindow ? T.Popup.Window : T.Popup.Item
 
-    padding: Ayame.Units.smallSpacing
+    padding: StyleKit.Units.smallSpacing
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, implicitContentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     background: Rectangle {
-        radius: Ayame.Units.cornerRadius
+        radius: StyleKit.Units.cornerRadius
         color: control.colors.backgroundColor
-        border.width: Ayame.Units.borderWidth
+        border.width: StyleKit.Units.borderWidth
         border.color: control.colors.borderColor
     }
 }

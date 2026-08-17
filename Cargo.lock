@@ -21,6 +21,7 @@ dependencies = [
  "ayame-colors",
  "ayame-config",
  "ayame-icons",
+ "ayame-stylekit",
  "cxx",
  "cxx-qt",
  "cxx-qt-build",
@@ -60,6 +61,15 @@ dependencies = [
  "ayame",
  "ayame-config",
  "cxx",
+ "cxx-qt",
+ "cxx-qt-build",
+ "cxx-qt-lib",
+]
+
+[[package]]
+name = "ayame-stylekit"
+version = "0.1.0"
+dependencies = [
  "cxx-qt",
  "cxx-qt-build",
  "cxx-qt-lib",

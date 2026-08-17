@@ -3,12 +3,13 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.ProgressBar {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     // Pinned to the shared track thickness (not derived via the usual
     // implicitContentHeight + padding formula) -- same reasoning as
@@ -19,13 +20,13 @@ T.ProgressBar {
 
     background: Ayame.TrackBar {
         id: track
-        implicitWidth: Ayame.Units.gridUnit * 8
+        implicitWidth: StyleKit.Units.gridUnit * 8
         trackColor: control.colors.backgroundColor
         trackBorderColor: control.colors.borderColor
     }
 
     contentItem: Item {
-        implicitWidth: Ayame.Units.gridUnit * 8
+        implicitWidth: StyleKit.Units.gridUnit * 8
         implicitHeight: track.thickness
         clip: true
 
@@ -36,7 +37,7 @@ T.ProgressBar {
             height: parent.height
             radius: track.radius
             color: control.colors.highlightColor
-            border.width: Ayame.Units.borderWidth
+            border.width: StyleKit.Units.borderWidth
             border.color: control.colors.highlightColor
         }
 
@@ -51,14 +52,14 @@ T.ProgressBar {
         // with it, so left uninset they'd visibly draw over it.
         Item {
             id: indeterminateLayer
-            x: Ayame.Units.borderWidth
-            y: Ayame.Units.borderWidth
-            width: parent.width - Ayame.Units.borderWidth * 2
-            height: parent.height - Ayame.Units.borderWidth * 2
+            x: StyleKit.Units.borderWidth
+            y: StyleKit.Units.borderWidth
+            width: parent.width - StyleKit.Units.borderWidth * 2
+            height: parent.height - StyleKit.Units.borderWidth * 2
             visible: control.indeterminate
 
-            readonly property real stripeWidth: Ayame.Units.smallSpacing * 6
-            readonly property real gapWidth: Ayame.Units.smallSpacing * 4
+            readonly property real stripeWidth: StyleKit.Units.smallSpacing * 6
+            readonly property real gapWidth: StyleKit.Units.smallSpacing * 4
             readonly property real repeatWidth: stripeWidth + gapWidth
 
             Row {
@@ -79,11 +80,11 @@ T.ProgressBar {
                 }
 
                 NumberAnimation on x {
-                    running: control.indeterminate && Ayame.Units.animationsEnabled
+                    running: control.indeterminate && StyleKit.Units.animationsEnabled
                     loops: Animation.Infinite
                     from: -indeterminateLayer.repeatWidth
                     to: 0
-                    duration: Ayame.Units.veryLongDuration * 2
+                    duration: StyleKit.Units.veryLongDuration * 2
                 }
             }
         }

@@ -4,12 +4,13 @@ import QtQuick
 import QtQuick.Shapes
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.Dial {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
 
@@ -17,15 +18,15 @@ T.Dial {
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     background: Item {
-        implicitWidth: Ayame.Units.gridUnit * 3.5
-        implicitHeight: Ayame.Units.gridUnit * 3.5
+        implicitWidth: StyleKit.Units.gridUnit * 3.5
+        implicitHeight: StyleKit.Units.gridUnit * 3.5
 
         // Noticeably thicker than TrackBar's bar thickness -- at bar
         // thickness this reads as basically invisible wrapped around a
         // ~gridUnit*3.5 circle instead of a strip. Still rounded to a
         // whole pixel for the same reason TrackBar.qml's thickness is
         // -- a fractional stroke width on a thin arc renders blurry.
-        readonly property real ringThickness: Math.round(Ayame.Units.smallSpacing * 3)
+        readonly property real ringThickness: Math.round(StyleKit.Units.smallSpacing * 3)
 
         // qqc2-style-breeze's Dial keeps the handle nearly filling the
         // whole circle, with just a thin groove right at its edge
@@ -38,7 +39,7 @@ T.Dial {
             anchors.margins: parent.ringThickness / 2
             radius: width / 2
             color: control.colors.backgroundColor
-            border.width: Ayame.Units.borderWidth
+            border.width: StyleKit.Units.borderWidth
             border.color: control.hovered ? control.colors.highlightColor : control.colors.borderColor
         }
 
@@ -63,7 +64,7 @@ T.Dial {
             // full-thickness borderColor band, then a narrower
             // backgroundColor band on top -- leaving a borderColor rim
             // showing all the way around, including at the rounded caps.
-            readonly property real _trackFillStrokeWidth: Math.max(1, parent.ringThickness - Ayame.Units.borderWidth * 2)
+            readonly property real _trackFillStrokeWidth: Math.max(1, parent.ringThickness - StyleKit.Units.borderWidth * 2)
 
             ShapePath {
                 strokeWidth: parent.ringThickness

@@ -3,12 +3,13 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.TabBar {
     id: control
 
-    property int colorSet: Ayame.Theme.header
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.header
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset, contentWidth + leftPadding + rightPadding)
     implicitHeight: Math.max(contentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
@@ -45,7 +46,7 @@ T.TabBar {
         // otherwise every scroll-driven x change would itself animate
         // and the indicator would visibly lag behind the scroll).
         Rectangle {
-            height: Ayame.Units.borderWidth
+            height: StyleKit.Units.borderWidth
             y: parent.height - height
             color: control.colors.highlightColor
             visible: tabsView.currentItem !== null
@@ -54,11 +55,11 @@ T.TabBar {
 
             Behavior on x {
                 enabled: !tabsView.moving && !tabsView.dragging
-                NumberAnimation { duration: Ayame.Units.shortDuration; easing.type: Easing.OutCubic }
+                NumberAnimation { duration: StyleKit.Units.shortDuration; easing.type: Easing.OutCubic }
             }
             Behavior on width {
                 enabled: !tabsView.moving && !tabsView.dragging
-                NumberAnimation { duration: Ayame.Units.shortDuration; easing.type: Easing.OutCubic }
+                NumberAnimation { duration: StyleKit.Units.shortDuration; easing.type: Easing.OutCubic }
             }
         }
     }

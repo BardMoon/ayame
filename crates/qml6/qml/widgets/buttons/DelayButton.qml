@@ -3,23 +3,24 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Templates as T
 import Ayame 1.0 as Ayame
+import StyleKit 1.0 as StyleKit
 
 T.DelayButton {
     id: control
 
-    property int colorSet: Ayame.Theme.view
-    readonly property var colors: Ayame.Theme.paletteFor(control.colorSet)
+    property int colorSet: StyleKit.Theme.view
+    readonly property var colors: StyleKit.Theme.paletteFor(control.colorSet)
 
     hoverEnabled: true
-    implicitHeight: Ayame.Units.gridUnit * 1.6
-    implicitWidth: contentItem.implicitWidth + Ayame.Units.largeSpacing * 2
+    implicitHeight: StyleKit.Units.gridUnit * 1.6
+    implicitWidth: contentItem.implicitWidth + StyleKit.Units.largeSpacing * 2
 
     background: Item {
         Rectangle {
             anchors.fill: parent
-            radius: Ayame.Units.cornerRadius
+            radius: StyleKit.Units.cornerRadius
             color: control.pressed ? control.colors.pressedColor : (control.hovered ? control.colors.hoverColor : control.colors.backgroundColor)
-            border.width: Ayame.Units.borderWidth
+            border.width: StyleKit.Units.borderWidth
             border.color: control.activeFocus ? control.colors.highlightColor : control.colors.borderColor
         }
 
@@ -36,10 +37,10 @@ T.DelayButton {
             Rectangle {
                 width: control.width
                 height: control.height
-                radius: Ayame.Units.cornerRadius
+                radius: StyleKit.Units.cornerRadius
                 color: control.colors.highlightColor
                 opacity: 0.5
-                border.width: Ayame.Units.borderWidth
+                border.width: StyleKit.Units.borderWidth
                 border.color: control.colors.highlightColor
             }
         }

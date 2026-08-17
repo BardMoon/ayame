@@ -8,6 +8,7 @@ edition.workspace = true
 ayame-colors = { path = "../colors" }
 ayame-config = { path = "../config" }
 ayame-icons = { path = "../icons" }
+ayame-stylekit = { path = "../stylekit" }
 
 #[ Crates.io ]
 cxx = { workspace = true }

@@ -28,7 +28,7 @@ T.Dialog {
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset, contentHeight + topPadding + bottomPadding + (implicitHeaderHeight > 0 ? implicitHeaderHeight + spacing : 0) + (implicitFooterHeight > 0 ? implicitFooterHeight + spacing : 0))
 
     background: Rectangle {
-        radius: StyleKit.Units.cornerRadius
+        radius: styleReader.background.radius
         color: styleReader.background.color
         border.width: styleReader.background.border.width
         border.color: styleReader.background.border.color

@@ -70,7 +70,7 @@ T.SpinBox {
     background: Item {
         Rectangle {
             anchors.fill: parent
-            radius: StyleKit.Units.cornerRadius
+            radius: styleReader.background.radius
             color: styleReader.background.color
             border.width: styleReader.background.border.width
             border.color: styleReader.background.border.color
@@ -101,7 +101,7 @@ T.SpinBox {
         x: control.mirrored ? 0 : parent.width - width
         height: parent.height
         implicitWidth: StyleKit.Units.gridUnit * 1.2
-        radius: StyleKit.Units.cornerRadius
+        radius: upStyleReader.background.radius
         color: upStyleReader.background.color
 
         Text {
@@ -115,7 +115,7 @@ T.SpinBox {
         x: control.mirrored ? parent.width - width : 0
         height: parent.height
         implicitWidth: StyleKit.Units.gridUnit * 1.2
-        radius: StyleKit.Units.cornerRadius
+        radius: downStyleReader.background.radius
         color: downStyleReader.background.color
 
         Text {

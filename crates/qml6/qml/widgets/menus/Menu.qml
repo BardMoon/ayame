@@ -81,7 +81,7 @@ T.Menu {
     }
 
     background: Rectangle {
-        radius: StyleKit.Units.cornerRadius
+        radius: styleReader.background.radius
         color: control._headerBackground
         border.width: styleReader.background.border.width
         border.color: control._headerBorder

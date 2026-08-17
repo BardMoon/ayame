@@ -520,29 +520,87 @@ all that's required, which was already confirmed working since Phase 1.
       remaining real reference, `window.colors.backgroundColor` for the
       app chrome itself -- not covered by any Phase 2 batch, needs its
       own small pass before Theme.qml can actually be deleted).
-      `grep -rlE "StyleKit\.Units\b"` still returns ~35 files, and that's
-      **expected, not a gap to close in Phase 2** -- Phase 0 always scoped
-      Units.qml's `gridUnit`/`cornerRadius`/`borderWidth`/`iconSizes`/
-      animation durations onto `padding`/`spacing`/`background.radius`/
-      `StyleAnimation` as a separate, deferred effort (border width
-      specifically still reads `LegacyStyleKit.Units.borderWidth` *through*
-      `AyameStyle.qml` on purpose, see that file's own header comment) --
-      this was never going to fall out of "convert every widget file's
-      StyleReader", it needs its own dedicated pass giving `AyameStyle`
-      real `padding`/`spacing`/`background.radius` values and a
-      `StyleAnimation` for transitions. This task's original phrasing
-      ("once grep returns nothing for both") undersold that scope --
-      treat Units retirement as its own follow-up task, written up
-      separately, not a blocker for finishing what Phase 2 already
-      covers. Once *both* Theme.qml (needs `ApplicationWindow.qml`'s
-      pass first) and Units.qml (needs the dedicated pass above) are
-      fully unreferenced: delete `crates/stylekit`, its workspace-member/
-      dependency entries in `Cargo.toml`/`crates/qml6/Cargo.toml`, the
-      `_KEEP_AYAME_STYLEKIT_LINKED` marker in
-      `crates/qml6/src/cxxqt_object.rs`, and the `StyleKit/` postInstall
-      block in `nix/pkgs/ayame.nix` — all added earlier this session, all
-      superseded by this migration. Also still gated on
-      `origami-frameworks`' own Phase 3 (its task file, cross-referenced
-      at the top of this one) landing, since `crates/stylekit` is a
-      shared dependency.
+  - [x] **`ApplicationWindow.qml`'s small pass (2026-08-18).** Confirmed
+        via qmltypes (`plugins.qmltypes` for both `Qt.labs.StyleKit` and
+        `QtQuick.Templates`) that `applicationWindow` is a real
+        `AbstractStylableControls` slot / `StyleReader.ControlType` value,
+        and `T.ApplicationWindow` (unlike a bare `Window`) does expose a
+        `palette` property to bind a `StyleReader` against -- no workaround
+        needed, same recipe as `page`/`pane`. `AyameStyle.qml` gained an
+        `applicationWindow: ControlStyle { background.color:
+        root._windowBackground }` slot (reusing the existing `_windowBackground`
+        from the containers/ batch, no new palette math). `ApplicationWindow.qml`
+        itself: dropped `colorSet`/`colors` properties and the legacy
+        `import StyleKit 1.0 as StyleKit` entirely (confirmed via grep
+        nothing outside this file ever read `window.colors`/`.colorSet`),
+        added a `LabsStyleKit.StyleReader { controlType:
+        LabsStyleKit.StyleReader.ApplicationWindow; palette: window.palette }`,
+        `color: styleReader.background.color`. `grep -rnE "StyleKit\.Theme"`
+        across the tree now only matches comments (4 files, all prose
+        referencing the old singleton by name, no live code) -- the real
+        migration is done.
+        Verified 2026-08-18: `cargo check -p ayame` clean; `cargo build -p
+        ayame-settings` clean; headless run (`QT_QPA_PLATFORM=offscreen
+        timeout 8 cargo run -p ayame-settings`, confirmed actually reached
+        `Running` via stdout, errors checked via `journalctl --user --since
+        <ts> -o cat`) showed zero QML warnings beyond the pre-existing,
+        unrelated moc/`_FORTIFY_SOURCE` noise. `git status` shows only the
+        two intended files changed.
+      `grep -rlE "StyleKit\.Units\b"` still returns ~35 files -- **decision
+      revised 2026-08-18, confirmed with the user: `crates/stylekit` is not
+      being deleted.** `Units.qml` is a general app-wide design-token +
+      live-settings-mutation singleton (`gridUnit`/`smallSpacing`/
+      `largeSpacing`/`iconSizes`/`collapsedDrawerSize`/`groupContentMargin`,
+      plus `setUiScale()`/`setCornerRadiusOption()`/`setAnimationSpeedOption()`/
+      `setAnimationsEnabled()`/`persist()`/`cancel()`/`resetToDefaults()`/
+      `default*()` called directly by `ayame-settings`' Appearance page) --
+      most of it has no equivalent in `Qt.labs.StyleKit`'s read-only
+      `Style`/`ControlStyle` model and stays in `Units.qml` permanently.
+  - [x] **`cornerRadius` migrated (2026-08-18, ex-Units-follow-up-task,
+        file deleted after completion).** Investigated every `Units.qml`
+        member against actual widget-file usage: `cornerRadius` (23 uses)
+        is the only one shaped like `borderWidth` (single global value ->
+        `ControlStyle.background.radius`, confirmed real property via
+        `plugins.qmltypes`) -- migrated. `gridUnit`/`smallSpacing`/
+        `largeSpacing`/`iconSizes.*` (124 uses) drive arbitrary item
+        geometry across both QQC2 widgets and plain layout code, not
+        "control style" data -- no `ControlStyle` equivalent exists, left
+        alone permanently. `shortDuration`/`veryLongDuration`/
+        `animationsEnabled` (18 uses): investigated `Qt.labs.StyleKit`'s
+        `StyleAnimation` type directly (`StyleAnimation.qml`) -- it's a
+        `ParallelAnimation`-based `Behavior` component with one shared
+        `duration`/`easing`, not readable duration constants; adopting it
+        would mean giving up Ayame's short/long/veryLong tiering for no
+        gain -- left alone permanently.
+        `AyameStyle.qml` gained `readonly property real _cornerRadius:
+        LegacyStyleKit.Units.cornerRadius` (same deliberate-passthrough
+        pattern as `borderWidth`) plus `background.radius: root._cornerRadius`
+        on the 8 slots any in-scope site resolves through (`control`,
+        `button`, `flatButton`, `abstractButton`, `checkBox`, `comboBox`,
+        `itemDelegate`, `toolButton`). 21 of 23 `Units.cornerRadius` read
+        sites (17 widget files) already had a `StyleReader` wired to that
+        exact background `Rectangle` for color/border -- swapped to
+        `styleReader.background.radius` (or `indicatorStyleReader`/
+        `upStyleReader`/`downStyleReader` where applicable). 2 sites left
+        as direct `StyleKit.Units.cornerRadius` reads, matching this
+        migration's established "don't add a `StyleReader` to a file that
+        never needed one for colors either" precedent:
+        `impl/HighlightRing.qml` (reusable leaf, no per-caller StyleReader
+        ever) and `widgets/menus/MenuItem.qml` (no StyleReader at all,
+        unlike sibling `Menu.qml` which already had one for border-width
+        and picked up radius too).
+        Verified 2026-08-18: `cargo check -p ayame -p ayame-settings`
+        clean; headless run with a temporary verification block in
+        `ayame-settings/qml/main.qml` covering every touched widget the
+        real UI doesn't already exercise (`DelayButton`/`Tumbler`/
+        `DialogButtonBox`/`CheckDelegate`/`ItemDelegate`/`Frame`/
+        `GroupBox`/`TextArea`/`Dialog`/`Popup`/`ToolTip`/`Menu`+`MenuItem`,
+        `visible: true` on the Popup-family ones) showed zero QML warnings
+        beyond the pre-existing moc/`_FORTIFY_SOURCE` noise; block reverted
+        after, `git status` confirms `main.qml` clean.
+      Full deletion of `crates/stylekit` remains off the table for the
+      reasons above (`Units.qml`'s generic-sizing + live-settings-mutation
+      role has no replacement), independent of `origami-frameworks`' own
+      Phase 3 (its task file, cross-referenced at the top of this one),
+      which also remains unstarted.
 - [ ] Delete this file once done and confirmed working.

@@ -40,7 +40,7 @@ T.TextArea {
     background: Item {
         Rectangle {
             anchors.fill: parent
-            radius: StyleKit.Units.cornerRadius
+            radius: styleReader.background.radius
             color: styleReader.background.color
             border.width: styleReader.background.border.width
             border.color: styleReader.background.border.color

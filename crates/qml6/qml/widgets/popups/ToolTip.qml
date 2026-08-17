@@ -51,7 +51,7 @@ T.ToolTip {
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     background: Rectangle {
-        radius: StyleKit.Units.cornerRadius
+        radius: styleReader.background.radius
         color: control._tooltipBackground
         border.width: styleReader.background.border.width
         border.color: control._tooltipBorder

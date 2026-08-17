@@ -70,6 +70,14 @@ Style {
     readonly property color _hoverColor: root._blend(root.palette.highlight, 0.15)
     readonly property color _pressedColor: root._blend(root.palette.highlight, 0.5)
 
+    // Follow-up task (migrate-units-cornerradius-to-stylekit.md): a single
+    // global value, same deliberate passthrough-via-AyameStyle pattern as
+    // `LegacyStyleKit.Units.borderWidth` below -- `Units.qml`'s
+    // corner-radius preset UI/persistence stays right where it is, this
+    // just gives widget files one grouped-property read instead of a
+    // second direct `StyleKit.Units` import for radius alone.
+    readonly property real _cornerRadius: LegacyStyleKit.Units.cornerRadius
+
     // Mirrors the old Theme.qml's paletteFor(view)/derived-color math,
     // just reading root.palette (this Style's own live-resolved
     // QQuickPalette) instead of a SystemPalette singleton.
@@ -102,6 +110,7 @@ Style {
         background.color: root._viewBackground
         background.border.width: LegacyStyleKit.Units.borderWidth
         background.border.color: root._viewBorder
+        background.radius: root._cornerRadius
         text.color: root._viewText
 
         hovered.background.color: root._hoverColor
@@ -126,6 +135,7 @@ Style {
         background.color: root._viewBackground
         background.border.width: LegacyStyleKit.Units.borderWidth
         background.border.color: root._viewBorder
+        background.radius: root._cornerRadius
         text.color: root._viewText
 
         hovered.background.color: root._hoverColor
@@ -141,6 +151,7 @@ Style {
         background.color: root._viewBackground
         background.border.width: LegacyStyleKit.Units.borderWidth
         background.border.color: root._viewBorder
+        background.radius: root._cornerRadius
         text.color: root._viewText
 
         hovered.background.color: root._hoverColor
@@ -153,6 +164,7 @@ Style {
         background.color: root._viewBackground
         background.border.width: LegacyStyleKit.Units.borderWidth
         background.border.color: root._viewBorder
+        background.radius: root._cornerRadius
         text.color: root._viewText
 
         hovered.background.color: root._hoverColor
@@ -185,6 +197,7 @@ Style {
 
     toolButton: ControlStyle {
         background.color: "transparent"
+        background.radius: root._cornerRadius
         text.color: root._viewText
 
         hovered.background.color: root._hoverColor
@@ -200,6 +213,7 @@ Style {
         background.color: "transparent"
         background.border.width: LegacyStyleKit.Units.borderWidth
         background.border.color: root._viewBorder
+        background.radius: root._cornerRadius
         text.color: root._viewText
 
         hovered.background.color: root._hoverColor
@@ -216,6 +230,7 @@ Style {
         background.color: root._viewBackground
         background.border.width: LegacyStyleKit.Units.borderWidth
         background.border.color: root._viewBorder
+        background.radius: root._cornerRadius
         text.color: root._viewText
 
         hovered.background.color: root._hoverColor
@@ -237,6 +252,14 @@ Style {
 
         checked.background.color: root.palette.highlight
         checked.background.border.color: root.palette.highlight
+    }
+
+    // Phase 4: ApplicationWindow.qml's own app-chrome background -- the
+    // last real `StyleKit.Theme` reference in the tree (was
+    // `Theme.paletteFor(Theme.window).backgroundColor`). Same `window`
+    // colorSet/background-only shape as `page` below.
+    applicationWindow: ControlStyle {
+        background.color: root._windowBackground
     }
 
     // containers/ batch: Page.qml/Pane.qml used the old Theme's `window`
@@ -283,6 +306,7 @@ Style {
     // `indicatorStyleReader`).
     itemDelegate: ControlStyle {
         background.color: "transparent"
+        background.radius: root._cornerRadius
         text.color: root._viewText
 
         hovered.background.color: root._hoverColor

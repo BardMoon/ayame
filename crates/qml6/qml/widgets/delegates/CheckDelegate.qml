@@ -68,7 +68,7 @@ T.CheckDelegate {
         y: control.topPadding + (control.availableHeight - height) / 2
         width: StyleKit.Units.iconSizes.small
         height: StyleKit.Units.iconSizes.small
-        radius: StyleKit.Units.cornerRadius
+        radius: indicatorStyleReader.background.radius
         color: indicatorStyleReader.background.color
         border.width: indicatorStyleReader.background.border.width
         border.color: indicatorStyleReader.background.border.color

@@ -36,7 +36,7 @@ T.ComboBox {
     rightPadding: padding + (!control.mirrored && control.indicator ? control.indicator.width + control.spacing : 0)
 
     background: Rectangle {
-        radius: StyleKit.Units.cornerRadius
+        radius: styleReader.background.radius
         color: styleReader.background.color
         border.width: styleReader.background.border.width
         border.color: styleReader.background.border.color

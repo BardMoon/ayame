@@ -27,7 +27,7 @@ T.DelayButton {
     background: Item {
         Rectangle {
             anchors.fill: parent
-            radius: StyleKit.Units.cornerRadius
+            radius: styleReader.background.radius
             color: styleReader.background.color
             border.width: styleReader.background.border.width
             border.color: styleReader.background.border.color
@@ -46,7 +46,7 @@ T.DelayButton {
             Rectangle {
                 width: control.width
                 height: control.height
-                radius: StyleKit.Units.cornerRadius
+                radius: styleReader.background.radius
                 color: control.palette.highlight
                 opacity: 0.5
                 border.width: styleReader.background.border.width

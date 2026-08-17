@@ -15,3 +15,6 @@ apply_saved_theme_mode()経由で正しい)。accentもこのバグを同じ形�
 
 - ライブプレビュー
   - Stylekit非対応
+- qml type compiler
+  - Tech Preview更新待ち。
+  - cxx-qt 対応

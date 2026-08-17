@@ -34,7 +34,7 @@ T.CheckBox {
         y: control.topPadding + (control.availableHeight - height) / 2
         width: control._indicatorSize
         height: control._indicatorSize
-        radius: StyleKit.Units.cornerRadius
+        radius: styleReader.background.radius
         clip: true
         color: styleReader.background.color
         border.width: styleReader.background.border.width

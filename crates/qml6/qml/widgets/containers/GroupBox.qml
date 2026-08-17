@@ -36,7 +36,7 @@ T.GroupBox {
         y: control.topPadding - control.bottomPadding
         width: parent.width
         height: parent.height - control.topPadding + control.bottomPadding
-        radius: StyleKit.Units.cornerRadius
+        radius: styleReader.background.radius
         color: "transparent"
         border.width: styleReader.background.border.width
         border.color: styleReader.background.border.color

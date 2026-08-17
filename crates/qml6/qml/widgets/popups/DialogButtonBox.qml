@@ -44,7 +44,7 @@ T.DialogButtonBox {
     }
 
     background: Rectangle {
-        radius: StyleKit.Units.cornerRadius
+        radius: styleReader.background.radius
         color: styleReader.background.color
     }
 }

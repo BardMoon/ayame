@@ -6,4 +6,5 @@
 // only works because something links `ayame`) never registers -- see
 // ayame's own crates/qml6/src/cxxqt_object.rs for the reference site and
 // the identical `ayame-icons` precedent for this pattern.
-pub const MARKER: &str = "ayame-stylekit";
+#[used]
+pub static MARKER: &str = "ayame-stylekit";

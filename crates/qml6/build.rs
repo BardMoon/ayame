@@ -85,5 +85,6 @@ fn main() {
         .qt_module("QuickControls2")
         .qt_module("QuickShapes")
         .build()
+        .reexport_dependency("ayame-icons")
         .export();
 }

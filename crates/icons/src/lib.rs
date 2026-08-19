@@ -13,3 +13,6 @@
 mod mapping;
 
 pub use mapping::MAPPING;
+
+#[used]
+pub static MAPPING_STATIC: &[(&str, &str)] = mapping::MAPPING;

@@ -113,6 +113,14 @@ QtObject {
     // width). Sized to comfortably fit one icon-square button.
     readonly property int collapsedDrawerSize: units.gridUnit * 1.8
 
+    // A "toolbar" pane-tree leaf's own fixed thickness along whichever
+    // axis its containing split resizes (PaneSplit.qml's fixed-size
+    // handling, alongside collapsedDrawerSize above) -- e.g. a horizontal
+    // split holding one gives that cell this fixed width regardless of
+    // its neighbors' sizes. Sized to comfortably fit one row of icon
+    // buttons, same reasoning as collapsedDrawerSize.
+    readonly property int toolbarSize: units.gridUnit * 2.2
+
     // Maps the settings screen's 3-step Appearance/animation-speed preset
     // onto a duration multiplier applied to every constant below.
     readonly property var _animationSpeedPresets: ({

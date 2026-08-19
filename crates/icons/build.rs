@@ -1,4 +1,4 @@
-use cxx_qt_build::CxxQtBuilder;
+use cxx_qt_build::{CxxQtBuilder, QmlModule};
 use qt_build_utils::{QResource, QResourceFile, QResources};
 use std::path::Path;
 
@@ -20,7 +20,7 @@ fn main() {
                 .alias(format!("{freedesktop_name}.svg"))
         }));
 
-    CxxQtBuilder::new()
+    CxxQtBuilder::new_qml_module(QmlModule::new("ayame_icons"))
         .qrc_resources(QResources::new().resource(icons))
         .build()
         .export();

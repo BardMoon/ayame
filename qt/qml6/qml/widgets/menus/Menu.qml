@@ -29,7 +29,10 @@ T.Menu {
 
     readonly property color _headerBackground: control.palette.button
     readonly property color _headerText: control.palette.buttonText
-    readonly property color _headerBorder: Qt.rgba(control._headerText.r, control._headerText.g, control._headerText.b, 0.3)
+    // Opaque, not a raw alpha color, for the same reason as AyameStyle.qml's
+    // own private _headerBorder: a translucent border double-blends
+    // wherever it overlaps another translucent layer.
+    readonly property color _headerBorder: StyleKit.Theme.opaqueBlend(control._headerText, control._headerBackground, 0.3)
 
     // T.Menu (like T.Popup, which it extends) never computes its own root
     // implicitWidth/implicitHeight from contentItem/background -- every

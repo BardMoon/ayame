@@ -21,8 +21,20 @@ T.Popup {
 
     // `popup` has a dedicated slot, but its old look was identical to
     // `control`'s (view colorSet) -- no AyameStyle override needed.
-    LabsStyleKit.StyleReader {
-        id: styleReader
+    //
+    // A property, not a plain child object: Qt's own upstream reference
+    // implementation (Qt/labs/StyleKit/Popup.qml) uses the identical
+    // shape, with a TODO explaining why -- "making StyleReader a child
+    // object of T.Popup makes the popup not open on press". The same
+    // underlying quirk (T.Popup reparents itself into T.Overlay.overlay
+    // on open, which a plain child object doesn't track cleanly) is also
+    // what broke LabsStyleKit.StyleKit.style attached-property
+    // resolution for a StyleReader declared as a direct Popup child here
+    // -- surfaced as "No StyleKit style has been set!" once a real Popup
+    // instance was actually opened inside the full app (MapView.qml's
+    // pinEditor), not caught by this migration's own headless
+    // widget-gallery verification passes.
+    readonly property LabsStyleKit.StyleReader __styleReader: LabsStyleKit.StyleReader {
         controlType: LabsStyleKit.StyleReader.Popup
         enabled: control.enabled
         palette: control.palette
@@ -73,9 +85,9 @@ T.Popup {
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     background: Rectangle {
-        radius: styleReader.background.radius
-        color: styleReader.background.color
-        border.width: styleReader.background.border.width
-        border.color: styleReader.background.border.color
+        radius: control.__styleReader.background.radius
+        color: control.__styleReader.background.color
+        border.width: control.__styleReader.background.border.width
+        border.color: control.__styleReader.background.border.color
     }
 }

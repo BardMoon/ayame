@@ -6,7 +6,6 @@
   mkShell,
   qt6,
   kdePackages,
-  ayame,
   ...
 }:
 let
@@ -22,8 +21,6 @@ in
 mkShell rec {
   #[ https://github.com/NixOS/nixpkgs/blob/master/pkgs/kde/plasma/breeze/default.nix ]
   buildInputs = with pkgs; [
-    ayame
-
     #[ Develop ]
     ##[ Rust ]
     rustToolchain
@@ -50,8 +47,6 @@ mkShell rec {
 
   PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
   LD_LIBRARY_PATH = lib.makeLibraryPath [
-    ayame
-
     qt6.qtbase
     qt6.qtdeclarative
     qt6.qtwayland
@@ -84,8 +79,6 @@ mkShell rec {
     kdePackages.qqc2-breeze-style
     kdePackages.kirigami
     kdePackages.kguiaddons
-
-    ayame
   ];
   QML2_IMPORT_PATH = QML_IMPORT_PATH;
 

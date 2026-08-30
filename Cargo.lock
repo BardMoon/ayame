@@ -31,9 +31,6 @@ dependencies = [
 [[package]]
 name = "ayame-colors"
 version = "0.1.0"
-dependencies = [
- "cxx-qt-lib",
-]
 
 [[package]]
 name = "ayame-config"

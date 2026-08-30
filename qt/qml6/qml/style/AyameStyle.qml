@@ -66,6 +66,22 @@ Style {
         return Qt.rgba(color.r, color.g, color.b, alpha);
     }
 
+    // Pre-composites `fg` over `bg` at `alpha` and returns an opaque
+    // (alpha=1) result -- used for border colors, which need to render as
+    // solid pixels rather than semi-transparent ones (a translucent border
+    // double-blends wherever it overlaps another translucent layer, e.g.
+    // two adjacent bordered widgets, or a border drawn over a thumbnail).
+    // `_blend` above is left alone for `_hoverColor`/`_pressedColor`, which
+    // are genuinely meant to overlay whatever background color they're
+    // drawn on top of.
+    function _opaqueBlend(fg, bg, alpha) {
+        return Qt.rgba(
+            fg.r * alpha + bg.r * (1 - alpha),
+            fg.g * alpha + bg.g * (1 - alpha),
+            fg.b * alpha + bg.b * (1 - alpha),
+            1.0);
+    }
+
     // Same for every colorSet -- see class comment above.
     readonly property color _hoverColor: root._blend(root.palette.highlight, 0.15)
     readonly property color _pressedColor: root._blend(root.palette.highlight, 0.5)
@@ -83,24 +99,24 @@ Style {
     // QQuickPalette) instead of a SystemPalette singleton.
     readonly property color _viewBackground: root.palette.base
     readonly property color _viewText: root.palette.text
-    readonly property color _viewBorder: root._blend(root._viewText, 0.3)
-    readonly property color _viewHoverBorder: root._blend(root._viewText, 0.4)
+    readonly property color _viewBorder: root._opaqueBlend(root._viewText, root._viewBackground, 0.3)
+    readonly property color _viewHoverBorder: root._opaqueBlend(root._viewText, root._viewBackground, 0.4)
 
     // paletteFor(header) used pal.button/pal.buttonText as its base pair
     // (see old Theme.qml) -- everything else follows the same formula as
     // view above, just off that pair instead.
     readonly property color _headerBackground: root.palette.button
     readonly property color _headerText: root.palette.buttonText
-    readonly property color _headerBorder: root._blend(root._headerText, 0.3)
-    readonly property color _headerHoverBorder: root._blend(root._headerText, 0.4)
+    readonly property color _headerBorder: root._opaqueBlend(root._headerText, root._headerBackground, 0.3)
+    readonly property color _headerHoverBorder: root._opaqueBlend(root._headerText, root._headerBackground, 0.4)
 
     // paletteFor(window) was the old Theme.qml's default/fallback branch
     // (pal.window/pal.windowText, no explicit colorSet check needed) --
     // same formula as view/header above, just off that pair.
     readonly property color _windowBackground: root.palette.window
     readonly property color _windowText: root.palette.windowText
-    readonly property color _windowBorder: root._blend(root._windowText, 0.3)
-    readonly property color _windowHoverBorder: root._blend(root._windowText, 0.4)
+    readonly property color _windowBorder: root._opaqueBlend(root._windowText, root._windowBackground, 0.3)
+    readonly property color _windowHoverBorder: root._opaqueBlend(root._windowText, root._windowBackground, 0.4)
 
     // `control` is the ultimate fallback every other slot cascades to when
     // left unset, so it's seeded with the same view-colorSet look as a

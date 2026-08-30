@@ -707,6 +707,19 @@ impl Default for ThemeSettingsRust {
     }
 }
 
+// `ayame_colors::RgbColor` is deliberately Qt-free (no `cxx-qt-lib`
+// dependency) -- these two conversions live here instead, the only place
+// in the workspace that actually needs them (`crates/colors`' own
+// `RgbColor::to_qcolor`/`from_qcolor` were removed as part of that crate's
+// Qt-free cleanup; see `.agents/tasks/qt-free-colors-and-icons.md`).
+fn rgb_to_qcolor(c: ayame_colors::RgbColor) -> QColor {
+    QColor::from_rgba(c.r as i32, c.g as i32, c.b as i32, 255)
+}
+
+fn rgb_from_qcolor(color: &QColor) -> ayame_colors::RgbColor {
+    ayame_colors::RgbColor::new(color.red() as u8, color.green() as u8, color.blue() as u8)
+}
+
 impl ffi::ThemeSettings {
     fn mode(self: Pin<&mut Self>) -> QString {
         QString::from(self.rust().mode.as_str())
@@ -720,13 +733,14 @@ impl ffi::ThemeSettings {
     }
 
     fn accent_color(self: Pin<&mut Self>) -> QColor {
-        ayame_colors::RgbColor::from_hex(&self.rust().accent)
-            .unwrap_or(ayame_colors::DEFAULT_ACCENT)
-            .to_qcolor()
+        rgb_to_qcolor(
+            ayame_colors::RgbColor::from_hex(&self.rust().accent)
+                .unwrap_or(ayame_colors::DEFAULT_ACCENT),
+        )
     }
 
     fn set_accent_color(mut self: Pin<&mut Self>, color: &QColor) {
-        let hex = ayame_colors::RgbColor::from_qcolor(color).to_hex();
+        let hex = rgb_from_qcolor(color).to_hex();
         self.as_mut().rust_mut().accent = hex.clone();
         let mode = self.rust().mode.clone();
         apply_theme(&mode, &hex);
@@ -796,7 +810,7 @@ impl ffi::ThemeSettings {
     }
 
     fn default_accent_for(self: Pin<&mut Self>, id: &QString) -> QColor {
-        ayame_colors::default_accent_for(&id.to_string()).to_qcolor()
+        rgb_to_qcolor(ayame_colors::default_accent_for(&id.to_string()))
     }
 
     fn persist(self: Pin<&mut Self>) {
@@ -829,9 +843,10 @@ impl ffi::ThemeSettings {
     }
 
     fn default_accent_color(self: Pin<&mut Self>) -> QColor {
-        ayame_colors::RgbColor::from_hex(&ayame_config::StyleSettings::default().accent_color)
-            .unwrap_or(ayame_colors::DEFAULT_ACCENT)
-            .to_qcolor()
+        rgb_to_qcolor(
+            ayame_colors::RgbColor::from_hex(&ayame_config::StyleSettings::default().accent_color)
+                .unwrap_or(ayame_colors::DEFAULT_ACCENT),
+        )
     }
 }
 

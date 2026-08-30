@@ -67,6 +67,23 @@ Add `ayame-icons` as a normal Cargo dependency; its `build.rs` compiles
 and links the Qt resource in, no wiring needed in the consumer's own
 `build.rs`.
 
+### Qt-free consumers (e.g. a Slint app)
+
+The Qt-resource compilation itself is behind a default-on `qt-resource`
+Cargo feature (`cxx-qt-build`/`qt-build-utils` build-dependencies, gated
+in `build.rs`). A consumer that never touches Qt at runtime should depend
+with `default-features = false` instead -- `build.rs` then does nothing
+(no Qt tooling invoked at build time at all), and the crate still exposes
+`MAPPING` plus `pub fn vendor_dir() -> &'static Path` (the absolute path
+to `vendor/tabler-icons/outline`, baked in via `env!("CARGO_MANIFEST_DIR")`
+so it resolves correctly regardless of where Cargo actually checked this
+crate out). Resolve a freedesktop-style name to an actual SVG file with
+`vendor_dir().join(format!("{tabler_name}.svg"))` (look up `tabler_name`
+via `MAPPING`), then either vendor an individual copy into the consumer's
+own source tree (Slint's `@image-url()` needs a compile-time-literal path
+in its own crate, so this is the only option for that mechanism) or load
+it dynamically at runtime (`slint::Image::load_from_path`).
+
 **A plain `Cargo.toml` dependency is not enough by itself, though.**
 `ayame-icons` exports nothing at the Rust level beyond
 `pub const MAPPING` (all the real work is build-script side effects) --

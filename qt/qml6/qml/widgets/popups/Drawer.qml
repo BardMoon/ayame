@@ -15,8 +15,13 @@ T.Drawer {
     // look. Reuses `pane` (widgets/containers/Pane.qml's own slot, also
     // window-colorSet background-only) instead of adding a near-identical
     // AyameStyle slot just for this file.
-    LabsStyleKit.StyleReader {
-        id: styleReader
+    //
+    // A property, not a plain child object -- same fix, same reason, as
+    // widgets/popups/Popup.qml's own __styleReader (see its comment):
+    // T.Drawer is a T.Popup subtype, gets the same T.Overlay.overlay
+    // reparenting on open, and a StyleReader declared as a direct child
+    // hit the same "No StyleKit style has been set!" resolution failure.
+    readonly property LabsStyleKit.StyleReader __styleReader: LabsStyleKit.StyleReader {
         controlType: LabsStyleKit.StyleReader.Pane
         enabled: control.enabled
         palette: control.palette
@@ -32,8 +37,8 @@ T.Drawer {
     implicitHeight: Math.max(implicitContentHeight + topPadding + bottomPadding, implicitBackgroundHeight + topInset + bottomInset)
 
     background: Rectangle {
-        color: styleReader.background.color
-        border.width: styleReader.background.border.width
-        border.color: styleReader.background.border.color
+        color: control.__styleReader.background.color
+        border.width: control.__styleReader.background.border.width
+        border.color: control.__styleReader.background.border.color
     }
 }

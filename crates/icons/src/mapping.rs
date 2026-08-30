@@ -26,7 +26,9 @@ pub const MAPPING: &[(&str, &str)] = &[
     ("cards-block-symbolic", "layout-cards"),
     ("checkbox", "checkbox"),
     ("chevron-down", "chevron-down"),
+    ("chevron-left", "chevron-left"),
     ("chevron-right", "chevron-right"),
+    ("chevron-up", "chevron-up"),
     ("code-context", "code"),
     ("code-context-symbolic", "code"),
     ("dialog-error-symbolic", "alert-circle"),
@@ -84,6 +86,7 @@ pub const MAPPING: &[(&str, &str)] = &[
     ("sidebar-collapse-left", "layout-sidebar-left-collapse"),
     ("sidebar-expand-left", "layout-sidebar-left-expand"),
     ("sidebar-expand-symbolic", "layout-sidebar"),
+    ("system-search", "search"),
     ("tab-duplicate", "copy"),
     ("tab-duplicate-symbolic", "copy"),
     ("tab-new-symbolic", "plus"),
@@ -106,6 +109,7 @@ pub const MAPPING: &[(&str, &str)] = &[
     ("view-list-symbolic", "list"),
     ("view-list-tree", "list-tree"),
     ("view-pim-notes", "notes"),
+    ("view-pinboard-symbolic", "layout-columns"),
     ("view-preview-symbolic", "eye"),
     ("view-refresh", "refresh"),
     ("view-refresh-symbolic", "refresh"),
@@ -116,4 +120,18 @@ pub const MAPPING: &[(&str, &str)] = &[
     ("view-visible-symbolic", "eye"),
     ("window", "window"),
     ("window-close-symbolic", "x"),
+    // Shrink-to-headers-only ("shade") toggle on FloatingWindow.qml -- a
+    // plain dash is the conventional minimize glyph across every desktop
+    // (Windows, GNOME, historically macOS), and reads unambiguously at
+    // titlebar-button size, unlike Tabler's own literal "minimize" icon
+    // (see window-restore-symbolic below), whose thin corner-brackets get
+    // hard to read that small.
+    ("window-minimize-symbolic", "minus"),
+    // Fill-the-host toggle on FloatingWindow.qml -- Tabler's own
+    // fullscreen-style outward corner arrows.
+    ("window-maximize-symbolic", "maximize"),
+    // The same toggle button once already maximized -- Tabler's inward
+    // corner arrows read as "shrink back down" the same way a real window
+    // manager's restore icon does.
+    ("window-restore-symbolic", "minimize"),
 ];

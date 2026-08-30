@@ -5,9 +5,9 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-ayame-colors = { path = "../colors" }
-ayame-config = { path = "../config" }
-ayame-icons = { path = "../icons" }
+ayame-colors = { path = "../../crates/colors" }
+ayame-config = { path = "../../crates/config" }
+ayame-icons = { path = "../../crates/icons" }
 ayame-stylekit = { path = "../stylekit" }
 
 #[ Crates.io ]

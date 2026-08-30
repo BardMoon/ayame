@@ -42,6 +42,28 @@ QtObject {
     readonly property color negativeTextColor: "#da4453"
     readonly property color neutralTextColor: "#f67400"
 
+    // Pre-composites `fg` over `bg` at `alpha` and returns an opaque
+    // (alpha=1) result. Used for border colors: a translucent border
+    // double-blends wherever it overlaps another translucent layer (e.g.
+    // two adjacent bordered widgets), so callers that render on a known,
+    // solid background should use this instead of a raw alpha color.
+    function opaqueBlend(fg, bg, alpha) {
+        return Qt.rgba(
+            fg.r * alpha + bg.r * (1 - alpha),
+            fg.g * alpha + bg.g * (1 - alpha),
+            fg.b * alpha + bg.b * (1 - alpha),
+            1.0);
+    }
+
+    // Opaque black or white outline, picked by `bg`'s perceptual luminance,
+    // for drawing a border on top of an arbitrary/caller-supplied color
+    // (e.g. a color-swatch preview) where there is no single fixed
+    // background to pre-composite against with opaqueBlend() above.
+    function solidOutlineColor(bg) {
+        var luminance = 0.299 * bg.r + 0.587 * bg.g + 0.114 * bg.b;
+        return luminance > 0.5 ? Qt.rgba(0, 0, 0, 1.0) : Qt.rgba(1, 1, 1, 1.0);
+    }
+
     function paletteFor(set) {
         var pal = theme._palette;
         var backgroundColor = pal.window;
@@ -68,8 +90,8 @@ QtObject {
             hoverColor: Qt.rgba(pal.highlight.r, pal.highlight.g, pal.highlight.b, 0.15),
             pressedColor: Qt.rgba(pal.highlight.r, pal.highlight.g, pal.highlight.b, 0.5),
             // Border
-            borderColor: Qt.rgba(textColor.r, textColor.g, textColor.b, 0.3),
-            hoverBorderColor: Qt.rgba(textColor.r, textColor.g, textColor.b, 0.4),
+            borderColor: theme.opaqueBlend(textColor, backgroundColor, 0.3),
+            hoverBorderColor: theme.opaqueBlend(textColor, backgroundColor, 0.4),
             // Text
             textColor: textColor,
             positiveTextColor: theme.positiveTextColor,

@@ -2,27 +2,30 @@
 resolver = "3"
 
 members = [
-  "ayame-settings",
-  "crates/qml6",
-  "crates/stylekit",
+  #[ Qt-free ]
   "crates/colors",
   "crates/config",
   "crates/icons",
-  # "crates/kdecoreation6",
-  # "crates/kstyle6",
+
+  #[ Qt ]
+  "qt/ayame-settings",
+  "qt/qml6",
+  "qt/stylekit",
+  # "qt/kdecoreation6",
+  # "qt/kstyle6",
 ]
 
-default-members = ["crates/qml6"]
+default-members = ["qt/qml6"]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
 
 [workspace.dependencies]
-ayame = { path = "crates/qml6" }
+ayame = { path = "qt/qml6" }
 ayame-config = { path = "crates/config" }
 ayame-icons = { path = "crates/icons" }
-ayame-stylekit = { path = "crates/stylekit" }
+ayame-stylekit = { path = "qt/stylekit" }
 
 #[ Crates.io ]
 anyhow = "1"

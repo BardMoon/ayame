@@ -42,18 +42,6 @@ impl RgbColor {
         Some(Self { r, g, b })
     }
 
-    pub fn to_qcolor(self) -> cxx_qt_lib::QColor {
-        cxx_qt_lib::QColor::from_rgba(self.r as i32, self.g as i32, self.b as i32, 255)
-    }
-
-    pub fn from_qcolor(color: &cxx_qt_lib::QColor) -> Self {
-        Self {
-            r: color.red() as u8,
-            g: color.green() as u8,
-            b: color.blue() as u8,
-        }
-    }
-
     /// Packed `0xRRGGBB`, matching Qt's `QRgb` typedef -- this is the shape
     /// `theme_palette.cpp`'s FFI boundary expects (see
     /// `cettila_apply_theme_palette`), since passing `cxx_qt_lib::QColor`

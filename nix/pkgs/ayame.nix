@@ -60,8 +60,8 @@ craneLib.buildPackage (
       # styles) -- so the module must be named/located as plain "Ayame",
       # not "QtQuick.Controls.Ayame". See docs/qqc2-custom-style-resolution.md.
       mkdir -p $out/lib/qt-6/qml/Ayame/qml
-      if [ -d crates/qml6/qml ]; then
-        cp -r crates/qml6/qml/* $out/lib/qt-6/qml/Ayame/qml/
+      if [ -d qt/qml6/qml ]; then
+        cp -r qt/qml6/qml/* $out/lib/qt-6/qml/Ayame/qml/
       fi
       qmldir_file=target/cxxqt/qml_modules/Ayame/qmldir
       if [ -f "$qmldir_file" ]; then
@@ -75,11 +75,11 @@ craneLib.buildPackage (
       # StyleKit is an ordinary (non-style) QML module -- unlike Ayame, it
       # has no QT_QUICK_CONTROLS_STYLE naming/path constraint, so standard
       # Qt module install conventions apply. It's its own crate
-      # (crates/stylekit), not part of crates/qml6, so its qmldir/qmltypes
+      # (qt/stylekit), not part of qt/qml6, so its qmldir/qmltypes
       # are generated under a separate target/cxxqt/qml_modules/StyleKit/.
       mkdir -p $out/lib/qt-6/qml/StyleKit/qml/theme
-      if [ -d crates/stylekit/qml/theme ]; then
-        cp -r crates/stylekit/qml/theme/* $out/lib/qt-6/qml/StyleKit/qml/theme/
+      if [ -d qt/stylekit/qml/theme ]; then
+        cp -r qt/stylekit/qml/theme/* $out/lib/qt-6/qml/StyleKit/qml/theme/
       fi
       stylekit_qmldir_file=target/cxxqt/qml_modules/StyleKit/qmldir
       if [ -f "$stylekit_qmldir_file" ]; then

@@ -3,25 +3,25 @@ resolver = "3"
 
 members = [
   #[ Qt ]
-  "qt/ayame-settings",
-  "qt/qml6",
-  "qt/stylekit",
-  # "qt/kdecoreation6",
-  # "qt/kstyle6",
+  "crates/ayame-settings",
+  "crates/qml6",
+  "crates/stylekit",
+  # "crates/kdecoreation6",
+  # "crates/kstyle6",
 ]
 
-default-members = ["qt/qml6"]
+default-members = ["crates/ayame-settings"]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
 
 [workspace.dependencies]
-ayame = { path = "qt/qml6" }
-ayame-stylekit = { path = "qt/stylekit" }
-ayame-colors = { git = "https://github.com/BardMoon/origami-frameworks" }
-ayame-config = { git = "https://github.com/BardMoon/origami-frameworks" }
-ayame-icons = { git = "https://github.com/BardMoon/origami-frameworks" }
+ayame = { path = "crates/qml6" }
+ayame-stylekit = { path = "crates/stylekit" }
+ayame-colors = { git = "https://github.com/BardMoon/origami-frameworks", rev = "4a290a82f3cdcf85352af2046143bd86318bd065" }
+ayame-config = { git = "https://github.com/BardMoon/origami-frameworks", rev = "4a290a82f3cdcf85352af2046143bd86318bd065" }
+ayame-icons = { git = "https://github.com/BardMoon/origami-frameworks", rev = "4a290a82f3cdcf85352af2046143bd86318bd065" }
 
 #[ Crates.io ]
 anyhow = "1"
@@ -35,3 +35,11 @@ directories = "6.0"
 serde = { version = "1.0", features = ["derive"] }
 time = "0.3"
 toml = "0.8"
+
+[patch.crates-io]
+cxx-qt = { git = "https://github.com/BardMoon/cxx-qt", branch = "fix/qmlls-ini-readonly-source" }
+cxx-qt-build = { git = "https://github.com/BardMoon/cxx-qt", branch = "fix/qmlls-ini-readonly-source" }
+cxx-qt-gen = { git = "https://github.com/BardMoon/cxx-qt", branch = "fix/qmlls-ini-readonly-source" }
+cxx-qt-lib = { git = "https://github.com/BardMoon/cxx-qt", branch = "fix/qmlls-ini-readonly-source" }
+cxx-qt-macro = { git = "https://github.com/BardMoon/cxx-qt", branch = "fix/qmlls-ini-readonly-source" }
+qt-build-utils = { git = "https://github.com/BardMoon/cxx-qt", branch = "fix/qmlls-ini-readonly-source" }

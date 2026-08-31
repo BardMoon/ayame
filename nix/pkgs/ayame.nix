@@ -19,6 +19,11 @@ let
     dontWrapQtApps = true;
     cargoExtraArgs = "-p ayame -p ayame-stylekit";
 
+    outputHashes = {
+      "git+https://github.com/BardMoon/origami-frameworks?rev=4a290a82f3cdcf85352af2046143bd86318bd065#4a290a82f3cdcf85352af2046143bd86318bd065" = "sha256-KlAn7kqBJTj8fRtMsCKXTKOk2FuWYtYCTrW2PEUoYrg=";
+      "git+https://github.com/BardMoon/cxx-qt?branch=fix/qmlls-ini-readonly-source#01719cd4d22dd404d30dec36ff4bec9dc1bf099b" = "sha256-W2GCy2vc1sy+By12q8SkjehJTTF79BR1+QjHbQ/tACA=";
+    };
+
     nativeBuildInputs = [
       pkg-config
       cmake
@@ -53,12 +58,6 @@ craneLib.buildPackage (
     inherit cargoArtifacts;
     doCheck = false;
     postInstall = ''
-      # A custom (non-built-in) QQC2 style is imported by Qt using its
-      # style name literally as the QML import URI, with no
-      # "QtQuick.Controls." prefix (see qtquickcontrols2plugin.cpp's own
-      # styleUri(): that prefix is only added for Qt's own built-in
-      # styles) -- so the module must be named/located as plain "Ayame",
-      # not "QtQuick.Controls.Ayame". See docs/qqc2-custom-style-resolution.md.
       mkdir -p $out/lib/qt-6/qml/Ayame/qml
       if [ -d qt/qml6/qml ]; then
         cp -r qt/qml6/qml/* $out/lib/qt-6/qml/Ayame/qml/
@@ -72,14 +71,9 @@ craneLib.buildPackage (
         cp "$qmltypes_file" $out/lib/qt-6/qml/Ayame/plugin.qmltypes
       fi
 
-      # StyleKit is an ordinary (non-style) QML module -- unlike Ayame, it
-      # has no QT_QUICK_CONTROLS_STYLE naming/path constraint, so standard
-      # Qt module install conventions apply. It's its own crate
-      # (qt/stylekit), not part of qt/qml6, so its qmldir/qmltypes
-      # are generated under a separate target/cxxqt/qml_modules/StyleKit/.
       mkdir -p $out/lib/qt-6/qml/StyleKit/qml/theme
-      if [ -d qt/stylekit/qml/theme ]; then
-        cp -r qt/stylekit/qml/theme/* $out/lib/qt-6/qml/StyleKit/qml/theme/
+      if [ -d crates/stylekit/qml/theme ]; then
+        cp -r crates/stylekit/qml/theme/* $out/lib/qt-6/qml/StyleKit/qml/theme/
       fi
       stylekit_qmldir_file=target/cxxqt/qml_modules/StyleKit/qmldir
       if [ -f "$stylekit_qmldir_file" ]; then

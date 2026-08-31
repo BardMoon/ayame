@@ -17,7 +17,12 @@ let
     version = "0.1.0";
 
     dontWrapQtApps = true;
-    cargoExtraArgs = "-p ayame";
+    cargoExtraArgs = "-p ayame-settings";
+
+    outputHashes = {
+      "git+https://github.com/BardMoon/origami-frameworks?rev=4a290a82f3cdcf85352af2046143bd86318bd065#4a290a82f3cdcf85352af2046143bd86318bd065" = "sha256-KlAn7kqBJTj8fRtMsCKXTKOk2FuWYtYCTrW2PEUoYrg=";
+      "git+https://github.com/BardMoon/cxx-qt?branch=fix/qmlls-ini-readonly-source#01719cd4d22dd404d30dec36ff4bec9dc1bf099b" = "sha256-W2GCy2vc1sy+By12q8SkjehJTTF79BR1+QjHbQ/tACA=";
+    };
 
     nativeBuildInputs = [
       pkg-config

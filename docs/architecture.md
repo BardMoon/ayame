@@ -17,33 +17,33 @@ either -- `ayame-colors` used to claim Qt-free while still depending on
   own `README.md`) plus the logic to compose a preset with an accent
   color. Pure Rust, genuinely Qt-free (zero dependencies) -- it used to
   depend on `cxx-qt-lib` purely for two `QColor` conversion methods
-  nothing outside `qt/qml6` called; those moved to `qt/qml6/src/
+  nothing outside `crates/qml6` called; those moved to `crates/qml6/src/
   cxxqt_object.rs` (`rgb_to_qcolor`/`rgb_from_qcolor`) so this crate can
   be depended on directly by non-Qt consumers (e.g. `../cettila`'s Slint
   app) without pulling in Qt at build time.
 - `crates/config` (`ayame-config`) -- settings persisted to
-  `~/.config/ayamerc`, shared between `qt/qml6` (reads it at
-  startup/on change) and `qt/ayame-settings` (the editor GUI below).
+  `~/.config/ayamerc`, shared between `crates/qml6` (reads it at
+  startup/on change) and `crates/ayame-settings` (the editor GUI below).
 - `crates/icons` (`ayame-icons`) -- bundled Tabler Icons, exposed as a
   Qt resource at `qrc:/cettila/icons/<freedesktop-name>.svg` behind a
   default-on `qt-resource` Cargo feature; a Qt-free consumer depends
   with `default-features = false` and resolves icons via `vendor_dir()`/
   `MAPPING` instead, no Qt at build time. See `docs/bundled-icons.md`.
 
-`qt/` (Qt required at build time):
-- `qt/qml6` (package `ayame`) -- the "Ayame" QQC2 style itself
+`crates/` (Qt required at build time):
+- `crates/qml6` (package `ayame`) -- the "Ayame" QQC2 style itself
   (Rust + QML + cxx-qt bridge). The only piece that's actually a
   runtime style today; see `docs/qqc2-custom-style-resolution.md` for
   how Qt resolves its module name.
-- `qt/stylekit` (`ayame-stylekit`) -- `Theme`/`Units` QML singletons
+- `crates/stylekit` (`ayame-stylekit`) -- `Theme`/`Units` QML singletons
   (`Theme.qml`/`Units.qml`), a distinct swappable QML module
   (`import StyleKit`) consumed by `../origami-frameworks`' widgets.
   Mid-migration onto `Qt.labs.StyleKit` under a separate task; may be
   retired later.
-- `qt/kdecoreation6`, `qt/kstyle6` -- stub directories for a future KDE
+- `crates/kdecoreation6`, `crates/kstyle6` -- stub directories for a future KDE
   window-decoration/style plugin; not implemented, commented out of the
   workspace `members` list.
-- `qt/ayame-settings` -- the standalone settings editor GUI (depends on
+- `crates/ayame-settings` -- the standalone settings editor GUI (depends on
   `ayame` for the style itself, `ayame-config` for the persisted data).
 
 ## Consumers outside this workspace

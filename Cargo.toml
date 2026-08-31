@@ -2,11 +2,6 @@
 resolver = "3"
 
 members = [
-  #[ Qt-free ]
-  "crates/colors",
-  "crates/config",
-  "crates/icons",
-
   #[ Qt ]
   "qt/ayame-settings",
   "qt/qml6",
@@ -23,9 +18,10 @@ edition = "2024"
 
 [workspace.dependencies]
 ayame = { path = "qt/qml6" }
-ayame-config = { path = "crates/config" }
-ayame-icons = { path = "crates/icons" }
 ayame-stylekit = { path = "qt/stylekit" }
+ayame-colors = { git = "https://github.com/BardMoon/origami-frameworks" }
+ayame-config = { git = "https://github.com/BardMoon/origami-frameworks" }
+ayame-icons = { git = "https://github.com/BardMoon/origami-frameworks" }
 
 #[ Crates.io ]
 anyhow = "1"

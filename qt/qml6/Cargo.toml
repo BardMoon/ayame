@@ -5,10 +5,10 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-ayame-colors = { path = "../../crates/colors" }
-ayame-config = { path = "../../crates/config" }
-ayame-icons = { path = "../../crates/icons" }
-ayame-stylekit = { path = "../stylekit" }
+ayame-colors = { workspace = true }
+ayame-config = { workspace = true }
+ayame-icons = { workspace = true }
+ayame-stylekit = { workspace = true }
 
 #[ Crates.io ]
 cxx = { workspace = true }
